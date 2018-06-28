@@ -21,6 +21,8 @@ import java.util.concurrent.CompletionStage;
 
 public class Engine implements ReactiveStreamsEngine {
 
+  private static final String INVALID_STAGE_MSG = "Invalid stage ";
+  
   private static final Map<Class, ProcessingStageFactory> PROCESSOR_STAGES = new HashMap<>();
   private static Map<Class, PublisherStageFactory> PUBLISHER_STAGES = new HashMap<>();
   private static Map<Class, TerminalStageFactory> SUBSCRIBER_STAGES = new HashMap<>();
@@ -145,7 +147,7 @@ public class Engine implements ReactiveStreamsEngine {
 
   private <I, O> Flowable<O> applyProcessors(Flowable<I> flowable, Stage stage) {
     if (!stage.hasOutlet() && !stage.hasInlet()) {
-      throw new IllegalArgumentException("Invalid stage " + stage
+      throw new IllegalArgumentException(INVALID_STAGE_MSG + stage
         + " - expected one inlet and one outlet.");
     }
     ProcessingStageFactory factory = PROCESSOR_STAGES.get(stage.getClass());
@@ -158,7 +160,7 @@ public class Engine implements ReactiveStreamsEngine {
 
   private <T, R> CompletionStage<R> applySubscriber(Flowable<T> flowable, Stage stage) {
     if (stage.hasOutlet() || !stage.hasInlet()) {
-      throw new IllegalArgumentException("Invalid stage " + stage
+      throw new IllegalArgumentException(INVALID_STAGE_MSG + stage
         + " - expected one inlet and no outlet.");
     }
     TerminalStageFactory factory = SUBSCRIBER_STAGES.get(stage.getClass());
@@ -171,7 +173,7 @@ public class Engine implements ReactiveStreamsEngine {
 
   private <O> Flowable<O> createPublisher(Stage stage) {
     if (!stage.hasOutlet() || stage.hasInlet()) {
-      throw new IllegalArgumentException("Invalid stage " + stage
+      throw new IllegalArgumentException(INVALID_STAGE_MSG + stage
         + " - expected no inlet and one outlet.");
     }
     PublisherStageFactory factory = PUBLISHER_STAGES.get(stage.getClass());
