@@ -3,6 +3,7 @@ package io.smallrye.reactive.streams.stages;
 import io.reactivex.Flowable;
 import io.smallrye.reactive.streams.Engine;
 import io.smallrye.reactive.streams.utils.Casts;
+import io.smallrye.reactive.streams.utils.DelegatingSubscriber;
 import org.eclipse.microprofile.reactive.streams.spi.Graph;
 import org.eclipse.microprofile.reactive.streams.spi.Stage;
 import org.reactivestreams.Subscriber;
@@ -24,7 +25,7 @@ public class FlatMapStageFactory implements ProcessingStageFactory<Stage.FlatMap
     return new FlatMapStage<>(engine, mapper);
   }
 
-  private class FlatMapStage<IN, OUT> implements ProcessingStage<IN, OUT> {
+  private static class FlatMapStage<IN, OUT> implements ProcessingStage<IN, OUT> {
     private final Engine engine;
     private final Function<IN, Graph> mapper;
 
@@ -43,37 +44,11 @@ public class FlatMapStageFactory implements ProcessingStageFactory<Stage.FlatMap
 
           return delegate -> {
             // Required because RX FlatMap subscriber does not enforce the reactive stream spec.
-            Subscriber<OUT> facade = new Subscriber<OUT>() {
-              @Override
-              public void onSubscribe(Subscription s) {
-                Objects.requireNonNull(s);
-                delegate.onSubscribe(s);
-              }
-
-              @Override
-              public void onNext(OUT out) {
-                Objects.requireNonNull(out);
-                delegate.onNext(out);
-              }
-
-              @Override
-              public void onError(Throwable t) {
-                Objects.requireNonNull(t);
-                delegate.onError(t);
-              }
-
-              @Override
-              public void onComplete() {
-                delegate.onComplete();
-              }
-            };
+            Subscriber<OUT> facade = new DelegatingSubscriber<>(delegate);
             publisher.subscribe(facade);
           };
 
         });
-
-
     }
   }
-
 }
