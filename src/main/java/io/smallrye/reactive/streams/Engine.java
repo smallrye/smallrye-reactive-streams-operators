@@ -24,8 +24,8 @@ public class Engine implements ReactiveStreamsEngine {
   private static final String INVALID_STAGE_MSG = "Invalid stage ";
   
   private static final Map<Class, ProcessingStageFactory> PROCESSOR_STAGES = new HashMap<>();
-  private static Map<Class, PublisherStageFactory> PUBLISHER_STAGES = new HashMap<>();
-  private static Map<Class, TerminalStageFactory> SUBSCRIBER_STAGES = new HashMap<>();
+  private static final Map<Class, PublisherStageFactory> PUBLISHER_STAGES = new HashMap<>();
+  private static final Map<Class, TerminalStageFactory> SUBSCRIBER_STAGES = new HashMap<>();
 
   static {
     PROCESSOR_STAGES.put(Stage.Filter.class, new FilterStageFactory());
