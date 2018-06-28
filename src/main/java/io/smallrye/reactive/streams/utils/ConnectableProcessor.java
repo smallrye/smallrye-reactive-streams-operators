@@ -113,11 +113,11 @@ public class ConnectableProcessor<T> implements Processor<T, T> {
   @Override
   public void onNext(T item) {
     Objects.requireNonNull(item);
-    Subscriber<? super T> subscriber = this.subscriber.get();
-    if (subscriber == null) {
+    Subscriber<? super T> actualSubscriber = this.subscriber.get();
+    if (actualSubscriber == null) {
       throw new IllegalStateException("No subscriber - cannot handle onNext");
     } else {
-      subscriber.onNext(item);
+      actualSubscriber.onNext(item);
     }
   }
 
