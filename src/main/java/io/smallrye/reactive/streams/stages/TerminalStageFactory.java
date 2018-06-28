@@ -8,6 +8,7 @@ import org.eclipse.microprofile.reactive.streams.spi.Stage;
  *
  * @author <a href="http://escoffier.me">Clement Escoffier</a>
  */
+@FunctionalInterface
 public interface TerminalStageFactory<T extends Stage> {
 
   /**

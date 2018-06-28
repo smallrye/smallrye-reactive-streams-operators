@@ -9,6 +9,7 @@ import java.util.concurrent.CompletionStage;
  *
  * @author <a href="http://escoffier.me">Clement Escoffier</a>
  */
+@FunctionalInterface
 public interface TerminalStage<IN, OUT> {
 
   /**

@@ -7,6 +7,7 @@ import io.reactivex.Flowable;
  *
  * @author <a href="http://escoffier.me">Clement Escoffier</a>
  */
+@FunctionalInterface
 public interface ProcessingStage<IN, OUT> {
 
   /**
