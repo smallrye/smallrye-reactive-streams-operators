@@ -7,8 +7,8 @@ Add the artifact into your classpath. For Maven, use:
 
 ```xml
 <dependency>
-  <groupId>me.escoffier.microprofile.reactive-streams</groupId>
-  <artifactId>microprofile-reactive-streams</artifactId>
+  <groupId>io.smallrye</groupId>
+  <artifactId>smallrye-reactive-streams-operators</artifactId>
   <version>${VERSION}</version>
 </dependency>
 ```
