@@ -27,7 +27,7 @@ public class CollectStageFactory implements TerminalStageFactory<Stage.Collect> 
     return new CollectStage<>(collector);
   }
 
-  private class CollectStage<IN, OUT> implements TerminalStage<IN, OUT> {
+  private static class CollectStage<IN, OUT> implements TerminalStage<IN, OUT> {
 
     private final Collector<IN, Object, OUT> collector;
 

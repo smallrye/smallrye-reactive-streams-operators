@@ -19,7 +19,7 @@ public class FlatMapIterableStageFactory implements ProcessingStageFactory<Stage
     return new FlatMapIterable<>(mapper);
   }
 
-  private class FlatMapIterable<IN, OUT> implements ProcessingStage<IN, OUT> {
+  private static class FlatMapIterable<IN, OUT> implements ProcessingStage<IN, OUT> {
     private final Function<IN, Iterable<OUT>> mapper;
 
     private FlatMapIterable(Function<IN, Iterable<OUT>> mapper) {

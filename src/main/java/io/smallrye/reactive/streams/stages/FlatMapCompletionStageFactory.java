@@ -26,7 +26,7 @@ public class FlatMapCompletionStageFactory
     return new FlatMapCompletionStage<>(mapper);
   }
 
-  private class FlatMapCompletionStage<IN, OUT> implements ProcessingStage<IN, OUT> {
+  private static class FlatMapCompletionStage<IN, OUT> implements ProcessingStage<IN, OUT> {
     private final Function<IN, CompletionStage<OUT>> mapper;
 
     private FlatMapCompletionStage(Function<IN, CompletionStage<OUT>> mapper) {

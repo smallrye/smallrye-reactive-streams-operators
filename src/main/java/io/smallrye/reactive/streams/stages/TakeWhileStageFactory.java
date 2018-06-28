@@ -21,7 +21,7 @@ public class TakeWhileStageFactory implements ProcessingStageFactory<Stage.TakeW
     return Casts.cast(new TakeWhile<>(predicate, stage.isInclusive()));
   }
 
-  private class TakeWhile<IN> implements ProcessingStage<IN, IN> {
+  private static class TakeWhile<IN> implements ProcessingStage<IN, IN> {
     private final Predicate<IN> predicate;
     private final boolean includeLast;
 
@@ -32,8 +32,11 @@ public class TakeWhileStageFactory implements ProcessingStageFactory<Stage.TakeW
 
     @Override
     public Flowable<IN> process(Flowable<IN> source) {
-      return includeLast ?
-        source.takeUntil(element -> !predicate.test(element)) : source.takeWhile(predicate::test);
+      if (includeLast) {
+        return source.takeUntil(item -> !predicate.test(item));
+      } else {
+        return source.takeWhile(predicate::test);
+      }
     }
   }
 }

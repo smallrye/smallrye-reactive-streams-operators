@@ -24,7 +24,7 @@ public class SubscriberStageFactory implements TerminalStageFactory<Stage.Subscr
     return (TerminalStage<IN, OUT>) new SubscriberStage<>(subscriber);
   }
 
-  private class SubscriberStage<IN> implements TerminalStage<IN, Void> {
+  private static class SubscriberStage<IN> implements TerminalStage<IN, Void> {
 
     private final Subscriber<IN> subscriber;
 
