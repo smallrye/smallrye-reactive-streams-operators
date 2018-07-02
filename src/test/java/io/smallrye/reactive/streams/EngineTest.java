@@ -1,17 +1,20 @@
 package io.smallrye.reactive.streams;
 
 import io.reactivex.Flowable;
-import io.smallrye.reactive.streams.Engine;
+import io.vertx.core.Future;
+import io.vertx.core.impl.VertxInternal;
 import io.vertx.reactivex.core.Vertx;
 import org.eclipse.microprofile.reactive.streams.spi.Graph;
 import org.eclipse.microprofile.reactive.streams.spi.Stage;
 import org.eclipse.microprofile.reactive.streams.spi.UnsupportedStageException;
 import org.junit.After;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -23,6 +26,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class EngineTest {
 
   private Engine engine;
+
+  @BeforeClass
+  public static void reset() {
+    if (Engine.reset()) {
+      System.out.println("Default Vert.x instance re-initialized");
+    }
+  }
 
   @After
   public void tearDown() {
@@ -42,6 +52,7 @@ public class EngineTest {
     Vertx vertx = Vertx.vertx();
     engine = new Engine(vertx);
     assertThat(engine.vertx()).isNotNull().isInstanceOf(Vertx.class).isEqualTo(vertx);
+    vertx.close();
   }
 
   @Test
@@ -50,6 +61,7 @@ public class EngineTest {
     engine = new Engine(vertx);
     assertThat(engine.vertx()).isNotNull().isInstanceOf(Vertx.class);
     assertThat(engine.vertx().getDelegate()).isEqualTo(vertx);
+    vertx.close();
   }
 
   @Test
@@ -175,6 +187,34 @@ public class EngineTest {
     stages.add(new Stage.Map(i -> ((int) i) + 1));
     Graph graph = new Graph(stages);
     engine.buildPublisher(graph);
+  }
+
+  @Test
+  public void testDefaultVertxInstanceManagement() {
+    AtomicBoolean closed = new AtomicBoolean(false);
+
+    Engine engine1 = new Engine();
+    Vertx vertx1 = engine1.vertx();
+    Engine engine2 = new Engine();
+    Vertx vertx2 = engine2.vertx();
+    assertThat(Engine.getDefaultVertx()).contains(vertx2).contains(vertx1);
+
+    if (Engine.getDefaultVertx().isPresent()) {
+      VertxInternal internal = (VertxInternal) (Engine.getDefaultVertx().get().getDelegate());
+      internal.addCloseHook(completionHandler -> {
+        closed.set(true);
+        if (completionHandler != null) {
+          completionHandler.handle(Future.succeededFuture());
+        }
+      });
+    }
+    
+    engine1.close();
+    assertThat(Engine.getDefaultVertx()).isNotEmpty();
+    assertThat(closed).isFalse();
+    engine2.close();
+    assertThat(Engine.getDefaultVertx()).isEmpty();
+    assertThat(closed).isTrue();
   }
 
 

@@ -18,8 +18,4 @@ public class ReactiveStreamsEngineImplTck extends ReactiveStreamsTck<Engine> {
     return new Engine();
   }
 
-  @Override
-  protected void shutdownEngine(Engine engine) {
-    engine.close();
-  }
 }

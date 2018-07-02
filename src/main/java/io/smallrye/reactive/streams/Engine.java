@@ -2,6 +2,8 @@ package io.smallrye.reactive.streams;
 
 import io.reactivex.Flowable;
 import io.smallrye.reactive.streams.stages.*;
+import io.smallrye.reactive.streams.utils.ConnectableProcessor;
+import io.smallrye.reactive.streams.utils.WrappedProcessor;
 import io.vertx.reactivex.core.Context;
 import io.vertx.reactivex.core.RxHelper;
 import io.vertx.reactivex.core.Vertx;
@@ -12,20 +14,26 @@ import org.eclipse.microprofile.reactive.streams.spi.Stage;
 import org.eclipse.microprofile.reactive.streams.spi.UnsupportedStageException;
 import org.reactivestreams.Processor;
 import org.reactivestreams.Publisher;
-import io.smallrye.reactive.streams.utils.ConnectableProcessor;
-import io.smallrye.reactive.streams.utils.WrappedProcessor;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Engine implements ReactiveStreamsEngine {
 
   private static final String INVALID_STAGE_MSG = "Invalid stage ";
-  
+
   private static final Map<Class, ProcessingStageFactory> PROCESSOR_STAGES = new HashMap<>();
   private static final Map<Class, PublisherStageFactory> PUBLISHER_STAGES = new HashMap<>();
   private static final Map<Class, TerminalStageFactory> SUBSCRIBER_STAGES = new HashMap<>();
+
+  /**
+   * Guarded by {@link Engine} class instance.
+   */
+  private static Vertx DEFAULT_VERTX = null;
+  private static AtomicInteger REF_COUNTER = new AtomicInteger();
 
   static {
     PROCESSOR_STAGES.put(Stage.Filter.class, new FilterStageFactory());
@@ -47,14 +55,17 @@ public class Engine implements ReactiveStreamsEngine {
     SUBSCRIBER_STAGES.put(Stage.FindFirst.class, new FindFirstStageFactory());
     SUBSCRIBER_STAGES.put(Stage.SubscriberStage.class, new SubscriberStageFactory());
   }
-
-  //TODO Should the vert.x instance be shared among several instance of engine?
-  // It may be a little bit complicated when we will implement async()
-
+  
   private final Vertx vertx;
 
   public Engine() {
-    this(Vertx.vertx());
+    synchronized (Engine.class) {
+      if (DEFAULT_VERTX == null) {
+        DEFAULT_VERTX = Vertx.vertx();
+      }
+    }
+    REF_COUNTER.incrementAndGet();
+    this.vertx = DEFAULT_VERTX;
   }
 
   public Engine(Vertx vertx) {
@@ -66,7 +77,21 @@ public class Engine implements ReactiveStreamsEngine {
   }
 
   public void close() {
-    vertx.close();
+    boolean mustCloseVertxInstance = false;
+    // If the engine is using the default vert.x instance, the ref counter must be decreased. If it reaches 0, we need
+    // to close the instance, and set the default instance to null.
+    // Obviously if the instance is not the default instance, the instance not should be closed, as the Vert.x
+    // instance has been given by the user - so the user is responsible for closing it.
+    synchronized (Engine.class) {
+      if (vertx == DEFAULT_VERTX  && REF_COUNTER.decrementAndGet() == 0) {
+          DEFAULT_VERTX = null;
+          mustCloseVertxInstance = true;
+      }
+    }
+
+    if (mustCloseVertxInstance) {
+      vertx.close();
+    }
   }
 
   @Override
@@ -92,7 +117,7 @@ public class Engine implements ReactiveStreamsEngine {
    */
   private <T> Flowable<T> injectThreadSwitchIfNeeded(Flowable<T> flowable) {
     Context context = Vertx.currentContext();
-    if (context != null) {
+    if (context != null && context.getDelegate() != null) {
       return flowable.compose((f) -> f.observeOn(RxHelper.scheduler(context)));
     }
     return flowable;
@@ -186,5 +211,31 @@ public class Engine implements ReactiveStreamsEngine {
 
   public Vertx vertx() {
     return vertx;
+  }
+
+  /**
+   * Retrieves the default Vert.x instance, mainly for testing purpose.
+   *
+   * @return the default Vert.x instance wrapped in an {@link Optional}.
+   */
+  static Optional<Vertx> getDefaultVertx() {
+    return Optional.ofNullable(DEFAULT_VERTX);
+  }
+
+  /**
+   * Closes the default vert.x instance if set. Mainly for testing purpose.
+   *
+   * @return {@code true} if the default Vert.x instance has been closed, {@code false} otherwise.
+   */
+  static boolean reset() {
+    return getDefaultVertx().map(vertx -> {
+      synchronized (Engine.class) {
+        DEFAULT_VERTX.close();
+        DEFAULT_VERTX = null;
+        REF_COUNTER.set(0);
+      }
+      return true;
+    })
+      .orElse(false);
   }
 }
