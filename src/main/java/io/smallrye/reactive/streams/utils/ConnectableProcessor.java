@@ -63,34 +63,44 @@ public class ConnectableProcessor<T> implements Processor<T, T> {
       // We were not in the idle state, the behavior depends on our current state
       // For failure and completed, we just creates an empty subscription and immediately report the error or completion
       if (state.get() == State.FAILED) {
-        subscriber.onSubscribe(new EmptySubscription());
+        manageSubscribeInFailedState(subscriber);
+      } else if (state.get() == State.COMPLETE) {
+        manageSubscribeInCompleteState(subscriber);
+      } else if (state.get() == State.HAS_SUBSCRIPTION) {
+        manageSubscribeInTheHasSubscriptionState(subscriber);
+      } else {
+        throw new RuntimeException("Illegal transition - subscribe happened in the " + state.get().name() + " state");
+      }
+
+    }
+  }
+
+  private void manageSubscribeInTheHasSubscriptionState(Subscriber<? super T> subscriber) {
+    // We already have a subscription, use it.
+    // However, we could complete of failed in the meantime.
+    subscriber.onSubscribe(
+      new WrappedSubscription(subscription.get(),
+        () -> this.subscriber.set(new CancellationSubscriber<>()))
+    );
+    if (!state.compareAndSet(State.HAS_SUBSCRIPTION, State.PROCESSING)) {
+      if (state.get() == State.FAILED) {
         subscriber.onError(failure.get());
-        return;
-      }
-
-      if (state.get() == State.COMPLETE) {
-        subscriber.onSubscribe(new EmptySubscription());
+      } else if (state.get() == State.COMPLETE) {
         subscriber.onComplete();
-      }
-
-      // We already have a subscription, use it.
-      // However, we could complete of failed in the meantime.
-      if (state.get() == State.HAS_SUBSCRIPTION) {
-        subscriber.onSubscribe(
-          new WrappedSubscription(subscription.get(),
-            () -> this.subscriber.set(new CancellationSubscriber<>()))
-        );
-        if (!state.compareAndSet(State.HAS_SUBSCRIPTION, State.PROCESSING)) {
-          if (state.get() == State.FAILED) {
-            subscriber.onError(failure.get());
-            return;
-          }
-          if (state.get() == State.COMPLETE) {
-            subscriber.onComplete();
-          }
-        }
+      } else {
+        throw new IllegalStateException("Illegal transition - subscribe called in the " + state.get().name() + " state");
       }
     }
+  }
+
+  private void manageSubscribeInCompleteState(Subscriber<? super T> subscriber) {
+    subscriber.onSubscribe(new EmptySubscription());
+    subscriber.onComplete();
+  }
+
+  private void manageSubscribeInFailedState(Subscriber<? super T> subscriber) {
+    subscriber.onSubscribe(new EmptySubscription());
+    subscriber.onError(failure.get());
   }
 
   @Override
@@ -125,10 +135,12 @@ public class ConnectableProcessor<T> implements Processor<T, T> {
   public void onComplete() {
     if (state.get() == State.PROCESSING) {
       subscriber.get().onComplete();
+      state.set(State.COMPLETE);
     } else if (state.get() == State.FAILED || state.get() == State.COMPLETE || state.get() == State.IDLE) {
       throw new IllegalStateException("Invalid transition, cannot handle onComplete in " + state.get().name());
+    } else {
+      state.set(State.COMPLETE);
     }
-    state.set(State.COMPLETE);
   }
 
   @Override
@@ -137,10 +149,12 @@ public class ConnectableProcessor<T> implements Processor<T, T> {
     this.failure.set(throwable);
     if (state.get() == State.PROCESSING) {
       subscriber.get().onError(throwable);
+      state.set(State.FAILED);
     } else if (state.get() == State.FAILED || state.get() == State.COMPLETE || state.get() == State.IDLE) {
       throw new IllegalStateException("Invalid transition, cannot handle onError in " + state.get().name());
+    } else {
+      state.set(State.FAILED);
     }
-    state.set(State.FAILED);
   }
 
 
