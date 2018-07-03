@@ -36,6 +36,7 @@ public class Engine implements ReactiveStreamsEngine {
   private static AtomicInteger REF_COUNTER = new AtomicInteger();
 
   static {
+    PROCESSOR_STAGES.put(Stage.Distinct.class, new DistinctStageFactory());
     PROCESSOR_STAGES.put(Stage.Filter.class, new FilterStageFactory());
     PROCESSOR_STAGES.put(Stage.FlatMap.class, new FlatMapStageFactory());
     PROCESSOR_STAGES.put(Stage.FlatMapCompletionStage.class, new FlatMapCompletionStageFactory());
