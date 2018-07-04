@@ -40,7 +40,7 @@ public class APITest {
   @Test
   public void testIntsPublisherFromSpec() throws ExecutionException, InterruptedException {
     PublisherBuilder<Integer> intsPublisher = ReactiveStreams.of(1, 2, 3);
-    CompletionBuilder<List<Integer>> intsResult = intsPublisher.toList();
+    CompletionRunner<List<Integer>> intsResult = intsPublisher.toList();
 
     assertThat(intsResult.run().toCompletableFuture().get()).containsExactly(1, 2, 3);
   }
