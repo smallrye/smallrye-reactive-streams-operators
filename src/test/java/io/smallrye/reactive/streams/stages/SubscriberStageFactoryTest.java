@@ -41,7 +41,7 @@ public class SubscriberStageFactoryTest extends StageTestBase {
       SubscriberBuilder<Integer, Optional<Integer>> builder = ReactiveStreams.<Integer>builder().findFirst();
       return ReactiveStreams.fromPublisher(flowable).filter(i -> i > 5)
         .to(builder).run(engine);
-    }).checkSuccess(Optional.of(6));
+    }).assertSuccess(Optional.of(6));
   }
 
   @Test(expected = NullPointerException.class)

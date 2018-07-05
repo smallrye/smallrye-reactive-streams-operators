@@ -63,7 +63,7 @@ public class PeekStageFactoryTest extends StageTestBase {
         .toList()
         .run(engine);
 
-    executeOnEventLoop(callable).checkSuccess(Arrays.asList("1", "4", "9"));
+    executeOnEventLoop(callable).assertSuccess(Arrays.asList("1", "4", "9"));
     assertThat(squares).containsExactly(1, 4, 9);
     assertThat(strings).containsExactly("1", "4", "9");
     assertThat(threads).hasSize(1).containsExactly(getCapturedThreadName());

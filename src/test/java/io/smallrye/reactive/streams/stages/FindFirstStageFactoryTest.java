@@ -35,7 +35,7 @@ public class FindFirstStageFactoryTest extends StageTestBase {
       .subscribeOn(Schedulers.computation());
     executeOnEventLoop(() ->
       ReactiveStreams.fromPublisher(flowable).filter(i -> i > 5)
-        .findFirst().run(engine)).checkSuccess(Optional.of(6));
+        .findFirst().run(engine)).assertSuccess(Optional.of(6));
   }
 
   @Test(expected = NullPointerException.class)

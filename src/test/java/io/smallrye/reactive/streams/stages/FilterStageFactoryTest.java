@@ -45,7 +45,7 @@ public class FilterStageFactoryTest extends StageTestBase {
     Callable<CompletionStage<List<Integer>>> callable = () ->
       ReactiveStreams.fromPublisher(flowable).filter(even).toList().run(engine);
 
-    executeOnEventLoop(callable).checkSuccess(Arrays.asList(2, 4, 6, 8, 10));
+    executeOnEventLoop(callable).assertSuccess(Arrays.asList(2, 4, 6, 8, 10));
   }
 
   @Test(expected = NullPointerException.class)

@@ -44,11 +44,11 @@ public class FromPublisherStageFactoryTest extends StageTestBase {
 
   @Test
   public void createFromVertxContext() {
-    executeOnEventLoop(() -> ReactiveStreams.fromPublisher(Flowable.fromArray(1, 2, 3)).toList().run(engine)).checkSuccess(Arrays.asList(1, 2, 3));
+    executeOnEventLoop(() -> ReactiveStreams.fromPublisher(Flowable.fromArray(1, 2, 3)).toList().run(engine)).assertSuccess(Arrays.asList(1, 2, 3));
 
-    executeOnEventLoop(() -> ReactiveStreams.fromPublisher(Flowable.just(25)).findFirst().run(engine)).checkSuccess(Optional.of(25));
+    executeOnEventLoop(() -> ReactiveStreams.fromPublisher(Flowable.just(25)).findFirst().run(engine)).assertSuccess(Optional.of(25));
 
-    executeOnEventLoop(() -> ReactiveStreams.fromPublisher(Flowable.empty()).findFirst().run(engine)).checkSuccess(Optional.empty());
+    executeOnEventLoop(() -> ReactiveStreams.fromPublisher(Flowable.empty()).findFirst().run(engine)).assertSuccess(Optional.empty());
   }
 
 

@@ -40,7 +40,7 @@ public class TakeWhileStageFactoryTest extends StageTestBase {
     Callable<CompletionStage<List<Integer>>> callable = () ->
       ReactiveStreams.fromPublisher(flowable).takeWhile(i -> i < 6).toList().run(engine);
 
-    executeOnEventLoop(callable).checkSuccess(Arrays.asList(1, 2, 3, 4, 5));
+    executeOnEventLoop(callable).assertSuccess(Arrays.asList(1, 2, 3, 4, 5));
   }
 
   @Test(expected = NullPointerException.class)

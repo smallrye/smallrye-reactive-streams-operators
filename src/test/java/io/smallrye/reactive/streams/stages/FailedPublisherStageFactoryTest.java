@@ -37,7 +37,7 @@ public class FailedPublisherStageFactoryTest extends StageTestBase {
       .<Integer>flatMap(x -> ReactiveStreams.failed(failure))
       .to(ReactiveStreams.<Integer>builder().findFirst()).run(engine);
 
-    executeOnEventLoop(callable).checkFailure("Boom");
+    executeOnEventLoop(callable).assertFailure("Boom");
   }
 
   @Test(expected = NullPointerException.class)

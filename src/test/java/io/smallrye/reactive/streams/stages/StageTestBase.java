@@ -73,13 +73,13 @@ public class StageTestBase {
       return callbackThread;
     }
 
-    void checkSuccess(T expected) {
+    void assertSuccess(T expected) {
       assertThat(result()).isEqualTo(expected);
       assertThat(failure()).isNull();
       assertThat(callbackThread()).isEqualTo(getCapturedThreadName());
     }
 
-    void checkFailure(String message) {
+    void assertFailure(String message) {
       assertThat(callbackThread()).isEqualTo(getCapturedThreadName());
       assertThat(result()).isNull();
       assertThat(failure()).hasMessageContaining(message);

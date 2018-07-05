@@ -52,7 +52,7 @@ public class FlatMapStageFactoryTest extends  StageTestBase {
         .flatMapCompletionStage(this::asString)
         .toList()
         .run(engine)
-    ).checkSuccess(Arrays.asList("1", "1", "2", "2", "3", "3"));
+    ).assertSuccess(Arrays.asList("1", "1", "2", "2", "3", "3"));
   }
   
   private PublisherBuilder<Integer> duplicate(int i) {

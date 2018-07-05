@@ -43,6 +43,9 @@ public class Engine implements ReactiveStreamsEngine {
     PROCESSOR_STAGES.put(Stage.FlatMapIterable.class, new FlatMapIterableStageFactory());
     PROCESSOR_STAGES.put(Stage.Map.class, new MapStageFactory());
     PROCESSOR_STAGES.put(Stage.Peek.class, new PeekStageFactory());
+    PROCESSOR_STAGES.put(Stage.OnComplete.class, new OnCompleteStageFactory());
+    PROCESSOR_STAGES.put(Stage.OnTerminate.class, new OnTerminateStageFactory());
+    PROCESSOR_STAGES.put(Stage.OnError.class, new OnErrorStageFactory());
     PROCESSOR_STAGES.put(Stage.ProcessorStage.class, new ProcessorStageFactory());
     PROCESSOR_STAGES.put(Stage.TakeWhile.class, new TakeWhileStageFactory());
 

@@ -37,11 +37,11 @@ public class FromIterableStageFactoryTest extends StageTestBase {
   @Test
   public void createFromVertxContext() {
 
-    executeOnEventLoop(() -> ReactiveStreams.of(1, 2, 3).toList().run(engine)).checkSuccess(Arrays.asList(1, 2, 3));
+    executeOnEventLoop(() -> ReactiveStreams.of(1, 2, 3).toList().run(engine)).assertSuccess(Arrays.asList(1, 2, 3));
 
-    executeOnEventLoop(() -> ReactiveStreams.of(25).findFirst().run(engine)).checkSuccess(Optional.of(25));
+    executeOnEventLoop(() -> ReactiveStreams.of(25).findFirst().run(engine)).assertSuccess(Optional.of(25));
 
-    executeOnEventLoop(() -> ReactiveStreams.fromIterable(Collections.emptyList()).findFirst().run(engine)).checkSuccess(Optional.empty());
+    executeOnEventLoop(() -> ReactiveStreams.fromIterable(Collections.emptyList()).findFirst().run(engine)).assertSuccess(Optional.empty());
   }
 
 

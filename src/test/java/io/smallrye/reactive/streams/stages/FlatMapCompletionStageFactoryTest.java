@@ -53,7 +53,7 @@ public class FlatMapCompletionStageFactoryTest extends StageTestBase {
         .toList()
         .run(engine);
 
-    executeOnEventLoop(callable).checkSuccess(Arrays.asList("1", "4", "9"));
+    executeOnEventLoop(callable).assertSuccess(Arrays.asList("1", "4", "9"));
   }
 
 

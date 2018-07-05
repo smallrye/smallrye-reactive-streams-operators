@@ -50,7 +50,7 @@ public class ProcessorStageFactoryTest extends StageTestBase {
         .via(asStringProcessor())
         .toList()
         .run(engine)
-    ).checkSuccess(Arrays.asList("1", "1", "2", "2", "3", "3"));
+    ).assertSuccess(Arrays.asList("1", "1", "2", "2", "3", "3"));
   }
 
   @Test
@@ -84,7 +84,7 @@ public class ProcessorStageFactoryTest extends StageTestBase {
         .via(asStringProcessorBuilder())
         .toList()
         .run(engine)
-    ).checkSuccess(Arrays.asList("1", "1", "2", "2", "3", "3"));
+    ).assertSuccess(Arrays.asList("1", "1", "2", "2", "3", "3"));
   }
 
   private ProcessorBuilder<Integer, Integer> duplicateProcessorBuilder() {

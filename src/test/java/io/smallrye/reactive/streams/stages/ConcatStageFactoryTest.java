@@ -89,7 +89,7 @@ public class ConcatStageFactoryTest extends StageTestBase {
         .toList().run(engine);
     };
 
-    executeOnEventLoop(callable).checkSuccess(Arrays.asList(1, 2, 3, 4, 5, 6));
+    executeOnEventLoop(callable).assertSuccess(Arrays.asList(1, 2, 3, 4, 5, 6));
     assertThat(threads).hasSize(1).contains(getCapturedThreadName());
   }
 

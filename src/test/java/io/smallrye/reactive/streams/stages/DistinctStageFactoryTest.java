@@ -3,7 +3,6 @@ package io.smallrye.reactive.streams.stages;
 import io.reactivex.Flowable;
 import io.reactivex.schedulers.Schedulers;
 import org.eclipse.microprofile.reactive.streams.ReactiveStreams;
-import org.eclipse.microprofile.reactive.streams.spi.Stage;
 import org.junit.Test;
 
 import java.util.*;
@@ -50,7 +49,7 @@ public class DistinctStageFactoryTest extends StageTestBase {
         .toList()
         .run(engine);
 
-    executeOnEventLoop(callable).checkSuccess(Arrays.asList("1", "2", "3"));
+    executeOnEventLoop(callable).assertSuccess(Arrays.asList("1", "2", "3"));
   }
 
 

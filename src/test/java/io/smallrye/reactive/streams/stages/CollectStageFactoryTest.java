@@ -52,7 +52,7 @@ public class CollectStageFactoryTest extends StageTestBase {
         .collect(Collectors.summingInt(value -> value)).run(engine);
     };
 
-    executeOnEventLoop(callable).checkSuccess(2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10 + 11);
+    executeOnEventLoop(callable).assertSuccess(2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10 + 11);
 
   }
 
