@@ -15,28 +15,10 @@ import java.util.function.Predicate;
  */
 public class TakeWhileStageFactory implements ProcessingStageFactory<Stage.TakeWhile> {
 
+  @SuppressWarnings("unchecked")
   @Override
   public <IN, OUT> ProcessingStage<IN, OUT> create(Engine engine, Stage.TakeWhile stage) {
-    Predicate<IN> predicate = Casts.cast(stage.getPredicate().get());
-    return Casts.cast(new TakeWhile<>(predicate, stage.isInclusive()));
-  }
-
-  private static class TakeWhile<IN> implements ProcessingStage<IN, IN> {
-    private final Predicate<IN> predicate;
-    private final boolean includeLast;
-
-    TakeWhile(Predicate<IN> predicate, boolean inclusive) {
-      this.predicate = Objects.requireNonNull(predicate);
-      this.includeLast = inclusive;
-    }
-
-    @Override
-    public Flowable<IN> process(Flowable<IN> source) {
-      if (includeLast) {
-        return source.takeUntil(item -> !predicate.test(item));
-      } else {
-        return source.takeWhile(predicate::test);
-      }
-    }
+    Predicate<IN> predicate = (Predicate<IN>) Objects.requireNonNull(stage.getPredicate());
+    return source -> (Flowable<OUT>) source.takeWhile(predicate::test);
   }
 }

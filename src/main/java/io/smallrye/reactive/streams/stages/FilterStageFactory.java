@@ -18,8 +18,7 @@ public class FilterStageFactory implements ProcessingStageFactory<Stage.Filter> 
   @Override
   public <IN, OUT> ProcessingStage<IN, OUT> create(Engine engine, Stage.Filter stage) {
     Objects.requireNonNull(stage);
-    Objects.requireNonNull(stage.getPredicate());
-    Predicate predicate = stage.getPredicate().get();
+    Predicate predicate = Objects.requireNonNull(stage.getPredicate());
     return source -> (Flowable<OUT>) source.filter(predicate::test);
   }
 }

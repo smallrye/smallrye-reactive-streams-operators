@@ -48,6 +48,9 @@ public class Engine implements ReactiveStreamsEngine {
     PROCESSOR_STAGES.put(Stage.OnError.class, new OnErrorStageFactory());
     PROCESSOR_STAGES.put(Stage.ProcessorStage.class, new ProcessorStageFactory());
     PROCESSOR_STAGES.put(Stage.TakeWhile.class, new TakeWhileStageFactory());
+    PROCESSOR_STAGES.put(Stage.DropWhile.class, new DropWhileStageFactory());
+    PROCESSOR_STAGES.put(Stage.Limit.class, new LimitStageFactory());
+    PROCESSOR_STAGES.put(Stage.Skip.class, new SkipStageFactory());
 
     PUBLISHER_STAGES.put(Stage.Concat.class, new ConcatStageFactory());
     PUBLISHER_STAGES.put(Stage.Failed.class, new FailedPublisherStageFactory());
