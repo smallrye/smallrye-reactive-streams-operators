@@ -191,4 +191,15 @@
       <comments>A business-friendly OSS license</comments>
     </license>
   </licenses>
+
+  <repositories>
+    <repository>
+      <id>sonatype-snapshots</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots/io/reactiverse</url>
+      <name>Snapshots</name>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
 </project>
