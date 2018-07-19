@@ -1,7 +1,9 @@
 package io.smallrye.reactive.streams.stages;
 
 import io.reactivex.Flowable;
+import io.reactivex.plugins.RxJavaPlugins;
 import io.smallrye.reactive.streams.Engine;
+import io.smallrye.reactive.streams.utils.recovery.OnErrorResumeWith;
 import org.eclipse.microprofile.reactive.streams.spi.Graph;
 import org.eclipse.microprofile.reactive.streams.spi.Stage;
 
@@ -20,10 +22,12 @@ public class OnErrorResumeWithStageFactory implements ProcessingStageFactory<Sta
   public <IN, OUT> ProcessingStage<IN, OUT> create(Engine engine, Stage.OnErrorResumeWith stage) {
     Function<Throwable, Graph> function = Objects.requireNonNull(stage).getFunction();
     Objects.requireNonNull(function);
-    return source -> (Flowable<OUT>) source.onErrorResumeNext(err -> {
-      Graph graph = function.apply(err);
-      return Flowable.fromPublisher(
-              Objects.requireNonNull(engine.buildPublisher(Objects.requireNonNull(graph))));
-    });
+
+    return source -> (Flowable<OUT>) RxJavaPlugins.onAssembly(
+            new OnErrorResumeWith<>(source, err -> {
+              Graph graph = function.apply(err);
+              return Flowable.fromPublisher(
+                Objects.requireNonNull(engine.buildPublisher(Objects.requireNonNull(graph))));
+            }));
   }
 }
