@@ -4,8 +4,10 @@ import io.reactivex.Flowable;
 import io.reactivex.FlowableSubscriber;
 import io.reactivex.exceptions.Exceptions;
 import io.reactivex.internal.fuseable.HasUpstreamPublisher;
+import io.reactivex.internal.subscriptions.EmptySubscription;
 import io.reactivex.internal.subscriptions.SubscriptionArbiter;
 import io.reactivex.plugins.RxJavaPlugins;
+import io.reactivex.schedulers.Schedulers;
 import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
@@ -57,7 +59,10 @@ public class OnErrorResumeWith<T> extends Flowable<T> implements HasUpstreamPubl
 
         @Override
         public void onSubscribe(Subscription s) {
-            arbiter.setSubscription(s);
+            if (! (s instanceof EmptySubscription)) {
+                arbiter.setSubscription(s);
+            }
+            // else the subscription has already been cancelled, and so we must not subscribe to be compliant with Reactive Streams.
         }
 
         @Override
