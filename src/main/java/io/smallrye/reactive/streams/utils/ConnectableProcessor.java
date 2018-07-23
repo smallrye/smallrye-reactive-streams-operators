@@ -88,7 +88,8 @@ public class ConnectableProcessor<T> implements Processor<T, T> {
       } else if (state.get() == State.COMPLETE) {
         subscriber.onComplete();
       } else {
-        throw new IllegalStateException("Illegal transition - subscribe called in the " + state.get().name() + " state");
+        throw new IllegalStateException("Illegal transition - subscribe called in the "
+                + state.get().name() + " state");
       }
     }
   }
