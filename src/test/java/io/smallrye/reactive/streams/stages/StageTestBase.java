@@ -1,12 +1,16 @@
 package io.smallrye.reactive.streams.stages;
 
 import io.smallrye.reactive.streams.Engine;
+import org.eclipse.microprofile.reactive.streams.PublisherBuilder;
+import org.eclipse.microprofile.reactive.streams.ReactiveStreams;
 import org.junit.After;
 import org.junit.Before;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
@@ -99,5 +103,12 @@ public class StageTestBase {
     await().until(operation::hasCompletedOrFailed);
     return operation;
 
+  }
+
+  PublisherBuilder<Integer> infiniteStream() {
+    return ReactiveStreams.fromIterable(() -> {
+      AtomicInteger value = new AtomicInteger();
+      return IntStream.generate(value::incrementAndGet).boxed().iterator();
+    });
   }
 }
