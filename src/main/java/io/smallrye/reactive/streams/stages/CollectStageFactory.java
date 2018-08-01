@@ -1,8 +1,9 @@
 package io.smallrye.reactive.streams.stages;
 
-import hu.akarnokd.rxjava2.interop.FlowableInterop;
 import io.reactivex.Flowable;
+import io.reactivex.plugins.RxJavaPlugins;
 import io.smallrye.reactive.streams.Engine;
+import io.smallrye.reactive.streams.utils.FlowableCollector;
 import org.eclipse.microprofile.reactive.streams.spi.Stage;
 
 import java.util.Objects;
@@ -38,9 +39,10 @@ public class CollectStageFactory implements TerminalStageFactory<Stage.Collect> 
     @Override
     public CompletionStage<OUT> toCompletionStage(Flowable<IN> source) {
       CompletableFuture<OUT> future = new CompletableFuture<>();
-      Flowable<OUT> flow = source.compose(FlowableInterop.collect(collector));
+      Flowable<OUT> flow = source.compose(f -> RxJavaPlugins.onAssembly(new FlowableCollector<>(f, collector)));
       //noinspection ResultOfMethodCallIgnored
-      flow.firstElement()
+      flow
+        .firstElement()
         .subscribe(
           future::complete,
           future::completeExceptionally
