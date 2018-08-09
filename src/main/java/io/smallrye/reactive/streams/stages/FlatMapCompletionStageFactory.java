@@ -1,7 +1,7 @@
 package io.smallrye.reactive.streams.stages;
 
-import hu.akarnokd.rxjava2.interop.SingleInterop;
 import io.reactivex.Flowable;
+import io.reactivex.processors.AsyncProcessor;
 import io.smallrye.reactive.streams.Engine;
 import io.smallrye.reactive.streams.utils.Casts;
 import org.eclipse.microprofile.reactive.streams.spi.Stage;
@@ -35,8 +35,43 @@ public class FlatMapCompletionStageFactory
 
     @Override
     public Flowable<OUT> process(Flowable<IN> source) {
-      return source.concatMap(e -> SingleInterop.fromFuture(mapper.apply(e)).toFlowable(), 1);
+      return source.concatMap(e -> {
+        if (e == null) {
+          throw new NullPointerException();
+        }
+        CompletionStage<OUT> result = mapper.apply(e);
+        if (result == null) {
+          throw new NullPointerException();
+        }
+        return fromCompletionStage(result);
+      }, 1);
     }
+  }
+
+  /**
+   * Returns a {@link Flowable} that emits the value of the given {@link CompletionStage}, its error or
+   * @{code NullPointerException} if it signals {@code null}.
+   *
+   * @param <T> the value type
+   * @param future the source {@link CompletionStage} instance
+   * @return the new {@link Flowable} instance
+   */
+  private static <T> Flowable<T> fromCompletionStage(CompletionStage<T> future) {
+    AsyncProcessor<T> processor = AsyncProcessor.create();
+
+    future.whenComplete((v, e) -> {
+      if (e != null) {
+        processor.onError(e);
+      } else
+      if (v != null) {
+        processor.onNext(v);
+        processor.onComplete();
+      } else {
+        processor.onError(new NullPointerException());
+      }
+    });
+
+    return processor;
   }
 
 }

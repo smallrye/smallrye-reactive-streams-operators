@@ -22,7 +22,6 @@
     <log4j2.version>2.11.0</log4j2.version>
     <microprofile-reactive-streams.version>1.0-SNAPSHOT</microprofile-reactive-streams.version>
     <rxjava.version>2.1.15</rxjava.version>
-    <rxjava2-interop.version>0.2.9</rxjava2-interop.version>
   </properties>
   
   <dependencyManagement>
@@ -60,11 +59,6 @@
       <artifactId>rxjava</artifactId>
       <version>${rxjava.version}</version>
     </dependency>
-    <dependency>
-      <groupId>com.github.akarnokd</groupId>
-      <artifactId>rxjava2-jdk8-interop</artifactId>
-      <version>${rxjava2-interop.version}</version>
-    </dependency>
 
     <dependency>
       <groupId>junit</groupId>
@@ -78,6 +72,13 @@
       <version>3.10.0</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.testng</groupId>
+      <artifactId>testng</artifactId>
+      <version>6.14.3</version>
+      <scope>test</scope>
+    </dependency>
+
 
     <dependency>
       <groupId>org.awaitility</groupId>
