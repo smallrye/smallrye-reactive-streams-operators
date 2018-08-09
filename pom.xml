@@ -18,10 +18,10 @@
   <packaging>jar</packaging>
 
   <properties>
-    <vertx.version>3.5.2</vertx.version>
-    <log4j2.version>2.11.0</log4j2.version>
-    <microprofile-reactive-streams.version>1.0-SNAPSHOT</microprofile-reactive-streams.version>
-    <rxjava.version>2.1.15</rxjava.version>
+    <vertx.version>3.5.3</vertx.version>
+    <log4j2.version>2.11.1</log4j2.version>
+    <microprofile-reactive-streams.version>1.0.0-M1</microprofile-reactive-streams.version>
+    <rxjava.version>2.2.0</rxjava.version>
   </properties>
   
   <dependencyManagement>
