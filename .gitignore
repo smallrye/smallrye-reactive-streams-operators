@@ -3,6 +3,11 @@
 # Compiled class file
 *.class
 
+.classpath
+.project
+.idea
+*.iml
+
 # Log file
 *.log
 
@@ -101,5 +106,3 @@ buildNumber.properties
 
 .vertx
 .tmp
-*.iml
-.idea
