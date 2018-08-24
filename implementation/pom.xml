@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>io.smallrye.reactive-streams-operators</groupId>
+    <groupId>io.smallrye.reactive</groupId>
     <artifactId>smallrye-reactive-streams-operators-project</artifactId>
     <version>1.0.0-SNAPSHOT</version>
   </parent>

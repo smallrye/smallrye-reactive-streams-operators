@@ -7,10 +7,18 @@ Add the artifact into your classpath. For Maven, use:
 
 ```xml
 <dependency>
-  <groupId>io.smallrye</groupId>
+  <groupId>io.smallrye.reactive</groupId>
   <artifactId>smallrye-reactive-streams-operators</artifactId>
   <version>${VERSION}</version>
 </dependency>
+
+<!-- or CDI version -->
+<dependency>
+  <groupId>io.smallrye.reactive</groupId>
+  <artifactId>smallrye-reactive-streams-operators-cdi</artifactId>
+  <version>${VERSION}</version>
+</dependency>
+
 ```
 
 Then, in your code, just use it:
