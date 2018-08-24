@@ -49,6 +49,12 @@
       <scope>test</scope>
       <version>${microprofile-reactive-streams.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.eclipse.microprofile.reactive.streams</groupId>
+      <artifactId>microprofile-reactive-streams-operators-tck-arquillian</artifactId>
+      <scope>test</scope>
+      <version>${microprofile-reactive-streams.version}</version>
+    </dependency>
 
     <dependency>
       <groupId>io.vertx</groupId>
