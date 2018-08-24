@@ -38,6 +38,7 @@ To collect the code coverage:
 ```bash
 mvn clean verify -Pcoverage
 # to generate the report
+cd implementation
 mvn jacoco:report -Djacoco.dataFile=target/jacoco.exec -Pcoverage
 ```
 
