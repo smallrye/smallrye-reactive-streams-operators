@@ -19,6 +19,7 @@
 
   <modules>
     <module>implementation</module>
+    <module>cdi</module>
   </modules>
 
   <properties>
@@ -26,6 +27,8 @@
     <log4j2.version>2.11.1</log4j2.version>
     <microprofile-reactive-streams.version>1.0.0-M1</microprofile-reactive-streams.version>
     <rxjava.version>2.2.0</rxjava.version>
+
+    <weld-core.version>3.0.4.Final</weld-core.version>
   </properties>
   
   <dependencyManagement>
