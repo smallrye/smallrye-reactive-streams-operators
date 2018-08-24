@@ -9,6 +9,7 @@
     <version>1</version>
   </parent>
 
+  <groupId>io.smallrye.reactive-streams-operators</groupId>
   <artifactId>smallrye-reactive-streams-operators-project</artifactId>
   <version>1.0.0-SNAPSHOT</version>
 
