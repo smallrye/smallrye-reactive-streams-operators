@@ -35,7 +35,7 @@ public class FlatMapCompletionStageFactory
 
     @Override
     public Flowable<OUT> process(Flowable<IN> source) {
-      return source.concatMap(e -> {
+      return source.flatMap(e -> {
         if (e == null) {
           throw new NullPointerException();
         }
