@@ -60,7 +60,7 @@ public class OnErrorResumeWithStageFactoryTest extends StageTestBase {
         Set<String> threads = new LinkedHashSet<>();
         Callable<CompletionStage<List<Integer>>> callable = () ->
                 ReactiveStreams.<Integer>failed(new Exception("BOOM"))
-                        .onErrorResumeWithPublisher(t -> flowable.observeOn(Schedulers.computation()))
+                        .onErrorResumeWithRsPublisher(t -> flowable.observeOn(Schedulers.computation()))
                         .peek(x -> threads.add(Thread.currentThread().getName()))
                         .toList()
                         .run(engine);
