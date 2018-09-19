@@ -58,6 +58,9 @@ public class Engine implements ReactiveStreamsEngine {
     PUBLISHER_STAGES.put(Stage.Failed.class, new FailedPublisherStageFactory());
     PUBLISHER_STAGES.put(Stage.Of.class, new FromIterableStageFactory());
     PUBLISHER_STAGES.put(Stage.PublisherStage.class, new FromPublisherStageFactory());
+    PUBLISHER_STAGES.put(Stage.FromCompletionStage.class, new FromCompletionStageFactory());
+    PUBLISHER_STAGES.put(Stage.FromCompletionStageNullable.class, new FromCompletionStageNullableFactory());
+
 
     SUBSCRIBER_STAGES.put(Stage.Cancel.class, new CancelStageFactory());
     SUBSCRIBER_STAGES.put(Stage.Collect.class, new CollectStageFactory());

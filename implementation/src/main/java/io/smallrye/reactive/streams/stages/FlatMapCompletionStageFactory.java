@@ -10,6 +10,8 @@ import java.util.Objects;
 import java.util.concurrent.CompletionStage;
 import java.util.function.Function;
 
+import static io.smallrye.reactive.streams.utils.CompletionStageToPublisher.fromCompletionStage;
+
 /**
  * Implementation of the {@link Stage.FlatMapCompletionStage} stage.
  *
@@ -43,35 +45,11 @@ public class FlatMapCompletionStageFactory
         if (result == null) {
           throw new NullPointerException();
         }
-        return fromCompletionStage(result);
+        return fromCompletionStage(result, false);
       }, 1);
     }
   }
 
-  /**
-   * Returns a {@link Flowable} that emits the value of the given {@link CompletionStage}, its error or
-   * @{code NullPointerException} if it signals {@code null}.
-   *
-   * @param <T> the value type
-   * @param future the source {@link CompletionStage} instance
-   * @return the new {@link Flowable} instance
-   */
-  private static <T> Flowable<T> fromCompletionStage(CompletionStage<T> future) {
-    AsyncProcessor<T> processor = AsyncProcessor.create();
 
-    future.whenComplete((v, e) -> {
-      if (e != null) {
-        processor.onError(e);
-      } else
-      if (v != null) {
-        processor.onNext(v);
-        processor.onComplete();
-      } else {
-        processor.onError(new NullPointerException());
-      }
-    });
-
-    return processor;
-  }
 
 }

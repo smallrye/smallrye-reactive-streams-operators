@@ -3,6 +3,7 @@ package io.smallrye.reactive.streams.utils;
 import io.smallrye.reactive.streams.stages.ProcessingStage;
 import org.reactivestreams.Processor;
 
+import java.util.concurrent.CompletionStage;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -34,6 +35,10 @@ public class Casts {
 
   public static <I, O> Processor<I, O> cast(Processor<?, ?> p) {
     return (Processor<I, O>) p;
+  }
+
+  public static <O> CompletionStage<O> cast(CompletionStage<?> cs) {
+    return (CompletionStage<O>) cs;
   }
 
 }
