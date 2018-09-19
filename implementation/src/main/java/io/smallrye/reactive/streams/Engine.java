@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class Engine implements ReactiveStreamsEngine {
 
@@ -32,8 +33,8 @@ public class Engine implements ReactiveStreamsEngine {
   /**
    * Guarded by {@link Engine} class instance.
    */
-  private static Vertx DEFAULT_VERTX = null;
-  private static AtomicInteger REF_COUNTER = new AtomicInteger();
+  private static final AtomicReference<Vertx> DEFAULT_VERTX = new AtomicReference<>();
+  private static final AtomicInteger REF_COUNTER = new AtomicInteger();
 
   static {
     PROCESSOR_STAGES.put(Stage.Distinct.class, new DistinctStageFactory());
@@ -72,12 +73,10 @@ public class Engine implements ReactiveStreamsEngine {
 
   public Engine() {
     synchronized (Engine.class) {
-      if (DEFAULT_VERTX == null) {
-        DEFAULT_VERTX = Vertx.vertx();
-      }
+      DEFAULT_VERTX.compareAndSet(null, Vertx.vertx());
+      REF_COUNTER.incrementAndGet();
     }
-    REF_COUNTER.incrementAndGet();
-    this.vertx = DEFAULT_VERTX;
+    this.vertx = DEFAULT_VERTX.get();
   }
 
   public Engine(Vertx vertx) {
@@ -89,25 +88,22 @@ public class Engine implements ReactiveStreamsEngine {
   }
 
   public void close() {
-    boolean mustCloseVertxInstance = false;
+    boolean mustCloseVertxInstance;
     // If the engine is using the default vert.x instance, the ref counter must be decreased. If it reaches 0, we need
     // to close the instance, and set the default instance to null.
     // Obviously if the instance is not the default instance, the instance not should be closed, as the Vert.x
     // instance has been given by the user - so the user is responsible for closing it.
     synchronized (Engine.class) {
-      if (vertx == DEFAULT_VERTX  && REF_COUNTER.decrementAndGet() == 0) {
-          DEFAULT_VERTX = null;
-          mustCloseVertxInstance = true;
-      }
+      mustCloseVertxInstance = DEFAULT_VERTX.get() == vertx  && REF_COUNTER.decrementAndGet() == 0;
     }
 
     if (mustCloseVertxInstance) {
-      vertx.close();
+      DEFAULT_VERTX.getAndSet(null).close();
     }
   }
 
   @Override
-  public <T> Publisher<T> buildPublisher(Graph graph) throws UnsupportedStageException {
+  public <T> Publisher<T> buildPublisher(Graph graph) {
     Flowable<T> flowable = null;
     for (Stage stage : graph.getStages()) {
       if (flowable == null) {
@@ -130,14 +126,13 @@ public class Engine implements ReactiveStreamsEngine {
   private <T> Flowable<T> injectThreadSwitchIfNeeded(Flowable<T> flowable) {
     Context context = Vertx.currentContext();
     if (context != null && context.getDelegate() != null) {
-      return flowable.compose((f) -> f.observeOn(RxHelper.scheduler(context)));
+      return flowable.compose(f -> f.observeOn(RxHelper.scheduler(context)));
     }
     return flowable;
   }
 
   @Override
-  public <T, R> CompletionSubscriber<T, R> buildSubscriber(Graph graph)
-    throws UnsupportedStageException {
+  public <T, R> CompletionSubscriber<T, R> buildSubscriber(Graph graph) {
     Processor<T, T> processor = new ConnectableProcessor<>();
 
     Flowable<T> flowable = Flowable.fromPublisher(processor);
@@ -154,7 +149,7 @@ public class Engine implements ReactiveStreamsEngine {
   }
 
   @Override
-  public <T, R> Processor<T, R> buildProcessor(Graph graph) throws UnsupportedStageException {
+  public <T, R> Processor<T, R> buildProcessor(Graph graph) {
     Processor<T, T> processor = new ConnectableProcessor<>();
 
     Flowable<T> flowable = Flowable.fromPublisher(processor);
@@ -167,7 +162,7 @@ public class Engine implements ReactiveStreamsEngine {
   }
 
   @Override
-  public <T> CompletionStage<T> buildCompletion(Graph graph) throws UnsupportedStageException {
+  public <T> CompletionStage<T> buildCompletion(Graph graph) {
     Flowable<?> flowable = null;
     for (Stage stage : graph.getStages()) {
       if (flowable == null) {
@@ -231,7 +226,7 @@ public class Engine implements ReactiveStreamsEngine {
    * @return the default Vert.x instance wrapped in an {@link Optional}.
    */
   static Optional<Vertx> getDefaultVertx() {
-    return Optional.ofNullable(DEFAULT_VERTX);
+    return Optional.ofNullable(DEFAULT_VERTX.get());
   }
 
   /**
@@ -242,8 +237,7 @@ public class Engine implements ReactiveStreamsEngine {
   static boolean reset() {
     return getDefaultVertx().map(vertx -> {
       synchronized (Engine.class) {
-        DEFAULT_VERTX.close();
-        DEFAULT_VERTX = null;
+        DEFAULT_VERTX.getAndSet(null).close();
         REF_COUNTER.set(0);
       }
       return true;
