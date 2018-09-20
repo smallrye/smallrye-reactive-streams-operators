@@ -23,9 +23,9 @@ import java.util.stream.Collector;
  */
 public final class FlowableCollector<T, A, R> extends Flowable<R> {
 
-    final Publisher<T> source;
+    private final Publisher<T> source;
 
-    final Collector<T, A, R> collector;
+    private final Collector<T, A, R> collector;
 
     public FlowableCollector(Publisher<T> source, Collector<T, A, R> collector) {
         this.source = source;
@@ -57,13 +57,13 @@ public final class FlowableCollector<T, A, R> extends Flowable<R> {
 
         private static final long serialVersionUID = 2129956429647866525L;
 
-        private final BiConsumer<A, T> accumulator;
+        private final transient BiConsumer<A, T> accumulator;
 
-        private final Function<A, R> finisher;
+        private final transient Function<A, R> finisher;
 
-        private A intermediate;
+        private transient A intermediate;
 
-        private Subscription subscription;
+        private transient Subscription subscription;
 
         private boolean done;
 

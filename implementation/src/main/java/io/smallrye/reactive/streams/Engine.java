@@ -123,7 +123,7 @@ public class Engine implements ReactiveStreamsEngine {
    * @param <T>      the type of data
    * @return the decorated flowable if needed
    */
-  private <T> Flowable<T> injectThreadSwitchIfNeeded(Flowable<T> flowable) {
+  private static <T> Flowable<T> injectThreadSwitchIfNeeded(Flowable<T> flowable) {
     Context context = Vertx.currentContext();
     if (context != null && context.getDelegate() != null) {
       return flowable.compose(f -> f.observeOn(RxHelper.scheduler(context)));

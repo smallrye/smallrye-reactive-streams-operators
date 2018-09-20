@@ -9,6 +9,7 @@ import java.util.function.Function;
 
 public class OnErrorReturnSubscriber<T> extends SinglePostCompleteSubscriber<T, T> {
 
+    private static final long serialVersionUID = 1111111L;
     private final transient Function<? super Throwable, ? extends T> valueSupplier;
 
     OnErrorReturnSubscriber(Subscriber<? super T> actual,
