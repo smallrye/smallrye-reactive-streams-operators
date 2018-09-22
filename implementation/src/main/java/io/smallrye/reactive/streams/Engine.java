@@ -73,7 +73,9 @@ public class Engine implements ReactiveStreamsEngine {
 
   public Engine() {
     synchronized (Engine.class) {
-      DEFAULT_VERTX.compareAndSet(null, Vertx.vertx());
+      if (DEFAULT_VERTX.get() == null) {
+        DEFAULT_VERTX.set(Vertx.vertx());
+      }
       REF_COUNTER.incrementAndGet();
     }
     this.vertx = DEFAULT_VERTX.get();
