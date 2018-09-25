@@ -17,17 +17,17 @@ import java.util.function.Function;
  */
 public class OnErrorResumeWithStageFactory implements ProcessingStageFactory<Stage.OnErrorResumeWith> {
 
-  @SuppressWarnings("unchecked")
-  @Override
-  public <IN, OUT> ProcessingStage<IN, OUT> create(Engine engine, Stage.OnErrorResumeWith stage) {
-    Function<Throwable, Graph> function = Objects.requireNonNull(stage).getFunction();
-    Objects.requireNonNull(function);
+    @SuppressWarnings("unchecked")
+    @Override
+    public <IN, OUT> ProcessingStage<IN, OUT> create(Engine engine, Stage.OnErrorResumeWith stage) {
+        Function<Throwable, Graph> function = Objects.requireNonNull(stage).getFunction();
+        Objects.requireNonNull(function);
 
-    return source -> (Flowable<OUT>) RxJavaPlugins.onAssembly(
-            new OnErrorResumeWith<>(source, err -> {
-              Graph graph = function.apply(err);
-              return Flowable.fromPublisher(
-                Objects.requireNonNull(engine.buildPublisher(Objects.requireNonNull(graph))));
-            }));
-  }
+        return source -> (Flowable<OUT>) RxJavaPlugins.onAssembly(
+                new OnErrorResumeWith<>(source, err -> {
+                    Graph graph = function.apply(err);
+                    return Flowable.fromPublisher(
+                            Objects.requireNonNull(engine.buildPublisher(Objects.requireNonNull(graph))));
+                }));
+    }
 }

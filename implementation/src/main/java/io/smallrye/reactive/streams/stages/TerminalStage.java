@@ -12,12 +12,12 @@ import java.util.concurrent.CompletionStage;
 @FunctionalInterface
 public interface TerminalStage<IN, OUT> {
 
-  /**
-   * Creates the {@link CompletionStage} called when the embedded logic has completed or failed.
-   *
-   * @param flowable the observed / subscribed stream
-   * @return the asynchronous result
-   */
-  CompletionStage<OUT> toCompletionStage(Flowable<IN> flowable);
+    /**
+     * Creates the {@link CompletionStage} called when the embedded logic has completed or failed.
+     *
+     * @param flowable the observed / subscribed stream
+     * @return the asynchronous result
+     */
+    CompletionStage<OUT> toCompletionStage(Flowable<IN> flowable);
 
 }

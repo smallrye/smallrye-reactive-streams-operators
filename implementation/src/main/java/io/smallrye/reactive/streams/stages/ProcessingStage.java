@@ -10,12 +10,12 @@ import io.reactivex.Flowable;
 @FunctionalInterface
 public interface ProcessingStage<IN, OUT> {
 
-  /**
-   * Adapts the streams.
-   *
-   * @param source the input stream, must not be {@code null}
-   * @return the adapted stream, must not be {@code null}
-   */
-  Flowable<OUT> process(Flowable<IN> source);
+    /**
+     * Adapts the streams.
+     *
+     * @param source the input stream, must not be {@code null}
+     * @return the adapted stream, must not be {@code null}
+     */
+    Flowable<OUT> process(Flowable<IN> source);
 
 }

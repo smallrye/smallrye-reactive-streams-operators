@@ -20,35 +20,35 @@ import java.util.stream.Collector;
 public class CollectStageFactory implements TerminalStageFactory<Stage.Collect> {
 
 
-  @SuppressWarnings("unchecked")
-  @Override
-  public <IN, OUT> TerminalStage<IN, OUT> create(Engine engine, Stage.Collect stage) {
-    Collector<IN, Object, OUT> collector = (Collector<IN, Object, OUT>) Objects.requireNonNull(stage).getCollector();
-    Objects.requireNonNull(collector);
-    return new CollectStage<>(collector);
-  }
-
-  private static class CollectStage<IN, OUT> implements TerminalStage<IN, OUT> {
-
-    private final Collector<IN, Object, OUT> collector;
-
-    CollectStage(Collector<IN, Object, OUT> collector) {
-      this.collector = collector;
-    }
-
+    @SuppressWarnings("unchecked")
     @Override
-    public CompletionStage<OUT> toCompletionStage(Flowable<IN> source) {
-      CompletableFuture<OUT> future = new CompletableFuture<>();
-      Flowable<OUT> flow = source.compose(f -> RxJavaPlugins.onAssembly(new FlowableCollector<>(f, collector)));
-      //noinspection ResultOfMethodCallIgnored
-      flow
-        .firstElement()
-        .subscribe(
-          future::complete,
-          future::completeExceptionally
-        );
-      return future;
+    public <IN, OUT> TerminalStage<IN, OUT> create(Engine engine, Stage.Collect stage) {
+        Collector<IN, Object, OUT> collector = (Collector<IN, Object, OUT>) Objects.requireNonNull(stage).getCollector();
+        Objects.requireNonNull(collector);
+        return new CollectStage<>(collector);
     }
-  }
+
+    private static class CollectStage<IN, OUT> implements TerminalStage<IN, OUT> {
+
+        private final Collector<IN, Object, OUT> collector;
+
+        CollectStage(Collector<IN, Object, OUT> collector) {
+            this.collector = collector;
+        }
+
+        @Override
+        public CompletionStage<OUT> toCompletionStage(Flowable<IN> source) {
+            CompletableFuture<OUT> future = new CompletableFuture<>();
+            Flowable<OUT> flow = source.compose(f -> RxJavaPlugins.onAssembly(new FlowableCollector<>(f, collector)));
+            //noinspection ResultOfMethodCallIgnored
+            flow
+                    .firstElement()
+                    .subscribe(
+                            future::complete,
+                            future::completeExceptionally
+                    );
+            return future;
+        }
+    }
 
 }

@@ -29,7 +29,7 @@ public class OnErrorResumeWithSubscriber<T> implements FlowableSubscriber<T> {
 
     @Override
     public void onSubscribe(Subscription s) {
-        if (! (s instanceof EmptySubscription)) {
+        if (!(s instanceof EmptySubscription)) {
             arbiter.setSubscription(s);
         }
         // else the subscription has already been cancelled, and so we must not subscribe to

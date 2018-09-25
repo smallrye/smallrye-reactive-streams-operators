@@ -31,7 +31,7 @@ CompletionStage<Integer> stage = ReactiveStreams.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 1
 
 ## Threading model
 
-This implementation is based on RX Java 2 and Eclipse Vert.x. If you are using it in a Vert.x application it enforces the 
+This implementation is based on RX Java 2. By adding the Vert.x Execution Model to your classpath, it enforces the 
 Vert.x threading model automatically. So operations triggered from a Vert.x context (event loop or worker) are always 
 handled in the same context, even if stream emissions are done in another thread. 
 

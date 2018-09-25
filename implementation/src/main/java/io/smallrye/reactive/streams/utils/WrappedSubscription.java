@@ -9,24 +9,24 @@ import java.util.Objects;
  */
 public class WrappedSubscription implements Subscription {
 
-  private final Subscription subscription;
-  private final Runnable cancellationHandler;
+    private final Subscription subscription;
+    private final Runnable cancellationHandler;
 
-  WrappedSubscription(Subscription subscription, Runnable onCancellation) {
-    this.subscription = Objects.requireNonNull(subscription);
-    this.cancellationHandler = onCancellation;
-  }
-
-  @Override
-  public void request(long n) {
-    subscription.request(n);
-  }
-
-  @Override
-  public void cancel() {
-    if (cancellationHandler != null) {
-      cancellationHandler.run();
+    WrappedSubscription(Subscription subscription, Runnable onCancellation) {
+        this.subscription = Objects.requireNonNull(subscription);
+        this.cancellationHandler = onCancellation;
     }
-    subscription.cancel();
-  }
+
+    @Override
+    public void request(long n) {
+        subscription.request(n);
+    }
+
+    @Override
+    public void cancel() {
+        if (cancellationHandler != null) {
+            cancellationHandler.run();
+        }
+        subscription.cancel();
+    }
 }

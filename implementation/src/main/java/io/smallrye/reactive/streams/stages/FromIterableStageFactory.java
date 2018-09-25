@@ -13,10 +13,10 @@ import java.util.Objects;
  */
 public class FromIterableStageFactory implements PublisherStageFactory<Stage.Of> {
 
-  @SuppressWarnings("unchecked")
-  @Override
-  public <OUT> PublisherStage<OUT> create(Engine engine, Stage.Of stage) {
-    Iterable<OUT> elements = (Iterable<OUT>) Objects.requireNonNull(Objects.requireNonNull(stage).getElements());
-    return () -> Flowable.fromIterable(elements);
-  }
+    @SuppressWarnings("unchecked")
+    @Override
+    public <OUT> PublisherStage<OUT> create(Engine engine, Stage.Of stage) {
+        Iterable<OUT> elements = (Iterable<OUT>) Objects.requireNonNull(Objects.requireNonNull(stage).getElements());
+        return () -> Flowable.fromIterable(elements);
+    }
 }

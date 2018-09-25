@@ -13,6 +13,6 @@ public class ProducerInjectionProcessor implements ApplicationArchiveProcessor {
     @Override
     public void process(Archive<?> applicationArchive, TestClass testClass) {
         applicationArchive.as(JavaArchive.class)
-            .addClass(ReactiveEngineProvider.class);
+                .addClass(ReactiveEngineProvider.class);
     }
 }

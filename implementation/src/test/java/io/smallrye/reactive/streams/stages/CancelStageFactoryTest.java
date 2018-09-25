@@ -2,7 +2,6 @@ package io.smallrye.reactive.streams.stages;
 
 import io.reactivex.Flowable;
 import io.reactivex.schedulers.Schedulers;
-import org.eclipse.microprofile.reactive.streams.PublisherBuilder;
 import org.eclipse.microprofile.reactive.streams.ReactiveStreams;
 import org.eclipse.microprofile.reactive.streams.spi.Stage;
 import org.junit.Test;
@@ -15,8 +14,6 @@ import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
@@ -65,7 +62,6 @@ public class CancelStageFactoryTest extends StageTestBase {
         });
         assertThat(done).isTrue();
     }
-
 
 
     @Test

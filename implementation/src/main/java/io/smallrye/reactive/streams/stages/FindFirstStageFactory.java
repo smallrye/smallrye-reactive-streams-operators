@@ -14,22 +14,22 @@ import java.util.concurrent.CompletableFuture;
  */
 public class FindFirstStageFactory implements TerminalStageFactory<Stage.FindFirst> {
 
-  @SuppressWarnings("unchecked")
-  @Override
-  public <IN, OUT> TerminalStage<IN, OUT> create(Engine engine, Stage.FindFirst stage) {
-    Objects.requireNonNull(stage); // Not really useful here as it conveys no parameters, so just here for symmetry
-    return (TerminalStage<IN, OUT>) INSTANCE;
-  }
+    private final static TerminalStage<?, Optional<?>> INSTANCE
+            = (TerminalStage<?, Optional<?>>) source -> {
+        CompletableFuture<Optional<?>> future = new CompletableFuture<>();
+        //noinspection ResultOfMethodCallIgnored
+        source.map(Optional::of).first(Optional.empty())
+                .subscribe(
+                        future::complete, future::completeExceptionally
+                );
+        return future;
+    };
 
-  private final static TerminalStage<?, Optional<?>> INSTANCE
-    = (TerminalStage<?, Optional<?>>) source -> {
-    CompletableFuture<Optional<?>> future = new CompletableFuture<>();
-    //noinspection ResultOfMethodCallIgnored
-    source.map(Optional::of).first(Optional.empty())
-      .subscribe(
-        future::complete, future::completeExceptionally
-      );
-    return future;
-  };
+    @SuppressWarnings("unchecked")
+    @Override
+    public <IN, OUT> TerminalStage<IN, OUT> create(Engine engine, Stage.FindFirst stage) {
+        Objects.requireNonNull(stage); // Not really useful here as it conveys no parameters, so just here for symmetry
+        return (TerminalStage<IN, OUT>) INSTANCE;
+    }
 
 }

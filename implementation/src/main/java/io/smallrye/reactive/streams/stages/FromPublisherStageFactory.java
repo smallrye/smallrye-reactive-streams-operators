@@ -14,10 +14,10 @@ import java.util.Objects;
  */
 public class FromPublisherStageFactory implements PublisherStageFactory<Stage.PublisherStage> {
 
-  @SuppressWarnings("unchecked")
-  @Override
-  public <OUT> PublisherStage<OUT> create(Engine engine, Stage.PublisherStage stage) {
-    Publisher<OUT> publisher = (Publisher<OUT>) Objects.requireNonNull(Objects.requireNonNull(stage.getRsPublisher()));
-    return () -> Flowable.fromPublisher(publisher);
-  }
+    @SuppressWarnings("unchecked")
+    @Override
+    public <OUT> PublisherStage<OUT> create(Engine engine, Stage.PublisherStage stage) {
+        Publisher<OUT> publisher = (Publisher<OUT>) Objects.requireNonNull(Objects.requireNonNull(stage.getRsPublisher()));
+        return () -> Flowable.fromPublisher(publisher);
+    }
 }

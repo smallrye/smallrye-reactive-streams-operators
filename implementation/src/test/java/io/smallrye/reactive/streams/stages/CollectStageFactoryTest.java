@@ -2,15 +2,16 @@ package io.smallrye.reactive.streams.stages;
 
 import io.reactivex.Flowable;
 import io.reactivex.schedulers.Schedulers;
-import org.eclipse.microprofile.reactive.streams.ReactiveStreams;
+import io.smallrye.reactive.streams.Engine;
 import org.eclipse.microprofile.reactive.streams.spi.Stage;
 import org.eclipse.microprofile.reactive.streams.tck.spi.QuietRuntimeException;
 import org.junit.Test;
-import org.testng.Assert;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
 import java.util.function.ToIntFunction;
 import java.util.stream.Collector;
@@ -45,24 +46,9 @@ public class CollectStageFactoryTest extends StageTestBase {
         assertThat(list).hasSize(10);
     }
 
-    @Test
-    public void createFromVertxContext() {
-        Callable<CompletionStage<Integer>> callable = () -> {
-            Flowable<Integer> flowable = Flowable.fromArray(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
-                    .subscribeOn(Schedulers.computation())
-                    .map(i -> i + 1);
-
-            return ReactiveStreams.fromPublisher(flowable)
-                    .collect(Collectors.summingInt(value -> value)).run(engine);
-        };
-
-        executeOnEventLoop(callable).assertSuccess(2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10 + 11);
-
-    }
-
     @Test(expected = NullPointerException.class)
     public void createWithoutStage() {
-        factory.create(engine, null);
+        factory.create(new Engine(), null);
     }
 
     @Test(expected = NullPointerException.class)

@@ -8,13 +8,13 @@ import org.reactivestreams.Subscription;
  * @author <a href="http://escoffier.me">Clement Escoffier</a>
  */
 public class EmptySubscription implements Subscription {
-  @Override
-  public void request(long n) {
-    // Ignored.
-  }
+    @Override
+    public void request(long n) {
+        // Ignored.
+    }
 
-  @Override
-  public void cancel() {
-    // Ignored.
-  }
+    @Override
+    public void cancel() {
+        // Ignored.
+    }
 }

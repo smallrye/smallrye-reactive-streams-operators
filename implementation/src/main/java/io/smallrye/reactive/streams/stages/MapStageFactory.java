@@ -14,10 +14,10 @@ import java.util.function.Function;
  */
 public class MapStageFactory implements ProcessingStageFactory<Stage.Map> {
 
-  @Override
-  public <IN, OUT> ProcessingStage<IN, OUT> create(Engine engine, Stage.Map stage) {
-    Function<IN, OUT> mapper = Casts.cast(stage.getMapper());
-    Objects.requireNonNull(mapper);
-    return source -> source.map(mapper::apply);
-  }
+    @Override
+    public <IN, OUT> ProcessingStage<IN, OUT> create(Engine engine, Stage.Map stage) {
+        Function<IN, OUT> mapper = Casts.cast(stage.getMapper());
+        Objects.requireNonNull(mapper);
+        return source -> source.map(mapper::apply);
+    }
 }

@@ -13,9 +13,9 @@ import java.util.Objects;
  */
 public class FailedPublisherStageFactory implements PublisherStageFactory<Stage.Failed> {
 
-  @Override
-  public <OUT> PublisherStage<OUT> create(Engine engine, Stage.Failed stage) {
-    Throwable error = Objects.requireNonNull(Objects.requireNonNull(stage).getError());
-    return () -> Flowable.error(error);
-  }
+    @Override
+    public <OUT> PublisherStage<OUT> create(Engine engine, Stage.Failed stage) {
+        Throwable error = Objects.requireNonNull(Objects.requireNonNull(stage).getError());
+        return () -> Flowable.error(error);
+    }
 }

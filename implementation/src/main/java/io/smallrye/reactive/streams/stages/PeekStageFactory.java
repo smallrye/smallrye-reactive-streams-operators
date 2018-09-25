@@ -14,12 +14,12 @@ import java.util.function.Consumer;
  */
 public class PeekStageFactory implements ProcessingStageFactory<Stage.Peek> {
 
-  @SuppressWarnings("unchecked")
-  @Override
-  public <IN, OUT> ProcessingStage<IN, OUT> create(Engine engine, Stage.Peek stage) {
-    Consumer<IN> consumer = (Consumer<IN>) Objects.requireNonNull(stage)
-        .getConsumer();
-    Objects.requireNonNull(consumer);
-    return source -> (Flowable<OUT>) source.doOnNext(consumer::accept);
-  }
+    @SuppressWarnings("unchecked")
+    @Override
+    public <IN, OUT> ProcessingStage<IN, OUT> create(Engine engine, Stage.Peek stage) {
+        Consumer<IN> consumer = (Consumer<IN>) Objects.requireNonNull(stage)
+                .getConsumer();
+        Objects.requireNonNull(consumer);
+        return source -> (Flowable<OUT>) source.doOnNext(consumer::accept);
+    }
 }

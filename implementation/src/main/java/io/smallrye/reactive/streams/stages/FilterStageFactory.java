@@ -14,11 +14,11 @@ import java.util.function.Predicate;
  */
 public class FilterStageFactory implements ProcessingStageFactory<Stage.Filter> {
 
-  @SuppressWarnings("unchecked")
-  @Override
-  public <IN, OUT> ProcessingStage<IN, OUT> create(Engine engine, Stage.Filter stage) {
-    Objects.requireNonNull(stage);
-    Predicate predicate = Objects.requireNonNull(stage.getPredicate());
-    return source -> (Flowable<OUT>) source.filter(predicate::test);
-  }
+    @SuppressWarnings("unchecked")
+    @Override
+    public <IN, OUT> ProcessingStage<IN, OUT> create(Engine engine, Stage.Filter stage) {
+        Objects.requireNonNull(stage);
+        Predicate predicate = Objects.requireNonNull(stage.getPredicate());
+        return source -> (Flowable<OUT>) source.filter(predicate::test);
+    }
 }

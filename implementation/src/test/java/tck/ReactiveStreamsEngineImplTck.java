@@ -9,13 +9,13 @@ import org.reactivestreams.tck.TestEnvironment;
  */
 public class ReactiveStreamsEngineImplTck extends ReactiveStreamsTck<Engine> {
 
-  public ReactiveStreamsEngineImplTck() {
-    super(new TestEnvironment(100));
-  }
+    public ReactiveStreamsEngineImplTck() {
+        super(new TestEnvironment(100));
+    }
 
-  @Override
-  protected Engine createEngine() {
-    return new Engine();
-  }
+    @Override
+    protected Engine createEngine() {
+        return new Engine();
+    }
 
 }

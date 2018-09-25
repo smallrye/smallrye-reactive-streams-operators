@@ -10,6 +10,6 @@ public class ApplicationEnhancer implements LoadableExtension {
     @Override
     public void register(LoadableExtension.ExtensionBuilder extensionBuilder) {
         extensionBuilder
-            .service(ApplicationArchiveProcessor.class, ProducerInjectionProcessor.class);
+                .service(ApplicationArchiveProcessor.class, ProducerInjectionProcessor.class);
     }
 }

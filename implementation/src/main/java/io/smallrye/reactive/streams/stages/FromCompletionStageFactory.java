@@ -1,7 +1,6 @@
 package io.smallrye.reactive.streams.stages;
 
 import io.reactivex.Flowable;
-import io.reactivex.processors.AsyncProcessor;
 import io.smallrye.reactive.streams.Engine;
 import io.smallrye.reactive.streams.utils.Casts;
 import org.eclipse.microprofile.reactive.streams.spi.Stage;

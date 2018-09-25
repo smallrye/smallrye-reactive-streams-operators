@@ -13,18 +13,18 @@ import java.util.Objects;
  */
 public class OnTerminateStageFactory implements ProcessingStageFactory<Stage.OnTerminate> {
 
-  @SuppressWarnings("unchecked")
-  @Override
-  public <IN, OUT> ProcessingStage<IN, OUT> create(Engine engine, Stage.OnTerminate stage) {
-    Runnable runnable = Objects.requireNonNull(stage).getAction();
-    Objects.requireNonNull(runnable);
-    // Interesting issue when using onTerminate, the TCK fails because the issue is reported twice
-    // First, the onComplete "part" is called, throws an exception, and then call the doOnError part
-    // which throws another exception.
-    // Anyway, we should also configure the cancellation callback.
-    return source -> (Flowable<OUT>) source
-      .doOnError(t -> runnable.run())
-      .doOnComplete(runnable::run)
-      .doOnCancel(runnable::run);
-  }
+    @SuppressWarnings("unchecked")
+    @Override
+    public <IN, OUT> ProcessingStage<IN, OUT> create(Engine engine, Stage.OnTerminate stage) {
+        Runnable runnable = Objects.requireNonNull(stage).getAction();
+        Objects.requireNonNull(runnable);
+        // Interesting issue when using onTerminate, the TCK fails because the issue is reported twice
+        // First, the onComplete "part" is called, throws an exception, and then call the doOnError part
+        // which throws another exception.
+        // Anyway, we should also configure the cancellation callback.
+        return source -> (Flowable<OUT>) source
+                .doOnError(t -> runnable.run())
+                .doOnComplete(runnable::run)
+                .doOnCancel(runnable::run);
+    }
 }

@@ -15,22 +15,22 @@ import java.util.function.Predicate;
  */
 public class DropWhileStageFactory implements ProcessingStageFactory<Stage.DropWhile> {
 
-  @Override
-  public <IN, OUT> ProcessingStage<IN, OUT> create(Engine engine, Stage.DropWhile stage) {
-    Predicate<IN> predicate = Casts.cast(stage.getPredicate());
-    return Casts.cast(new TakeWhile<>(predicate));
-  }
-
-  private static class TakeWhile<IN> implements ProcessingStage<IN, IN> {
-    private final Predicate<IN> predicate;
-
-    TakeWhile(Predicate<IN> predicate) {
-      this.predicate = Objects.requireNonNull(predicate);
-    }
-
     @Override
-    public Flowable<IN> process(Flowable<IN> source) {
-      return source.skipWhile(predicate::test);
+    public <IN, OUT> ProcessingStage<IN, OUT> create(Engine engine, Stage.DropWhile stage) {
+        Predicate<IN> predicate = Casts.cast(stage.getPredicate());
+        return Casts.cast(new TakeWhile<>(predicate));
     }
-  }
+
+    private static class TakeWhile<IN> implements ProcessingStage<IN, IN> {
+        private final Predicate<IN> predicate;
+
+        TakeWhile(Predicate<IN> predicate) {
+            this.predicate = Objects.requireNonNull(predicate);
+        }
+
+        @Override
+        public Flowable<IN> process(Flowable<IN> source) {
+            return source.skipWhile(predicate::test);
+        }
+    }
 }

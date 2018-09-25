@@ -15,13 +15,13 @@ import java.util.Objects;
  */
 public class ProcessorStageFactory implements ProcessingStageFactory<Stage.ProcessorStage> {
 
-  @Override
-  public <IN, OUT> ProcessingStage<IN, OUT> create(Engine engine, Stage.ProcessorStage stage) {
-    Processor<IN, OUT> processor = Casts.cast(Objects.requireNonNull(Objects.requireNonNull(stage).getRsProcessor()));
+    @Override
+    public <IN, OUT> ProcessingStage<IN, OUT> create(Engine engine, Stage.ProcessorStage stage) {
+        Processor<IN, OUT> processor = Casts.cast(Objects.requireNonNull(Objects.requireNonNull(stage).getRsProcessor()));
 
-    return source -> {
-      Objects.requireNonNull(source).safeSubscribe(processor);
-      return Flowable.fromPublisher(processor);
-    };
-  }
+        return source -> {
+            Objects.requireNonNull(source).safeSubscribe(processor);
+            return Flowable.fromPublisher(processor);
+        };
+    }
 }

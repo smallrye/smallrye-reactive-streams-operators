@@ -6,9 +6,8 @@ import org.eclipse.microprofile.reactive.streams.ReactiveStreams;
 import org.eclipse.microprofile.reactive.streams.spi.Stage;
 import org.junit.Test;
 
-import java.util.*;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CompletionStage;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -31,7 +30,7 @@ public class OnErrorResumeWithStageFactoryTest extends StageTestBase {
         List<Integer> list = ReactiveStreams.<Integer>failed(new Exception("BOOM"))
                 .onErrorResumeWith(t -> ReactiveStreams.fromPublisher(flowable))
                 .toList()
-                .run(engine).toCompletableFuture().exceptionally(x -> Collections.emptyList()).get();
+                .run().toCompletableFuture().exceptionally(x -> Collections.emptyList()).get();
 
         assertThat(list).hasSize(10);
     }
@@ -42,31 +41,13 @@ public class OnErrorResumeWithStageFactoryTest extends StageTestBase {
         List<Integer> list = ReactiveStreams.<Integer>failed(new RuntimeException("BOOM"))
                 .onErrorResumeWith(t -> ReactiveStreams.failed(new RuntimeException("Failed")))
                 .toList()
-                .run(engine).toCompletableFuture().exceptionally(x -> {
+                .run().toCompletableFuture().exceptionally(x -> {
                     error.set(x);
                     return Collections.emptyList();
                 }).get();
 
         assertThat(list).hasSize(0);
         assertThat(error.get()).hasMessage("Failed");
-
-    }
-
-    @Test
-    public void createOnVertxContext() {
-        Flowable<Integer> flowable = Flowable.fromArray(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
-                .subscribeOn(Schedulers.computation());
-
-        Set<String> threads = new LinkedHashSet<>();
-        Callable<CompletionStage<List<Integer>>> callable = () ->
-                ReactiveStreams.<Integer>failed(new Exception("BOOM"))
-                        .onErrorResumeWithRsPublisher(t -> flowable.observeOn(Schedulers.computation()))
-                        .peek(x -> threads.add(Thread.currentThread().getName()))
-                        .toList()
-                        .run(engine);
-
-        executeOnEventLoop(callable).assertSuccess(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
-        assertThat(threads).hasSize(1).containsExactly(getCapturedThreadName());
     }
 
     @Test(expected = NullPointerException.class)

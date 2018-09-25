@@ -33,14 +33,6 @@ public class FromCompletionStageFactoryNullableTest extends StageTestBase {
     }
 
     @Test
-    public void createFromAlreadyCompletedFutureFromVertxContext() {
-        executeOnEventLoop(() -> {
-            CompletionStage<String> cs = CompletableFuture.completedFuture("hello");
-            return ReactiveStreams.fromCompletionStageNullable(cs).findFirst().run().toCompletableFuture();
-        }).assertSuccess(Optional.of("hello"));
-    }
-
-    @Test
     public void createFromAlreadyFailedFuture() {
         CompletionStage<String> cs = new CompletableFuture<>();
         ((CompletableFuture<String>) cs).completeExceptionally(new Exception("Expected"));
@@ -51,15 +43,6 @@ public class FromCompletionStageFactoryNullableTest extends StageTestBase {
         } catch (Exception e) {
             assertThat(e).hasMessageContaining("Expected");
         }
-    }
-
-    @Test
-    public void createFromAlreadyFailedFutureFromVertxContext() {
-        executeOnEventLoop(() -> {
-            CompletionStage<String> cs = new CompletableFuture<>();
-            ((CompletableFuture<String>) cs).completeExceptionally(new Exception("Expected"));
-            return ReactiveStreams.fromCompletionStageNullable(cs).findFirst().run();
-        }).assertFailure("Expected");
     }
 
     @Test
@@ -79,17 +62,6 @@ public class FromCompletionStageFactoryNullableTest extends StageTestBase {
     }
 
     @Test
-    public void createFromFutureGoingToBeCompletedFromVertxContext() {
-        CompletableFuture<String> cf = new CompletableFuture<>();
-
-        executeOnEventLoop(() -> {
-            CompletionStage<Optional<String>> stage = ReactiveStreams.fromCompletionStageNullable(cf).findFirst().run(engine);
-            engine.vertx().setTimer(10, x -> cf.complete("Hello"));
-            return stage;
-        }).assertSuccess(Optional.of("Hello"));
-    }
-
-    @Test
     public void createFromFutureGoingToBeFailed() {
         CompletableFuture<String> cf = new CompletableFuture<>();
         CompletionStage<Optional<String>> stage = ReactiveStreams.fromCompletionStageNullable(cf).findFirst().run();
@@ -105,16 +77,6 @@ public class FromCompletionStageFactoryNullableTest extends StageTestBase {
         await().untilAtomic(done, is(true));
     }
 
-    @Test
-    public void createFromFutureGoingToBeFailedFromVertxContext() {
-        CompletableFuture<String> cf = new CompletableFuture<>();
-
-        executeOnEventLoop(() -> {
-            CompletionStage<Optional<String>> stage = ReactiveStreams.fromCompletionStageNullable(cf).findFirst().run();
-            engine.vertx().setTimer(10, x -> cf.completeExceptionally(new Exception("Expected")));
-            return stage;
-        }).assertFailure("Expected");
-    }
 
     @Test
     public void createFromFutureCompletedWithNull() {
@@ -131,18 +93,6 @@ public class FromCompletionStageFactoryNullableTest extends StageTestBase {
         new Thread(() -> cf.complete(null)).start();
         await().untilAtomic(done, is(true));
     }
-
-    @Test
-    public void createFromFutureGoingToBeCompletedWithNullFromVertxContext() {
-        CompletableFuture<Void> cf = new CompletableFuture<>();
-
-        executeOnEventLoop(() -> {
-            CompletionStage<Optional<Void>> stage = ReactiveStreams.fromCompletionStageNullable(cf).findFirst().run();
-            engine.vertx().setTimer(10, x -> cf.complete(null));
-            return stage;
-        }).assertSuccess(Optional.empty());
-    }
-
 
     @Test(expected = NullPointerException.class)
     public void createWithoutStage() {

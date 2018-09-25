@@ -13,23 +13,23 @@ import java.util.function.Function;
  */
 public class FlatMapIterableStageFactory implements ProcessingStageFactory<Stage.FlatMapIterable> {
 
-  @Override
-  public <IN, OUT> ProcessingStage<IN, OUT> create(Engine engine, Stage.FlatMapIterable stage) {
-    Function<IN, Iterable<OUT>> mapper = Casts.cast(stage.getMapper());
-    return new FlatMapIterable<>(mapper);
-  }
-
-  private static class FlatMapIterable<IN, OUT> implements ProcessingStage<IN, OUT> {
-    private final Function<IN, Iterable<OUT>> mapper;
-
-    private FlatMapIterable(Function<IN, Iterable<OUT>> mapper) {
-      this.mapper = Objects.requireNonNull(mapper);
-    }
-
     @Override
-    public Flowable<OUT> process(Flowable<IN> source) {
-      return source.concatMapIterable(mapper::apply);
+    public <IN, OUT> ProcessingStage<IN, OUT> create(Engine engine, Stage.FlatMapIterable stage) {
+        Function<IN, Iterable<OUT>> mapper = Casts.cast(stage.getMapper());
+        return new FlatMapIterable<>(mapper);
     }
-  }
+
+    private static class FlatMapIterable<IN, OUT> implements ProcessingStage<IN, OUT> {
+        private final Function<IN, Iterable<OUT>> mapper;
+
+        private FlatMapIterable(Function<IN, Iterable<OUT>> mapper) {
+            this.mapper = Objects.requireNonNull(mapper);
+        }
+
+        @Override
+        public Flowable<OUT> process(Flowable<IN> source) {
+            return source.concatMapIterable(mapper::apply);
+        }
+    }
 
 }

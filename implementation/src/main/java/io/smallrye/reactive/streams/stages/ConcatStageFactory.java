@@ -17,32 +17,32 @@ import java.util.Objects;
  */
 public class ConcatStageFactory implements PublisherStageFactory<Stage.Concat> {
 
-  @Override
-  public <OUT> PublisherStage<OUT> create(Engine engine, Stage.Concat stage) {
-    Objects.requireNonNull(engine);
-    Objects.requireNonNull(stage);
-    Graph g1 = stage.getFirst();
-    Graph g2 = stage.getSecond();
-    return new ConcatStage<>(engine, g1, g2);
-  }
-
-  private class ConcatStage<OUT> implements PublisherStage<OUT> {
-    private final Engine engine;
-    private final Graph first;
-    private final Graph second;
-
-    ConcatStage(Engine engine, Graph g1, Graph g2) {
-      this.engine = Objects.requireNonNull(engine);
-      this.first = Objects.requireNonNull(g1);
-      this.second = Objects.requireNonNull(g2);
-    }
-
     @Override
-    public Flowable<OUT> create() {
-      CancellablePublisher<OUT> cancellable = new CancellablePublisher<>(engine.buildPublisher(second));
-      return Flowable.concat(engine.buildPublisher(first), cancellable)
-        .doOnCancel(cancellable::cancelIfNotSubscribed)
-        .doOnTerminate(cancellable::cancelIfNotSubscribed);
+    public <OUT> PublisherStage<OUT> create(Engine engine, Stage.Concat stage) {
+        Objects.requireNonNull(engine);
+        Objects.requireNonNull(stage);
+        Graph g1 = stage.getFirst();
+        Graph g2 = stage.getSecond();
+        return new ConcatStage<>(engine, g1, g2);
     }
-  }
+
+    private class ConcatStage<OUT> implements PublisherStage<OUT> {
+        private final Engine engine;
+        private final Graph first;
+        private final Graph second;
+
+        ConcatStage(Engine engine, Graph g1, Graph g2) {
+            this.engine = Objects.requireNonNull(engine);
+            this.first = Objects.requireNonNull(g1);
+            this.second = Objects.requireNonNull(g2);
+        }
+
+        @Override
+        public Flowable<OUT> create() {
+            CancellablePublisher<OUT> cancellable = new CancellablePublisher<>(engine.buildPublisher(second));
+            return Flowable.concat(engine.buildPublisher(first), cancellable)
+                    .doOnCancel(cancellable::cancelIfNotSubscribed)
+                    .doOnTerminate(cancellable::cancelIfNotSubscribed);
+        }
+    }
 }
