@@ -1,17 +1,27 @@
 package io.smallrye.reactive.streams.cdi;
 
-import io.smallrye.reactive.streams.Engine;
 import org.eclipse.microprofile.reactive.streams.spi.ReactiveStreamsEngine;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
+import java.util.Iterator;
+import java.util.ServiceLoader;
 
-@ApplicationScoped
+
 public class ReactiveEngineProvider {
 
+    /**
+     * @return the reactive stream engine. It uses {@link ServiceLoader#load(Class)} to find an implementation from the Classpath.
+     * @throws IllegalStateException if no implementations are found.
+     */
     @Produces
+    @ApplicationScoped
     public ReactiveStreamsEngine getEngine() {
-        return new Engine();
+        Iterator<ReactiveStreamsEngine> iterator = ServiceLoader.load(ReactiveStreamsEngine.class).iterator();
+        if (iterator.hasNext()) {
+            return iterator.next();
+        }
+        throw new IllegalStateException("No implementation of the " + ReactiveStreamsEngine.class.getName() + " found in the Classpath");
     }
 
 }
