@@ -77,7 +77,7 @@ public class Engine implements ReactiveStreamsEngine {
      * @param <T>      the type of data
      * @return the decorated flowable if needed
      */
-    private static <T> Flowable<T> injectThreadSwitchIfNeeded(Flowable<T> flowable) {
+    private static <T> Flowable<T> applyTransformer(Flowable<T> flowable) {
         return TRANSFORMER.transform(flowable);
     }
 
@@ -103,7 +103,7 @@ public class Engine implements ReactiveStreamsEngine {
             if (stage.hasOutlet()) {
                 flowable = applyProcessors(flowable, stage);
             } else {
-                CompletionStage<R> result = applySubscriber(injectThreadSwitchIfNeeded(flowable), stage);
+                CompletionStage<R> result = applySubscriber(applyTransformer(flowable), stage);
                 return CompletionSubscriber.of(processor, result);
             }
         }
@@ -150,7 +150,7 @@ public class Engine implements ReactiveStreamsEngine {
             throw new UnsupportedStageException(stage);
         }
         @SuppressWarnings("unchecked") ProcessingStage<I, O> ps = factory.create(this, stage);
-        return injectThreadSwitchIfNeeded(ps.process(flowable));
+        return applyTransformer(ps.process(flowable));
     }
 
     private <T, R> CompletionStage<R> applySubscriber(Flowable<T> flowable, Stage stage) {
@@ -163,7 +163,7 @@ public class Engine implements ReactiveStreamsEngine {
             throw new UnsupportedStageException(stage);
         }
         @SuppressWarnings("unchecked") TerminalStage<T, R> ps = factory.create(this, stage);
-        return ps.toCompletionStage(injectThreadSwitchIfNeeded(flowable));
+        return ps.toCompletionStage(applyTransformer(flowable));
     }
 
     private <O> Flowable<O> createPublisher(Stage stage) {
@@ -176,7 +176,7 @@ public class Engine implements ReactiveStreamsEngine {
             throw new UnsupportedStageException(stage);
         }
         @SuppressWarnings("unchecked") PublisherStage<O> ps = factory.create(this, stage);
-        return injectThreadSwitchIfNeeded(ps.create());
+        return applyTransformer(ps.create());
     }
 
 }
