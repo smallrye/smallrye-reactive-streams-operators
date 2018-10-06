@@ -19,9 +19,10 @@ public class ProcessorStageFactory implements ProcessingStageFactory<Stage.Proce
     public <IN, OUT> ProcessingStage<IN, OUT> create(Engine engine, Stage.ProcessorStage stage) {
         Processor<IN, OUT> processor = Casts.cast(Objects.requireNonNull(Objects.requireNonNull(stage).getRsProcessor()));
 
-        return source -> {
-            Objects.requireNonNull(source).safeSubscribe(processor);
-            return Flowable.fromPublisher(processor);
-        };
+        return source -> Flowable.defer(() -> {
+            Flowable<OUT> flowable = Flowable.fromPublisher(processor);
+            source.safeSubscribe(processor);
+            return flowable;
+        });
     }
 }
