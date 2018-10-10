@@ -18,8 +18,8 @@ public class FromPublisherStageFactory implements PublisherStageFactory<Stage.Pu
 
     @SuppressWarnings("unchecked")
     @Override
-    public <OUT> PublisherStage<OUT> create(Engine engine, Stage.PublisherStage stage) {
-        Publisher<OUT> publisher = (Publisher<OUT>) Objects.requireNonNull(Objects.requireNonNull(stage.getRsPublisher()));
+    public <O> PublisherStage<O> create(Engine engine, Stage.PublisherStage stage) {
+        Publisher<O> publisher = (Publisher<O>) Objects.requireNonNull(Objects.requireNonNull(stage.getRsPublisher()));
         return () -> Flowable.fromPublisher(publisher);
     }
 }

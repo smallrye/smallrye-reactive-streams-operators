@@ -7,6 +7,9 @@ import org.reactivestreams.Subscription;
 import java.util.Objects;
 import java.util.concurrent.CompletionStage;
 
+/**
+ * Simple implementation of {@link CompletionSubscriber}.
+ */
 public class CompletionSubscriberImpl<T, R> implements CompletionSubscriber<T, R> {
     private final Subscriber<T> subscriber;
     private final CompletionStage<R> completion;

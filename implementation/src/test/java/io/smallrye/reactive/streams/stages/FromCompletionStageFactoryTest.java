@@ -1,7 +1,6 @@
 package io.smallrye.reactive.streams.stages;
 
 import org.eclipse.microprofile.reactive.streams.ReactiveStreams;
-import org.eclipse.microprofile.reactive.streams.spi.Stage;
 import org.junit.Test;
 
 import java.util.List;
@@ -100,7 +99,7 @@ public class FromCompletionStageFactoryTest extends StageTestBase {
 
     @Test(expected = NullPointerException.class)
     public void createWithNullAsResult() {
-        factory.create(null, () -> null).create();
+        factory.create(null, () -> null).get();
     }
 
 }

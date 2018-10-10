@@ -16,10 +16,10 @@ public interface ProcessingStageFactory<T extends Stage> {
      *
      * @param engine the reactive engine
      * @param stage  the stage
-     * @param <IN>   input data
-     * @param <OUT>  output data
+     * @param <I>    input data
+     * @param <O>    output data
      * @return the created processing stage, should never be {@code null}
      */
-    <IN, OUT> ProcessingStage<IN, OUT> create(Engine engine, T stage);
+    <I, O> ProcessingStage<I, O> create(Engine engine, T stage);
 
 }

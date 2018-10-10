@@ -14,8 +14,8 @@ import org.eclipse.microprofile.reactive.streams.spi.Stage;
 public class LimitStageFactory implements ProcessingStageFactory<Stage.Limit> {
 
     @Override
-    public <IN, OUT> ProcessingStage<IN, OUT> create(Engine engine, Stage.Limit stage) {
+    public <I, O> ProcessingStage<I, O> create(Engine engine, Stage.Limit stage) {
         long limit = stage.getLimit();
-        return source -> (Flowable<OUT>) source.limit(limit);
+        return source -> (Flowable<O>) source.limit(limit);
     }
 }

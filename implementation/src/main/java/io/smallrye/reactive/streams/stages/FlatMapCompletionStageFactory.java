@@ -22,28 +22,30 @@ public class FlatMapCompletionStageFactory
         implements ProcessingStageFactory<Stage.FlatMapCompletionStage> {
 
     @Override
-    public <IN, OUT> ProcessingStage<IN, OUT> create(Engine engine,
-                                                     Stage.FlatMapCompletionStage stage) {
-        Function<IN, CompletionStage<OUT>> mapper = Casts.cast(
+    public <I, O> ProcessingStage<I, O> create(Engine engine,
+                                               Stage.FlatMapCompletionStage stage) {
+        Function<I, CompletionStage<O>> mapper = Casts.cast(
                 Objects.requireNonNull(stage).getMapper());
         return new FlatMapCompletionStage<>(mapper);
     }
 
-    private static class FlatMapCompletionStage<IN, OUT> implements ProcessingStage<IN, OUT> {
-        private final Function<IN, CompletionStage<OUT>> mapper;
+    private static class FlatMapCompletionStage<I, O> implements ProcessingStage<I, O> {
+        private final Function<I, CompletionStage<O>> mapper;
 
-        private FlatMapCompletionStage(Function<IN, CompletionStage<OUT>> mapper) {
+        private FlatMapCompletionStage(Function<I, CompletionStage<O>> mapper) {
             this.mapper = Objects.requireNonNull(mapper);
         }
 
         @Override
-        public Flowable<OUT> process(Flowable<IN> source) {
-            return source.flatMap(e -> {
-                if (e == null) {
+        public Flowable<O> apply(Flowable<I> source) {
+            return source.flatMap((I item) -> {
+                if (item == null) {
+                    // Throw an NPE to be compliant with the reactive stream spec.
                     throw new NullPointerException();
                 }
-                CompletionStage<OUT> result = mapper.apply(e);
+                CompletionStage<O> result = mapper.apply(item);
                 if (result == null) {
+                    // Throw an NPE to be compliant with the reactive stream spec.
                     throw new NullPointerException();
                 }
                 return fromCompletionStage(result, false);

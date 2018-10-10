@@ -20,23 +20,23 @@ public class SubscriberStageFactory implements TerminalStageFactory<Stage.Subscr
 
     @SuppressWarnings("unchecked")
     @Override
-    public <IN, OUT> TerminalStage<IN, OUT> create(Engine engine, Stage.SubscriberStage stage) {
-        Subscriber<IN> subscriber = (Subscriber<IN>) Objects.requireNonNull(stage).getRsSubscriber();
+    public <I, O> TerminalStage<I, O> create(Engine engine, Stage.SubscriberStage stage) {
+        Subscriber<I> subscriber = (Subscriber<I>) Objects.requireNonNull(stage).getRsSubscriber();
         Objects.requireNonNull(subscriber);
-        return (TerminalStage<IN, OUT>) new SubscriberStage<>(subscriber);
+        return (TerminalStage<I, O>) new SubscriberStage<>(subscriber);
     }
 
-    private static class SubscriberStage<IN> implements TerminalStage<IN, Void> {
+    private static class SubscriberStage<I> implements TerminalStage<I, Void> {
 
-        private final Subscriber<IN> subscriber;
+        private final Subscriber<I> subscriber;
 
-        SubscriberStage(Subscriber<IN> subscriber) {
+        SubscriberStage(Subscriber<I> subscriber) {
             this.subscriber = subscriber;
         }
 
         @Override
-        public CompletionStage<Void> toCompletionStage(Flowable<IN> source) {
-            WrappedSubscriber<IN> wrapped = new WrappedSubscriber<>(subscriber);
+        public CompletionStage<Void> apply(Flowable<I> source) {
+            WrappedSubscriber<I> wrapped = new WrappedSubscriber<>(subscriber);
             source.safeSubscribe(wrapped);
             return wrapped.future();
         }

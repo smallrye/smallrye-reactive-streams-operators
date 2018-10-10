@@ -14,8 +14,8 @@ import org.eclipse.microprofile.reactive.streams.spi.Stage;
 public class SkipStageFactory implements ProcessingStageFactory<Stage.Skip> {
 
     @Override
-    public <IN, OUT> ProcessingStage<IN, OUT> create(Engine engine, Stage.Skip stage) {
+    public <I, O> ProcessingStage<I, O> create(Engine engine, Stage.Skip stage) {
         long skip = stage.getSkip();
-        return source -> (Flowable<OUT>) source.skip(skip);
+        return source -> (Flowable<O>) source.skip(skip);
     }
 }

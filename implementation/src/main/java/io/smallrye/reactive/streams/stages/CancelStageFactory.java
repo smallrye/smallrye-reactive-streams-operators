@@ -1,5 +1,6 @@
 package io.smallrye.reactive.streams.stages;
 
+import io.reactivex.Flowable;
 import io.smallrye.reactive.streams.Engine;
 import io.smallrye.reactive.streams.operators.TerminalStage;
 import io.smallrye.reactive.streams.operators.TerminalStageFactory;
@@ -18,20 +19,18 @@ import java.util.concurrent.CompletableFuture;
 public class CancelStageFactory implements TerminalStageFactory<Stage.Cancel> {
 
     @Override
-    public <IN, OUT> TerminalStage<IN, OUT> create(Engine engine, Stage.Cancel stage) {
+    public <I, O> TerminalStage<I, O> create(Engine engine, Stage.Cancel stage) {
         Objects.requireNonNull(stage);
-        return flowable -> {
-            flowable.subscribe(new Subscriber<IN>() {
-                private Subscription subscription;
+        return (Flowable<I> flow) -> {
+            flow.subscribe(new Subscriber<I>() {
 
                 @Override
                 public void onSubscribe(Subscription s) {
-                    subscription = s;
                     s.cancel();
                 }
 
                 @Override
-                public void onNext(IN in) {
+                public void onNext(I in) {
                     // Do nothing.
                 }
 

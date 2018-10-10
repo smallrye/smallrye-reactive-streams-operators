@@ -10,10 +10,10 @@ import java.util.Objects;
  *
  * @author <a href="http://escoffier.me">Clement Escoffier</a>
  */
-public class DelegatingSubscriber<OUT> implements Subscriber<OUT> {
-    private final Subscriber<? super OUT> delegate;
+public class DelegatingSubscriber<O> implements Subscriber<O> {
+    private final Subscriber<? super O> delegate;
 
-    public DelegatingSubscriber(Subscriber<? super OUT> delegate) {
+    public DelegatingSubscriber(Subscriber<? super O> delegate) {
         this.delegate = delegate;
     }
 
@@ -24,7 +24,7 @@ public class DelegatingSubscriber<OUT> implements Subscriber<OUT> {
     }
 
     @Override
-    public void onNext(OUT out) {
+    public void onNext(O out) {
         Objects.requireNonNull(out);
         delegate.onNext(out);
     }

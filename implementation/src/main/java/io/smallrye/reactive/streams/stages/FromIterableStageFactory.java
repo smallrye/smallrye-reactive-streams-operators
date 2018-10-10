@@ -17,8 +17,8 @@ public class FromIterableStageFactory implements PublisherStageFactory<Stage.Of>
 
     @SuppressWarnings("unchecked")
     @Override
-    public <OUT> PublisherStage<OUT> create(Engine engine, Stage.Of stage) {
-        Iterable<OUT> elements = (Iterable<OUT>) Objects.requireNonNull(Objects.requireNonNull(stage).getElements());
+    public <O> PublisherStage<O> create(Engine engine, Stage.Of stage) {
+        Iterable<O> elements = (Iterable<O>) Objects.requireNonNull(Objects.requireNonNull(stage).getElements());
         return () -> Flowable.fromIterable(elements);
     }
 }

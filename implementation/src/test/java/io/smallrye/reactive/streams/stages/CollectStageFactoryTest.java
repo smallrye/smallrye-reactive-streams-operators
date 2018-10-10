@@ -39,7 +39,7 @@ public class CollectStageFactoryTest extends StageTestBase {
         Flowable<Integer> flowable = Flowable.fromArray(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
                 .doOnNext(list::add)
                 .subscribeOn(Schedulers.computation());
-        CompletionStage<Integer> stage = terminal.toCompletionStage(flowable);
+        CompletionStage<Integer> stage = terminal.apply(flowable);
         Integer result = stage.toCompletableFuture().get();
 
         assertThat(result).isEqualTo(1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10);

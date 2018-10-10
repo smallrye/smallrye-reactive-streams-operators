@@ -38,7 +38,7 @@ public class CancelStageFactoryTest extends StageTestBase {
                 .observeOn(Schedulers.io())
                 .doOnNext(list::add)
                 .doOnCancel(() -> cancelled.set(true));
-        CompletionStage<Void> stage = terminal.toCompletionStage(flowable);
+        CompletionStage<Void> stage = terminal.apply(flowable);
         stage.toCompletableFuture().get();
 
         await().untilAtomic(cancelled, is(true));

@@ -4,16 +4,12 @@ import io.smallrye.reactive.streams.operators.Operator;
 import io.smallrye.reactive.streams.operators.ProcessorOperator;
 import io.smallrye.reactive.streams.operators.PublisherOperator;
 import io.smallrye.reactive.streams.operators.TerminalOperator;
-import org.eclipse.microprofile.reactive.streams.CompletionSubscriber;
 import org.eclipse.microprofile.reactive.streams.spi.Stage;
 import org.eclipse.microprofile.reactive.streams.spi.UnsupportedStageException;
-import org.reactivestreams.Subscriber;
-import org.reactivestreams.Subscription;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.CompletionStage;
 
 /**
  * Allows looking for the {@link Operator} for a given {@link Stage}.
@@ -48,7 +44,8 @@ public class Stages {
         ALL.add(new PublisherOperator<>(Stage.Of.class, new FromIterableStageFactory()));
         ALL.add(new PublisherOperator<>(Stage.PublisherStage.class, new FromPublisherStageFactory()));
         ALL.add(new PublisherOperator<>(Stage.FromCompletionStage.class, new FromCompletionStageFactory()));
-        ALL.add(new PublisherOperator<>(Stage.FromCompletionStageNullable.class, new FromCompletionStageNullableFactory()));
+        ALL.add(new PublisherOperator<>(Stage.FromCompletionStageNullable.class,
+                new FromCompletionStageNullableFactory()));
 
         ALL.add(new TerminalOperator<>(Stage.Cancel.class, new CancelStageFactory()));
         ALL.add(new TerminalOperator<>(Stage.Collect.class, new CollectStageFactory()));
@@ -60,7 +57,11 @@ public class Stages {
     public static <T extends Stage> Operator<T> lookup(T stage) {
         Objects.requireNonNull(stage, "The stage must not be `null`");
         return ALL.stream().filter(p -> p.test(stage)).findAny()
-        .orElseThrow(() -> new UnsupportedStageException(stage));
+                .orElseThrow(() -> new UnsupportedStageException(stage));
+    }
+
+    private Stages() {
+        // Avoid direct instantiation.
     }
 
 

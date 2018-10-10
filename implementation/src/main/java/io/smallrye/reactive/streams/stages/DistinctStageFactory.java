@@ -17,8 +17,8 @@ public class DistinctStageFactory implements ProcessingStageFactory<Stage.Distin
 
     @SuppressWarnings("unchecked")
     @Override
-    public <IN, OUT> ProcessingStage<IN, OUT> create(Engine engine, Stage.Distinct stage) {
+    public <I, O> ProcessingStage<I, O> create(Engine engine, Stage.Distinct stage) {
         Objects.requireNonNull(stage);
-        return source -> (Flowable<OUT>) source.distinct();
+        return source -> (Flowable<O>) source.distinct();
     }
 }

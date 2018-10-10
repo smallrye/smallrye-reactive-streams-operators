@@ -17,9 +17,9 @@ public class OnCompleteStageFactory implements ProcessingStageFactory<Stage.OnCo
 
     @SuppressWarnings("unchecked")
     @Override
-    public <IN, OUT> ProcessingStage<IN, OUT> create(Engine engine, Stage.OnComplete stage) {
+    public <I, O> ProcessingStage<I, O> create(Engine engine, Stage.OnComplete stage) {
         Runnable runnable = Objects.requireNonNull(stage).getAction();
         Objects.requireNonNull(runnable);
-        return source -> (Flowable<OUT>) source.doOnComplete(runnable::run);
+        return source -> (Flowable<O>) source.doOnComplete(runnable::run);
     }
 }

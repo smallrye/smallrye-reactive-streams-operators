@@ -15,10 +15,10 @@ import static io.smallrye.reactive.streams.utils.CompletionStageToPublisher.from
 public class FromCompletionStageFactory implements PublisherStageFactory<Stage.FromCompletionStage> {
 
     @Override
-    public <OUT> PublisherStage<OUT> create(Engine engine, Stage.FromCompletionStage stage) {
+    public <O> PublisherStage<O> create(Engine engine, Stage.FromCompletionStage stage) {
         Objects.requireNonNull(stage);
         return () -> {
-            CompletionStage<OUT> cs = Casts.cast(Objects.requireNonNull(stage.getCompletionStage()));
+            CompletionStage<O> cs = Casts.cast(Objects.requireNonNull(stage.getCompletionStage()));
             return Flowable.fromPublisher(fromCompletionStage(cs, false));
         };
     }

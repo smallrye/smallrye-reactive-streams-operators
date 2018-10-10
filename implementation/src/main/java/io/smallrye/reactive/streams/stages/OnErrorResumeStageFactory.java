@@ -20,9 +20,9 @@ public class OnErrorResumeStageFactory implements ProcessingStageFactory<Stage.O
 
     @SuppressWarnings("unchecked")
     @Override
-    public <IN, OUT> ProcessingStage<IN, OUT> create(Engine engine, Stage.OnErrorResume stage) {
-        Function<Throwable, IN> function = (Function<Throwable, IN>) Objects.requireNonNull(stage).getFunction();
+    public <I, O> ProcessingStage<I, O> create(Engine engine, Stage.OnErrorResume stage) {
+        Function<Throwable, I> function = (Function<Throwable, I>) Objects.requireNonNull(stage).getFunction();
         Objects.requireNonNull(function);
-        return source -> (Flowable<OUT>) RxJavaPlugins.onAssembly(new OnErrorReturn<>(source, function));
+        return source -> (Flowable<O>) RxJavaPlugins.onAssembly(new OnErrorReturn<>(source, function));
     }
 }

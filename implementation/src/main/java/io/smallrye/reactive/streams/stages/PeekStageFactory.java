@@ -18,10 +18,10 @@ public class PeekStageFactory implements ProcessingStageFactory<Stage.Peek> {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <IN, OUT> ProcessingStage<IN, OUT> create(Engine engine, Stage.Peek stage) {
-        Consumer<IN> consumer = (Consumer<IN>) Objects.requireNonNull(stage)
+    public <I, O> ProcessingStage<I, O> create(Engine engine, Stage.Peek stage) {
+        Consumer<I> consumer = (Consumer<I>) Objects.requireNonNull(stage)
                 .getConsumer();
         Objects.requireNonNull(consumer);
-        return source -> (Flowable<OUT>) source.doOnNext(consumer::accept);
+        return source -> (Flowable<O>) source.doOnNext(consumer::accept);
     }
 }

@@ -3,6 +3,7 @@ package io.smallrye.reactive.streams.operators;
 import io.reactivex.Flowable;
 
 import java.util.concurrent.CompletionStage;
+import java.util.function.Function;
 
 /**
  * Defines a terminal stage - so a stream subscription and observation.
@@ -10,7 +11,7 @@ import java.util.concurrent.CompletionStage;
  * @author <a href="http://escoffier.me">Clement Escoffier</a>
  */
 @FunctionalInterface
-public interface TerminalStage<IN, OUT> {
+public interface TerminalStage<I, O> extends Function<Flowable<I>, CompletionStage<O>> {
 
     /**
      * Creates the {@link CompletionStage} called when the embedded logic has completed or failed.
@@ -18,6 +19,6 @@ public interface TerminalStage<IN, OUT> {
      * @param flowable the observed / subscribed stream
      * @return the asynchronous result
      */
-    CompletionStage<OUT> toCompletionStage(Flowable<IN> flowable);
+    CompletionStage<O> apply(Flowable<I> flowable);
 
 }
