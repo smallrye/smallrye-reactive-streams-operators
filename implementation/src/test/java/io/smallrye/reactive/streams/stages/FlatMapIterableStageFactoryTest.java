@@ -62,7 +62,7 @@ public class FlatMapIterableStageFactoryTest extends StageTestBase {
 
     @Test(expected = NullPointerException.class)
     public void createWithoutFunction() {
-        factory.create(null, new Stage.FlatMapIterable(null));
+        factory.create(null, () -> null);
     }
 
 }

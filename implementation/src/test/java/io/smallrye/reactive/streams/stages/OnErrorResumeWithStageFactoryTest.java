@@ -57,7 +57,7 @@ public class OnErrorResumeWithStageFactoryTest extends StageTestBase {
 
     @Test(expected = NullPointerException.class)
     public void createWithoutFunction() {
-        factory.create(null, new Stage.OnErrorResume(null));
+        factory.create(null, () -> null);
     }
 
 }

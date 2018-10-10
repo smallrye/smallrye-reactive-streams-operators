@@ -52,7 +52,7 @@ public class OnCompleteStageFactoryTest extends StageTestBase {
 
     @Test(expected = NullPointerException.class)
     public void createWithoutFunction() {
-        factory.create(null, new Stage.OnComplete(null));
+        factory.create(null, () -> null);
     }
 
 }

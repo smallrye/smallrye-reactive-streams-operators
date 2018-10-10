@@ -3,7 +3,7 @@ package io.smallrye.reactive.streams.stages;
 import io.reactivex.Flowable;
 import io.reactivex.schedulers.Schedulers;
 import io.smallrye.reactive.streams.Engine;
-import org.eclipse.microprofile.reactive.streams.spi.Stage;
+import io.smallrye.reactive.streams.operators.TerminalStage;
 import org.eclipse.microprofile.reactive.streams.tck.spi.QuietRuntimeException;
 import org.junit.Test;
 
@@ -33,7 +33,7 @@ public class CollectStageFactoryTest extends StageTestBase {
     @Test
     public void create() throws ExecutionException, InterruptedException {
         TerminalStage<Integer, Integer> terminal = factory.create(null,
-                new Stage.Collect(Collectors.summingInt((ToIntFunction<Integer>) value -> value)));
+                () -> Collectors.summingInt((ToIntFunction<Integer>) value -> value));
 
         List<Integer> list = new ArrayList<>();
         Flowable<Integer> flowable = Flowable.fromArray(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
@@ -53,16 +53,14 @@ public class CollectStageFactoryTest extends StageTestBase {
 
     @Test(expected = NullPointerException.class)
     public void createWithoutCollector() {
-        factory.create(null, new Stage.Collect(null));
+        factory.create(null, () -> null);
     }
 
     @Test
     public void collectStageShouldPropagateErrorsFromSupplierThroughCompletionStage() {
         CompletableFuture<Void> cancelled = new CompletableFuture<>();
         CompletionStage<Integer> result = infiniteStream()
-                .onTerminate(() -> {
-                    cancelled.complete(null);
-                })
+                .onTerminate(() -> cancelled.complete(null))
                 .collect(Collector.<Integer, Integer, Integer>of(() -> {
                     throw new QuietRuntimeException("failed");
                 }, (a, b) -> {

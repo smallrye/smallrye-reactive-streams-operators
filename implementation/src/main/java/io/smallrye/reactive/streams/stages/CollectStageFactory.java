@@ -3,6 +3,8 @@ package io.smallrye.reactive.streams.stages;
 import io.reactivex.Flowable;
 import io.reactivex.plugins.RxJavaPlugins;
 import io.smallrye.reactive.streams.Engine;
+import io.smallrye.reactive.streams.operators.TerminalStage;
+import io.smallrye.reactive.streams.operators.TerminalStageFactory;
 import io.smallrye.reactive.streams.utils.FlowableCollector;
 import org.eclipse.microprofile.reactive.streams.spi.Stage;
 

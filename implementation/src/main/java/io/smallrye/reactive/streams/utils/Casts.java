@@ -1,6 +1,6 @@
 package io.smallrye.reactive.streams.utils;
 
-import io.smallrye.reactive.streams.stages.ProcessingStage;
+import io.smallrye.reactive.streams.operators.ProcessingStage;
 import org.reactivestreams.Processor;
 
 import java.util.concurrent.CompletionStage;

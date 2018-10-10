@@ -4,6 +4,7 @@ import io.reactivex.Flowable;
 import org.eclipse.microprofile.reactive.streams.ReactiveStreams;
 import org.eclipse.microprofile.reactive.streams.spi.Stage;
 import org.junit.Test;
+import org.reactivestreams.Publisher;
 
 import java.util.List;
 import java.util.Optional;
@@ -48,6 +49,6 @@ public class FromPublisherStageFactoryTest extends StageTestBase {
 
     @Test(expected = NullPointerException.class)
     public void createWithoutFunction() {
-        factory.create(null, new Stage.PublisherStage(null));
+        factory.create(null, () -> null);
     }
 }

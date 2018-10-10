@@ -3,7 +3,6 @@ package io.smallrye.reactive.streams.stages;
 import io.reactivex.Flowable;
 import io.reactivex.schedulers.Schedulers;
 import org.eclipse.microprofile.reactive.streams.ReactiveStreams;
-import org.eclipse.microprofile.reactive.streams.spi.Stage;
 import org.junit.Test;
 
 import java.util.List;
@@ -36,7 +35,7 @@ public class DropWhileStageFactoryTest extends StageTestBase {
 
     @Test(expected = NullPointerException.class)
     public void createWithoutPredicate() {
-        factory.create(null, new Stage.DropWhile(null));
+        factory.create(null, () -> null);
     }
 
 

@@ -99,8 +99,8 @@ public class FromCompletionStageFactoryTest extends StageTestBase {
     }
 
     @Test(expected = NullPointerException.class)
-    public void createWithoutFunction() {
-        factory.create(null, new Stage.FromCompletionStage(null));
+    public void createWithNullAsResult() {
+        factory.create(null, () -> null).create();
     }
 
 }

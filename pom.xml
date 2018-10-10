@@ -28,7 +28,7 @@
     <properties>
         <vertx.version>3.5.3</vertx.version>
         <log4j2.version>2.11.1</log4j2.version>
-        <microprofile-reactive-streams.version>1.0-RC1</microprofile-reactive-streams.version>
+        <microprofile-reactive-streams.version>1.0-SNAPSHOT</microprofile-reactive-streams.version>
         <rxjava.version>2.2.0</rxjava.version>
 
         <cdi.version>2.0.SP1</cdi.version>
@@ -46,6 +46,11 @@
             <groupId>org.eclipse.microprofile.reactive.streams</groupId>
             <artifactId>microprofile-reactive-streams-operators-tck</artifactId>
             <scope>test</scope>
+            <version>${microprofile-reactive-streams.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.microprofile.reactive.streams</groupId>
+            <artifactId>microprofile-reactive-streams-operators-core</artifactId>
             <version>${microprofile-reactive-streams.version}</version>
         </dependency>
         <dependency>

@@ -51,7 +51,7 @@ public class MapStageFactoryTest extends StageTestBase {
 
     @Test(expected = NullPointerException.class)
     public void createWithoutFunction() {
-        factory.create(null, new Stage.Map(null));
+        factory.create(null, () -> null);
     }
 
 }

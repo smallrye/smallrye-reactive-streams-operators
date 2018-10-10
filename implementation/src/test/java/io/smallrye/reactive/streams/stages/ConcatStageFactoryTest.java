@@ -3,6 +3,7 @@ package io.smallrye.reactive.streams.stages;
 import io.reactivex.Flowable;
 import io.reactivex.schedulers.Schedulers;
 import io.smallrye.reactive.streams.Engine;
+import org.eclipse.microprofile.reactive.streams.PublisherBuilder;
 import org.eclipse.microprofile.reactive.streams.ReactiveStreams;
 import org.eclipse.microprofile.reactive.streams.spi.Graph;
 import org.eclipse.microprofile.reactive.streams.spi.Stage;
@@ -34,19 +35,29 @@ public class ConcatStageFactoryTest extends StageTestBase {
 
     @Test(expected = NullPointerException.class)
     public void testWithoutEngine() {
-        Graph g1 = new Graph(Collections.singletonList(new Stage.Of(Arrays.asList(1, 2, 3))));
-        Graph g2 = new Graph(Collections.singletonList(new Stage.Of(Arrays.asList(1, 2, 3))));
-        factory.create(null, new Stage.Concat(g1, g2));
+        Graph g1 = () -> Collections.singletonList((Stage.Of) () -> Arrays.asList(1, 2, 3));
+        Graph g2 = () -> Collections.singletonList((Stage.Of) () -> Arrays.asList(1, 2, 3));
+        factory.create(null, new Stage.Concat() {
+            @Override
+            public Graph getFirst() {
+                return g1;
+            }
+
+            @Override
+            public Graph getSecond() {
+                return g2;
+            }
+        });
     }
 
     @Test
     public void testConcatenationWhenAllEmissionAreMadeFromMain() throws ExecutionException, InterruptedException {
-        Graph g1 = new Graph(Collections.singletonList(new Stage.Of(Arrays.asList(1, 2, 3))));
-        Graph g2 = new Graph(Collections.singletonList(new Stage.Of(Arrays.asList(4, 5, 6))));
+        PublisherBuilder<Integer> f1 = ReactiveStreams.of(1, 2, 3);
+        PublisherBuilder<Integer> f2 = ReactiveStreams.of(4, 5, 6);
+
         String currentThreadName = Thread.currentThread().getName();
         LinkedHashSet<String> threads = new LinkedHashSet<>();
-        PublisherStage<Integer> stage = factory.create(new Engine(), new Stage.Concat(g1, g2));
-        CompletionStage<List<Integer>> list = ReactiveStreams.fromPublisher(stage.create())
+        CompletionStage<List<Integer>> list = ReactiveStreams.concat(f1, f2)
                 .peek(i -> threads.add(Thread.currentThread().getName()))
                 .toList().run();
         await().until(() -> list.toCompletableFuture().isDone());
@@ -59,13 +70,15 @@ public class ConcatStageFactoryTest extends StageTestBase {
     @Test
     public void testConcatenationWhenAllEmissionsAreMadeFromDifferentThreads() throws ExecutionException,
             InterruptedException {
+
         Flowable<Integer> firstStream = Flowable.fromArray(1, 2, 3).observeOn(Schedulers.io());
         Flowable<Integer> secondStream = Flowable.fromArray(4, 5, 6).observeOn(Schedulers.computation());
-        Graph g1 = new Graph(Collections.singletonList(new Stage.PublisherStage(firstStream)));
-        Graph g2 = new Graph(Collections.singletonList(new Stage.PublisherStage(secondStream)));
+
         LinkedHashSet<String> threads = new LinkedHashSet<>();
-        PublisherStage<Integer> stage = factory.create(new Engine(), new Stage.Concat(g1, g2));
-        CompletionStage<List<Integer>> list = ReactiveStreams.fromPublisher(stage.create())
+        CompletionStage<List<Integer>> list = ReactiveStreams.concat(
+                ReactiveStreams.fromPublisher(firstStream),
+                ReactiveStreams.fromPublisher(secondStream)
+        )
                 .peek(i -> threads.add(Thread.currentThread().getName()))
                 .toList().run();
         await().until(() -> list.toCompletableFuture().isDone());

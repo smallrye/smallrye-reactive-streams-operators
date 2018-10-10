@@ -2,6 +2,7 @@ package io.smallrye.reactive.streams.stages;
 
 import io.reactivex.Flowable;
 import io.reactivex.schedulers.Schedulers;
+import io.smallrye.reactive.streams.operators.TerminalStage;
 import org.eclipse.microprofile.reactive.streams.ReactiveStreams;
 import org.eclipse.microprofile.reactive.streams.spi.Stage;
 import org.junit.Test;
@@ -30,7 +31,7 @@ public class CancelStageFactoryTest extends StageTestBase {
 
     @Test
     public void create() throws ExecutionException, InterruptedException {
-        TerminalStage<Long, Void> terminal = factory.create(null, Stage.Cancel.INSTANCE);
+        TerminalStage<Long, Void> terminal = factory.create(null, new Stage.Cancel() {});
         AtomicBoolean cancelled = new AtomicBoolean();
         List<Long> list = new ArrayList<>();
         Flowable<Long> flowable = Flowable.interval(1000, TimeUnit.MILLISECONDS)

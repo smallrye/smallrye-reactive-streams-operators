@@ -41,7 +41,7 @@ public class SubscriberStageFactoryTest extends StageTestBase {
 
     @Test(expected = NullPointerException.class)
     public void createWithoutSubscriber() {
-        factory.create(new Engine(), new Stage.SubscriberStage(null));
+        factory.create(new Engine(), () -> null);
     }
 
 

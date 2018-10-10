@@ -63,7 +63,7 @@ public class FlatMapCompletionStageFactoryTest extends StageTestBase {
 
     @Test(expected = NullPointerException.class)
     public void createWithoutFunction() {
-        factory.create(null, new Stage.FlatMapCompletionStage(null));
+        factory.create(null, () -> null);
     }
 
 }

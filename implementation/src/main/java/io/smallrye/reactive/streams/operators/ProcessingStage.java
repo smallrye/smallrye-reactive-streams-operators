@@ -1,4 +1,4 @@
-package io.smallrye.reactive.streams.stages;
+package io.smallrye.reactive.streams.operators;
 
 import io.reactivex.Flowable;
 

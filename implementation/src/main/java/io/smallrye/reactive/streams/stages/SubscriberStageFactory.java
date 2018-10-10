@@ -2,6 +2,8 @@ package io.smallrye.reactive.streams.stages;
 
 import io.reactivex.Flowable;
 import io.smallrye.reactive.streams.Engine;
+import io.smallrye.reactive.streams.operators.TerminalStage;
+import io.smallrye.reactive.streams.operators.TerminalStageFactory;
 import io.smallrye.reactive.streams.utils.WrappedSubscriber;
 import org.eclipse.microprofile.reactive.streams.spi.Stage;
 import org.reactivestreams.Subscriber;
