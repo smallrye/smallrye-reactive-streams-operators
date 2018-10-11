@@ -12,29 +12,6 @@
 
     <artifactId>smallrye-reactive-streams-operators-tck</artifactId>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-failsafe-plugin</artifactId>
-                <version>${version.surefire.plugin}</version>
-                <executions>
-                    <execution>
-                        <id>tck</id>
-                        <goals>
-                            <goal>integration-test</goal>
-                        </goals>
-                        <configuration>
-                            <includes>
-                                <include>io.smallrye.reactive.streams.tck.InContainerIT</include>
-                            </includes>
-                            <junitArtifactName>none:none</junitArtifactName>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
 
     <dependencies>
         <dependency>
@@ -70,4 +47,27 @@
         </dependency>
     </dependencies>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>${version.surefire.plugin}</version>
+                <executions>
+                    <execution>
+                        <id>tck</id>
+                        <goals>
+                            <goal>integration-test</goal>
+                        </goals>
+                        <configuration>
+                            <includes>
+                                <include>io.smallrye.reactive.streams.tck.InContainerIT</include>
+                            </includes>
+                            <junitArtifactName>none:none</junitArtifactName>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

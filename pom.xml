@@ -13,10 +13,33 @@
     <artifactId>smallrye-reactive-streams-operators-project</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 
+    <packaging>pom</packaging>
+
     <name>MicroProfile Reactive Streams Operators Implementation</name>
     <description>An implementation of the MicroProfile Reactive Streams Operators specification</description>
+    <inceptionYear>2018</inceptionYear>
+    <organization>
+        <name>SmallRye</name>
+        <url>https://wwww.smallrye.io</url>
+    </organization>
 
-    <packaging>pom</packaging>
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+            <comments>A business-friendly OSS license</comments>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>cescoffier</id>
+            <name>Clement Escoffier</name>
+            <email>clement[AT]apache[DOT]org</email>
+            <url>https://github.com/cescoffier</url>
+        </developer>
+    </developers>
 
     <modules>
         <module>implementation</module>
@@ -93,24 +116,6 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
-    <developers>
-        <developer>
-            <id>cescoffier</id>
-            <name>Clement Escoffier</name>
-            <email>clement[AT]apache[DOT]org</email>
-            <url>https://github.com/cescoffier</url>
-        </developer>
-    </developers>
-
-    <licenses>
-        <license>
-            <name>Apache License, Version 2.0</name>
-            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
-            <distribution>repo</distribution>
-            <comments>A business-friendly OSS license</comments>
-        </license>
-    </licenses>
 
     <repositories>
         <repository>
