@@ -2,45 +2,23 @@ package io.smallrye.reactive.streams;
 
 import io.reactivex.Flowable;
 import io.smallrye.reactive.streams.operators.*;
-import io.smallrye.reactive.streams.spi.ExecutionModel;
+import io.smallrye.reactive.streams.spi.Transformer;
 import io.smallrye.reactive.streams.stages.CompletionSubscriberImpl;
 import io.smallrye.reactive.streams.stages.Stages;
 import io.smallrye.reactive.streams.utils.ConnectableProcessor;
 import io.smallrye.reactive.streams.utils.WrappedProcessor;
-import org.eclipse.microprofile.reactive.streams.spi.*;
+import org.eclipse.microprofile.reactive.streams.spi.Graph;
+import org.eclipse.microprofile.reactive.streams.spi.ReactiveStreamsEngine;
+import org.eclipse.microprofile.reactive.streams.spi.Stage;
+import org.eclipse.microprofile.reactive.streams.spi.SubscriberWithCompletionStage;
+import org.eclipse.microprofile.reactive.streams.spi.UnsupportedStageException;
 import org.reactivestreams.Processor;
 import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscriber;
 
-import java.util.Iterator;
-import java.util.ServiceLoader;
 import java.util.concurrent.CompletionStage;
 
 public class Engine implements ReactiveStreamsEngine {
-
-    private static final ExecutionModel TRANSFORMER;
-
-    static {
-        ServiceLoader<ExecutionModel> loader = ServiceLoader.load(ExecutionModel.class);
-        Iterator<ExecutionModel> iterator = loader.iterator();
-        if (iterator.hasNext()) {
-            TRANSFORMER = iterator.next();
-        } else {
-            TRANSFORMER = i -> i;
-        }
-    }
-
-    /**
-     * Calls the execution model transformer.
-     *
-     * @param flowable the flowable
-     * @param <T>      the type of data
-     * @return the decorated flowable if needed
-     */
-    @SuppressWarnings("unchecked")
-    private static <T> Flowable<T> applyTransformer(Flowable<T> flowable) {
-        return TRANSFORMER.apply(flowable);
-    }
 
     @Override
     public <T> Publisher<T> buildPublisher(Graph graph) {
@@ -74,7 +52,7 @@ public class Engine implements ReactiveStreamsEngine {
             if (operator instanceof ProcessorOperator) {
                 flowable = applyProcessors(flowable, stage, (ProcessorOperator) operator);
             } else if (operator instanceof TerminalOperator) {
-                CompletionStage<R> result = applySubscriber(applyTransformer(flowable), stage,
+                CompletionStage<R> result = applySubscriber(Transformer.apply(flowable), stage,
                         (TerminalOperator) operator);
                 return new SubscriberWithCompletionStage<T, R>() {
                     CompletionSubscriberImpl<T, R> subscriber = new CompletionSubscriberImpl<>(processor, result);
@@ -130,16 +108,16 @@ public class Engine implements ReactiveStreamsEngine {
 
     private <I, O> Flowable<O> applyProcessors(Flowable<I> flowable, Stage stage, ProcessorOperator operator) {
         @SuppressWarnings("unchecked") ProcessingStage<I, O> ps = operator.create(this, stage);
-        return applyTransformer(ps.apply(flowable));
+        return Transformer.apply(ps.apply(flowable));
     }
 
     private <T, R> CompletionStage<R> applySubscriber(Flowable<T> flowable, Stage stage, TerminalOperator operator) {
         @SuppressWarnings("unchecked") TerminalStage<T, R> ps = operator.create(this, stage);
-        return ps.apply(applyTransformer(flowable));
+        return ps.apply(Transformer.apply(flowable));
     }
 
     private <O> Flowable<O> createPublisher(Stage stage, PublisherOperator operator) {
         @SuppressWarnings("unchecked") PublisherStage<O> ps = operator.create(this, stage);
-        return applyTransformer(ps.get());
+        return Transformer.apply(ps.get());
     }
 }
