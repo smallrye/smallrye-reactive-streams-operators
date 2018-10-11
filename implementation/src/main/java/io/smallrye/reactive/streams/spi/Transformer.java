@@ -9,7 +9,7 @@ public class Transformer {
 
     private final ExecutionModel model;
 
-    private static Transformer INSTANCE;
+    private static final Transformer INSTANCE;
 
     static {
         INSTANCE = new Transformer();
