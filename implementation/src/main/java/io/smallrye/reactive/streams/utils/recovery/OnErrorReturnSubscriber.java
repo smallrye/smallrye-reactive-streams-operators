@@ -1,6 +1,5 @@
 package io.smallrye.reactive.streams.utils.recovery;
 
-import io.reactivex.exceptions.Exceptions;
 import io.reactivex.internal.subscribers.SinglePostCompleteSubscriber;
 import org.reactivestreams.Subscriber;
 
@@ -21,7 +20,7 @@ public class OnErrorReturnSubscriber<T> extends SinglePostCompleteSubscriber<T, 
     @Override
     public void onNext(T t) {
         produced++;
-        actual.onNext(t);
+        downstream.onNext(t);
     }
 
     @Override
@@ -30,7 +29,7 @@ public class OnErrorReturnSubscriber<T> extends SinglePostCompleteSubscriber<T, 
         try {
             v = Objects.requireNonNull(valueSupplier.apply(t), "The valueSupplier returned a null value");
         } catch (Exception ex) {
-            actual.onError(ex);
+            downstream.onError(ex);
             return;
         }
         complete(v);
@@ -38,6 +37,6 @@ public class OnErrorReturnSubscriber<T> extends SinglePostCompleteSubscriber<T, 
 
     @Override
     public void onComplete() {
-        actual.onComplete();
+        downstream.onComplete();
     }
 }

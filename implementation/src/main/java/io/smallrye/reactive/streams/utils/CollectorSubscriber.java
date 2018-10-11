@@ -37,7 +37,7 @@ final class CollectorSubscriber<T, A, R> extends DeferredScalarSubscription<R>
         if (SubscriptionHelper.validate(this.subscription, s)) {
             this.subscription = s;
 
-            actual.onSubscribe(this);
+            downstream.onSubscribe(this);
 
             s.request(Long.MAX_VALUE);
         }
@@ -62,7 +62,7 @@ final class CollectorSubscriber<T, A, R> extends DeferredScalarSubscription<R>
         } else {
             done = true;
             intermediate = null;
-            actual.onError(t);
+            downstream.onError(t);
         }
     }
 
