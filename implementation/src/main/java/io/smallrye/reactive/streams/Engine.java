@@ -3,9 +3,9 @@ package io.smallrye.reactive.streams;
 import io.reactivex.Flowable;
 import io.smallrye.reactive.streams.operators.*;
 import io.smallrye.reactive.streams.spi.Transformer;
-import io.smallrye.reactive.streams.stages.CompletionSubscriberImpl;
 import io.smallrye.reactive.streams.stages.Stages;
 import io.smallrye.reactive.streams.utils.ConnectableProcessor;
+import io.smallrye.reactive.streams.utils.DefaultSubscriberWithCompletionStage;
 import io.smallrye.reactive.streams.utils.WrappedProcessor;
 import org.eclipse.microprofile.reactive.streams.spi.Graph;
 import org.eclipse.microprofile.reactive.streams.spi.ReactiveStreamsEngine;
@@ -14,7 +14,6 @@ import org.eclipse.microprofile.reactive.streams.spi.SubscriberWithCompletionSta
 import org.eclipse.microprofile.reactive.streams.spi.UnsupportedStageException;
 import org.reactivestreams.Processor;
 import org.reactivestreams.Publisher;
-import org.reactivestreams.Subscriber;
 
 import java.util.concurrent.CompletionStage;
 
@@ -54,19 +53,7 @@ public class Engine implements ReactiveStreamsEngine {
             } else if (operator instanceof TerminalOperator) {
                 CompletionStage<R> result = applySubscriber(Transformer.apply(flowable), stage,
                         (TerminalOperator) operator);
-                return new SubscriberWithCompletionStage<T, R>() {
-                    CompletionSubscriberImpl<T, R> subscriber = new CompletionSubscriberImpl<>(processor, result);
-
-                    @Override
-                    public CompletionStage<R> getCompletion() {
-                        return subscriber.getCompletion();
-                    }
-
-                    @Override
-                    public Subscriber<T> getSubscriber() {
-                        return subscriber;
-                    }
-                };
+                return new DefaultSubscriberWithCompletionStage<>(processor, result);
             } else {
                 throw new UnsupportedStageException(stage);
             }
@@ -120,4 +107,5 @@ public class Engine implements ReactiveStreamsEngine {
         @SuppressWarnings("unchecked") PublisherStage<O> ps = operator.create(this, stage);
         return Transformer.apply(ps.get());
     }
+
 }
