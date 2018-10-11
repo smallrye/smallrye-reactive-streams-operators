@@ -29,8 +29,7 @@ public class OnErrorReturnSubscriber<T> extends SinglePostCompleteSubscriber<T, 
         T v;
         try {
             v = Objects.requireNonNull(valueSupplier.apply(t), "The valueSupplier returned a null value");
-        } catch (Throwable ex) {
-            Exceptions.throwIfFatal(ex);
+        } catch (Exception ex) {
             actual.onError(ex);
             return;
         }
