@@ -22,7 +22,7 @@ public class ReactiveEngineProviderTest {
     @Before
     public void setUp() {
         weld = new Weld();
-        weld.addBeanClasses(ReactiveEngineProvider.class, MyBean.class);
+        weld.addBeanClasses(MyBean.class);
     }
 
     @Test
