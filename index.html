@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 1.5.5">
-<meta name="author" content="James Roper, Clement Escoffier">
-<title>MicroProfile Reactive Streams Operators Specification</title>
+<meta name="generator" content="Asciidoctor 1.5.3">
+<meta name="author" content="Clement Escoffier">
+<title>SmallRye Reactive Streams Operators</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
@@ -18,6 +18,7 @@ audio:not([controls]){display:none;height:0}
 [hidden],template{display:none}
 script{display:none!important}
 html{font-family:sans-serif;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%}
+body{margin:0}
 a{background:transparent}
 a:focus{outline:thin dotted}
 a:active,a:hover{outline:0}
@@ -52,7 +53,7 @@ textarea{overflow:auto;vertical-align:top}
 table{border-collapse:collapse;border-spacing:0}
 *,*:before,*:after{-moz-box-sizing:border-box;-webkit-box-sizing:border-box;box-sizing:border-box}
 html,body{font-size:100%}
-body{background:#fff;color:rgba(0,0,0,.8);padding:0;margin:0;font-family:"Noto Serif","DejaVu Serif",serif;font-weight:400;font-style:normal;line-height:1;position:relative;cursor:auto;tab-size:4;-moz-osx-font-smoothing:grayscale;-webkit-font-smoothing:antialiased}
+body{background:#fff;color:rgba(0,0,0,.8);padding:0;margin:0;font-family:"Noto Serif","DejaVu Serif",serif;font-weight:400;font-style:normal;line-height:1;position:relative;cursor:auto}
 a:hover{cursor:pointer}
 img,object,embed{max-width:100%;height:auto}
 object,embed{height:100%}
@@ -64,6 +65,7 @@ img{-ms-interpolation-mode:bicubic}
 .text-center{text-align:center!important}
 .text-justify{text-align:justify!important}
 .hide{display:none}
+body{-webkit-font-smoothing:antialiased}
 img,object,svg{display:inline-block;vertical-align:middle}
 textarea{height:auto;min-height:50px}
 select{width:100%}
@@ -118,16 +120,13 @@ table thead tr th,table thead tr td,table tfoot tr th,table tfoot tr td{padding:
 table tr th,table tr td{padding:.5625em .625em;font-size:inherit;color:rgba(0,0,0,.8)}
 table tr.even,table tr.alt,table tr:nth-of-type(even){background:#f8f8f7}
 table thead tr th,table tfoot tr th,table tbody tr td,table tr td,table tfoot tr td{display:table-cell;line-height:1.6}
+body{tab-size:4}
 h1,h2,h3,#toctitle,.sidebarblock>.content>.title,h4,h5,h6{line-height:1.2;word-spacing:-.05em}
 h1 strong,h2 strong,h3 strong,#toctitle strong,.sidebarblock>.content>.title strong,h4 strong,h5 strong,h6 strong{font-weight:400}
 .clearfix:before,.clearfix:after,.float-group:before,.float-group:after{content:" ";display:table}
 .clearfix:after,.float-group:after{clear:both}
-*:not(pre)>code{font-size:.9375em;font-style:normal!important;letter-spacing:0;padding:.1em .5ex;word-spacing:-.15em;background-color:#f7f7f8;-webkit-border-radius:4px;border-radius:4px;line-height:1.45;text-rendering:optimizeSpeed;word-wrap:break-word}
-*:not(pre)>code.nobreak{word-wrap:normal}
-*:not(pre)>code.nowrap{white-space:nowrap}
+*:not(pre)>code{font-size:.9375em;font-style:normal!important;letter-spacing:0;padding:.1em .5ex;word-spacing:-.15em;background-color:#f7f7f8;-webkit-border-radius:4px;border-radius:4px;line-height:1.45;text-rendering:optimizeSpeed}
 pre,pre>code{line-height:1.45;color:rgba(0,0,0,.9);font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;font-weight:400;text-rendering:optimizeSpeed}
-em em{font-style:normal}
-strong strong{font-weight:400}
 .keyseq{color:rgba(51,51,51,.8)}
 kbd{font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;display:inline-block;color:rgba(0,0,0,.8);font-size:.65em;line-height:1.45;background-color:#f7f7f7;border:1px solid #ccc;-webkit-border-radius:3px;border-radius:3px;-webkit-box-shadow:0 1px 0 rgba(0,0,0,.2),0 0 0 .1em white inset;box-shadow:0 1px 0 rgba(0,0,0,.2),0 0 0 .1em #fff inset;margin:0 .15em;padding:.2em .5em;vertical-align:middle;position:relative;top:-.1em;white-space:nowrap}
 .keyseq kbd:first-child{margin-left:0}
@@ -418,990 +417,1244 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 .hide-for-print{display:none!important}
 .show-for-print{display:inherit!important}}
 </style>
-<style>
-/* Stylesheet for CodeRay to match GitHub theme | MIT License | http://foundation.zurb.com */
-/*pre.CodeRay {background-color:#f7f7f8;}*/
-.CodeRay .line-numbers{border-right:1px solid #d8d8d8;padding:0 0.5em 0 .25em}
-.CodeRay span.line-numbers{display:inline-block;margin-right:.5em;color:rgba(0,0,0,.3)}
-.CodeRay .line-numbers strong{color:rgba(0,0,0,.4)}
-table.CodeRay{border-collapse:separate;border-spacing:0;margin-bottom:0;border:0;background:none}
-table.CodeRay td{vertical-align: top;line-height:1.45}
-table.CodeRay td.line-numbers{text-align:right}
-table.CodeRay td.line-numbers>pre{padding:0;color:rgba(0,0,0,.3)}
-table.CodeRay td.code{padding:0 0 0 .5em}
-table.CodeRay td.code>pre{padding:0}
-.CodeRay .debug{color:#fff !important;background:#000080 !important}
-.CodeRay .annotation{color:#007}
-.CodeRay .attribute-name{color:#000080}
-.CodeRay .attribute-value{color:#700}
-.CodeRay .binary{color:#509}
-.CodeRay .comment{color:#998;font-style:italic}
-.CodeRay .char{color:#04d}
-.CodeRay .char .content{color:#04d}
-.CodeRay .char .delimiter{color:#039}
-.CodeRay .class{color:#458;font-weight:bold}
-.CodeRay .complex{color:#a08}
-.CodeRay .constant,.CodeRay .predefined-constant{color:#008080}
-.CodeRay .color{color:#099}
-.CodeRay .class-variable{color:#369}
-.CodeRay .decorator{color:#b0b}
-.CodeRay .definition{color:#099}
-.CodeRay .delimiter{color:#000}
-.CodeRay .doc{color:#970}
-.CodeRay .doctype{color:#34b}
-.CodeRay .doc-string{color:#d42}
-.CodeRay .escape{color:#666}
-.CodeRay .entity{color:#800}
-.CodeRay .error{color:#808}
-.CodeRay .exception{color:inherit}
-.CodeRay .filename{color:#099}
-.CodeRay .function{color:#900;font-weight:bold}
-.CodeRay .global-variable{color:#008080}
-.CodeRay .hex{color:#058}
-.CodeRay .integer,.CodeRay .float{color:#099}
-.CodeRay .include{color:#555}
-.CodeRay .inline{color:#000}
-.CodeRay .inline .inline{background:#ccc}
-.CodeRay .inline .inline .inline{background:#bbb}
-.CodeRay .inline .inline-delimiter{color:#d14}
-.CodeRay .inline-delimiter{color:#d14}
-.CodeRay .important{color:#555;font-weight:bold}
-.CodeRay .interpreted{color:#b2b}
-.CodeRay .instance-variable{color:#008080}
-.CodeRay .label{color:#970}
-.CodeRay .local-variable{color:#963}
-.CodeRay .octal{color:#40e}
-.CodeRay .predefined{color:#369}
-.CodeRay .preprocessor{color:#579}
-.CodeRay .pseudo-class{color:#555}
-.CodeRay .directive{font-weight:bold}
-.CodeRay .type{font-weight:bold}
-.CodeRay .predefined-type{color:inherit}
-.CodeRay .reserved,.CodeRay .keyword {color:#000;font-weight:bold}
-.CodeRay .key{color:#808}
-.CodeRay .key .delimiter{color:#606}
-.CodeRay .key .char{color:#80f}
-.CodeRay .value{color:#088}
-.CodeRay .regexp .delimiter{color:#808}
-.CodeRay .regexp .content{color:#808}
-.CodeRay .regexp .modifier{color:#808}
-.CodeRay .regexp .char{color:#d14}
-.CodeRay .regexp .function{color:#404;font-weight:bold}
-.CodeRay .string{color:#d20}
-.CodeRay .string .string .string{background:#ffd0d0}
-.CodeRay .string .content{color:#d14}
-.CodeRay .string .char{color:#d14}
-.CodeRay .string .delimiter{color:#d14}
-.CodeRay .shell{color:#d14}
-.CodeRay .shell .delimiter{color:#d14}
-.CodeRay .symbol{color:#990073}
-.CodeRay .symbol .content{color:#a60}
-.CodeRay .symbol .delimiter{color:#630}
-.CodeRay .tag{color:#008080}
-.CodeRay .tag-special{color:#d70}
-.CodeRay .variable{color:#036}
-.CodeRay .insert{background:#afa}
-.CodeRay .delete{background:#faa}
-.CodeRay .change{color:#aaf;background:#007}
-.CodeRay .head{color:#f8f;background:#505}
-.CodeRay .insert .insert{color:#080}
-.CodeRay .delete .delete{color:#800}
-.CodeRay .change .change{color:#66f}
-.CodeRay .head .head{color:#f4f}
-</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
+<link href="assets/style/foundation-potion.css" media="screen" rel="stylesheet">
+<link href="assets/style/style.css" media="screen" rel="stylesheet">
+
+<script>
+
+</script>
 </head>
 <body class="book toc2 toc-left">
 <div id="header">
-<h1>MicroProfile Reactive Streams Operators Specification</h1>
+<h1>SmallRye Reactive Streams Operators</h1>
 <div class="details">
-<span id="author" class="author">James Roper, Clement Escoffier</span><br>
-<span id="email" class="email"><a href="mailto:james@lightbend.com">james@lightbend.com</a>, <a href="mailto:clement.escoffier@redhat.com">clement.escoffier@redhat.com</a></span><br>
-<span id="revnumber"> 1.0-SNAPSHOT,</span>
-<span id="revdate">August 09, 2018</span>
-<br><span id="revremark">Draft</span>
+<span id="author" class="author">Clement Escoffier</span><br>
+<span id="revnumber">version 1.0.0-SNAPSHOT,</span>
+<span id="revdate">2018-11-06</span>
 </div>
 <div id="toc" class="toc2">
-<div id="toctitle">Table of Contents</div>
-<ul class="sectlevel1">
-<li><a href="#_microprofile_reactive_streams_operators">MicroProfile Reactive Streams Operators</a></li>
-<li><a href="#reactivestreamsarchitecture">Introduction</a>
+<div id="toctitle">SmallRye Reactive Streams Operators</div>
 <ul class="sectlevel2">
-<li><a href="#_rationale">Rationale</a></li>
-<li><a href="#_scope">Scope</a></li>
-<li><a href="#_reactive_streams_api_dependency">Reactive Streams API dependency</a></li>
-</ul>
-</li>
-<li><a href="#reactivestreamsdesign">Design</a>
-<ul class="sectlevel2">
-<li><a href="#_stages">Stages</a></li>
-<li><a href="#_graphs">Graphs</a></li>
-<li><a href="#_usage">Usage</a></li>
-</ul>
-</li>
-<li><a href="#reactivestreamsimplementation">Implementation</a>
-<ul class="sectlevel2">
-<li><a href="#_memory_visibility">Memory visibility</a></li>
-<li><a href="#_user_exceptions">User exceptions</a></li>
-<li><a href="#_error_propagation">Error propagation</a></li>
-<li><a href="#_cleanup">Cleanup</a></li>
-<li><a href="#_null_elements">null elements</a></li>
-</ul>
-</li>
-<li><a href="#reactivestreamscdi">CDI Integration</a>
-<ul class="sectlevel2">
-<li><a href="#_injection_of_engines">Injection of engines</a></li>
-<li><a href="#_contexts">Contexts</a></li>
-</ul>
-</li>
-<li><a href="#reactivestreamsexamples">Reactive Streams Usage Examples</a>
-<ul class="sectlevel2">
-<li><a href="#_trivial_closed_graph">Trivial closed graph</a></li>
-<li><a href="#_building_a_publisher">Building a publisher</a></li>
-<li><a href="#_building_a_subscriber">Building a subscriber</a></li>
-<li><a href="#_building_a_processor">Building a processor</a></li>
-<li><a href="#_consuming_a_publisher">Consuming a publisher</a></li>
-<li><a href="#_feeding_a_subscriber">Feeding a subscriber</a></li>
-</ul>
-</li>
-<li><a href="#reactivestreams-java-streams">Similarities and differences with the Java Stream API</a>
-<ul class="sectlevel2">
-<li><a href="#_asynchronous_processing">Asynchronous processing</a></li>
-<li><a href="#_no_parallel_processing">No parallel processing</a></li>
-<li><a href="#_other_differences">Other differences</a></li>
-</ul>
-</li>
-<li><a href="#_spi">SPI</a></li>
-<li><a href="#reactivestreamstck">TCK</a>
-<ul class="sectlevel2">
-<li><a href="#_structure">Structure</a>
+<li><a href="#_getting_started">1. Getting Started</a>
 <ul class="sectlevel3">
-<li><a href="#_api_tck">API TCK</a>
+<li><a href="#_prerequisites">1.1. Prerequisites</a></li>
+<li><a href="#_quickstart">1.2. Quickstart</a></li>
+<li><a href="#_using_reactive_streams_operators_in_a_vert_x_application">1.3. Using Reactive Streams Operators in a Vert.x application</a></li>
+<li><a href="#_using_reactive_streams_operators_in_a_camel_application">1.4. Using Reactive Streams Operators in a Camel application</a></li>
+</ul>
+</li>
+<li><a href="#_operators">2. Operators</a>
+<ul class="sectlevel3">
+<li><a href="#_creating_streams">2.1. Creating streams</a>
 <ul class="sectlevel4">
-<li><a href="#_running_the_api_tck">Running the API TCK</a></li>
+<li><a href="#_creating_empty_streams">Creating empty streams</a></li>
+<li><a href="#_creating_streams_from_elements">Creating streams from elements</a></li>
+<li><a href="#_creating_failing_streams">Creating failing streams</a></li>
+<li><a href="#_creating_streams_from_completionstage">Creating streams from CompletionStage</a></li>
+<li><a href="#_creating_streams_from_collections">Creating streams from collections</a></li>
+<li><a href="#_wrapping_a_reactive_stream_publisher">Wrapping a Reactive Stream Publisher</a></li>
+<li><a href="#_generating_infinite_streams">Generating infinite streams</a></li>
 </ul>
 </li>
-<li><a href="#_spi_tck">SPI TCK</a>
+<li><a href="#_processing_streams">2.2. Processing streams</a>
 <ul class="sectlevel4">
-<li><a href="#_running_the_spi_tck">Running the SPI TCK</a></li>
+<li><a href="#_creating_a_processor">Creating a processor</a></li>
+<li><a href="#_filtering_elements">Filtering elements</a></li>
+<li><a href="#_composing_asynchronous_actions">Composing asynchronous actions</a></li>
+<li><a href="#_transforming_items">Transforming items</a></li>
+<li><a href="#_combining_a_processor">Combining a Processor</a></li>
 </ul>
 </li>
-<li><a href="#_running_the_tck_in_a_container">Running the TCK in a container</a></li>
+<li><a href="#_action_operators">2.3. Action operators</a></li>
+<li><a href="#_error_management_operators">2.4. Error management operators</a>
+<ul class="sectlevel4">
+<li><a href="#_terminal_operator_and_computing_asynchronous_result">Terminal operator and computing asynchronous result</a></li>
+<li><a href="#_cancelling_a_stream">Cancelling a stream</a></li>
+<li><a href="#_ignoring_elements">Ignoring elements</a></li>
+<li><a href="#_collecting_results">Collecting results</a></li>
+<li><a href="#_get_the_first_item_of_a_stream">Get the first item of a stream</a></li>
+<li><a href="#_execute_a_method_for_each_element">Execute a method for each element</a></li>
+<li><a href="#_pass_to_a_reactive_streams_subscriber">Pass to a Reactive Streams Subscriber</a></li>
 </ul>
 </li>
 </ul>
 </li>
+<li><a href="#_execution_model">3. Execution Model</a></li>
 </ul>
 </div>
 </div>
 <div id="content">
 <div id="preamble">
 <div class="sectionbody">
-<div class="literalblock">
-<div class="content">
-<pre>Specification: MicroProfile Reactive Streams Operators Specification
-
-Version: 1.0-SNAPSHOT
-
-Status: Draft
-
-Release: August 09, 2018
-
-Copyright (c) 2018 Contributors to the Eclipse Foundation
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-   <a href="http://www.apache.org/licenses/LICENSE-2.0" class="bare">http://www.apache.org/licenses/LICENSE-2.0</a>
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.</pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_microprofile_reactive_streams_operators"><a class="anchor" href="#_microprofile_reactive_streams_operators"></a>MicroProfile Reactive Streams Operators</h2>
-<div class="sectionbody">
-
-</div>
-</div>
-<div class="sect1">
-<h2 id="reactivestreamsarchitecture"><a class="anchor" href="#reactivestreamsarchitecture"></a>Introduction</h2>
-<div class="sectionbody">
+<!-- toc disabled -->
 <div class="paragraph">
-<p>This specification defines an API for manipulating Reactive Streams, providing operators such as <code>map</code>, <code>filter</code>, <code>flatMap</code>, in a similar fashion to the <code>java.util.streams</code> API introduced in Java 8.
-It also provides an SPI for implementing and providing custom Reactive Streams engines, allowing application developers to use whichever engine they see fit.</p>
-</div>
-<div class="sect2">
-<h3 id="_rationale"><a class="anchor" href="#_rationale"></a>Rationale</h3>
-<div class="paragraph">
-<p>The <code>java.util.streams</code> API provides functionality necessary for manipulating streams in memory introducing functional programming into the Java language.
-However, manipulating potentially infinite asynchronous streams has some very different requirements which the <code>java.util.streams</code> API is not suitable for.</p>
+<p>SmallRye Reactive Stream Operators is an implementation of the Eclipse MicroProfile Reactive Stream Operators
+specification.</p>
 </div>
 <div class="paragraph">
-<p>Reactive Streams is a specification for asynchronous streaming between different libraries and/or technologies, which is included in JDK9 as the <code>java.util.concurrent.Flow</code> spec.
-Reactive Streams itself however is an SPI for library and technology vendors to implement, it is not intended that application developers implement it as the semantics are very complex.</p>
-</div>
-<div class="paragraph">
-<p>Commonly, Reactive Streams requires more than just plumbing <code>publishers</code> to <code>subscribers</code>, the stream typically needs to be manipulated in some way, such as applying operations such as <code>map</code>, <code>filter</code> and <code>flatMap</code>.
-Neither Reactive Streams, nor the JDK, provides an API for doing these manipulations.
-Since users are not meant to implement Reactive Streams themselves, this means the only way to do these manipulations currently is to depend on a third party library providing operators, such as <a href="https://doc.akka.io/docs/akka/current/stream/index.html">Akka Streams</a>, <a href="https://github.com/ReactiveX/RxJava">RxJava</a> or <a href="https://projectreactor.io/">Reactor</a>.</p>
-</div>
-<div class="paragraph">
-<p>This API seeks to fill that gap, so that MicroProfile application developers can manipulate Reactive Streams without bringing in a third party dependency.
-By itself, this API is not interesting to MicroProfile, but with the addition of other Reactive features, such as the MicroProfile Reactive Messaging proposal, it is essential.</p>
-</div>
-<div class="paragraph">
-<p>There are a number of different approaches to handling the cross cutting concerns relating to actually running streams.
-These include how and whether context is propagated, concurrency models, buffering, hooks for monitoring and remoting.
-Different implementations of Reactive Streams offer different approaches based on varying opinions on how these cross cutting concerns should be treated.
-For this reason, this API provides an underlying SPI to allow different engines to be plugged in to actually run the streams.
-Implementors of this spec will provide a default implementation, however users can select to use a custom implementation if they need.</p>
-</div>
-<div class="paragraph">
-<p>This specification started as a proposal for the JDK, but after discussions there, it was decided that the JDK was not the right place to incubate such an API.
-It is the intention that once incubated in MicroProfile, this specification will be put to the JDK again as a proposal.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_scope"><a class="anchor" href="#_scope"></a>Scope</h3>
-<div class="paragraph">
-<p>This specification aims to define a set of operators to manipulate Reactive Streams. The proposed API is voluntarily close to the <code>java.utils.Stream</code> API.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_reactive_streams_api_dependency"><a class="anchor" href="#_reactive_streams_api_dependency"></a>Reactive Streams API dependency</h3>
-<div class="paragraph">
-<p>Reactive Streams has been included in the JDK9 as the <code>java.util.concurrent.Flow</code> API, which contains the <code>Publisher</code>, <code>Subscriber</code>, <code>Subscription</code> and <code>Processor</code> interfaces as nested interfaces of <code>Flow</code>.
-MicroProfile however is not ready to move to a baseline requirement for JDK9 or above.</p>
-</div>
-<div class="paragraph">
-<p>For this reason, this proposal uses the JDK6 compatible <code>org.reactivestreams</code> API, which provides identical <code>Publisher</code>, <code>Subscriber</code>, <code>Subscription</code> and <code>Processor</code> interfaces as members of the <code>org.reactivestreams</code> package.
-This dependency contains nothing but those interfaces.</p>
-</div>
-<div class="paragraph">
-<p>It has been discussed that MicroProfile could copy those interfaces itself, so as to not add this dependency, however this would most likely frustrate use of Reactive Streams in MicroProfile.
-There is a large ecosystem built around the <code>org.reactivestreams</code> interfaces.
-If application developers wanted to leverage that ecosystem in their application, they would have to write adapters to bridge the two APIs.
-Given that the <code>org.reactivestreams</code> dependency is a jar that contains only these interfaces, identical to the interfaces in JDK9, there doesn&#8217;t seem to be any value in copying them again into MicroProfile.</p>
-</div>
-<div class="paragraph">
-<p>To facilitate an eventual migration to the JDK9 interfaces, once MicroProfile adopts JDK9 or later as a baseline JDK version, all methods that pass <code>org.reactivestreams</code> interfaces to the user (either as a return value, or by virtue of a user providing a callback to the method to receive it) will have <code>Rs</code> added to their name.
-For example, <code>getSubscriber</code> will be called <code>getRsSubscriber</code>.
-This will allow new methods to be added in future that return <code>java.util.concurrent.Flow</code> interfaces, without the <code>Rs</code> in the name, allowing the existing <code>Rs</code> methods to be kept for a limited time for backwards compatibility.
-Methods that accept a <code>org.reactivestreams</code> interface do not need to be given the same treatment, as support for the JDK9 interfaces can be added by overloading them, with backwards compatibility being maintained (see <a href="https://github.com/eclipse/microprofile-reactive/blob/master/approach.asciidoc">reactive approach for MicroProfile</a>).</p>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="reactivestreamsdesign"><a class="anchor" href="#reactivestreamsdesign"></a>Design</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The design of MicroProfile Reactive Streams Operators is centered around <strong>builders</strong> for the various shapes of streams.</p>
-</div>
-<div class="sect2">
-<h3 id="_stages"><a class="anchor" href="#_stages"></a>Stages</h3>
-<div class="paragraph">
-<p>Each builder contains zero or more stages. There are three different shapes of stages:</p>
+<p>The <a href="./microprofile-reactive-streams-operators-spec.html">MicroProfile Reactive Stream Operators specification</a>
+ defines a set of operators for Reactive Streams. You can:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>Publisher. A publisher stage has an outlet, but no inlet.</p>
+<p>Create Reactive Streams</p>
+</li>
+<li>
+<p>Process the data transiting in the streams</p>
+</li>
+<li>
+<p>Accumulate results</p>
 </li>
 </ul>
 </div>
-<div class="imageblock" style="text-align: center">
-<div class="content">
-<img src="./images/publisher-stage.svg" alt="Publisher stage" width="200">
+<div class="paragraph">
+<p>The idea behind the specification is to provide the equivalent of <code>java.util.stream</code> but for Reactive Stream, so, inherently
+asynchronous, supporting back-pressure and with error and completion signals propagation. The following code snippet shows
+how close the API is:</p>
 </div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">// java.util.stream version:
+Stream.of("hello", "world")
+        .filter(word -&gt; word.length() &lt;= 5)
+        .map(String::toUpperCase)
+        .findFirst()
+        .ifPresent(s -&gt; System.out.println("Regular Java stream result: " + s));
+// reactive stream operator version:
+ReactiveStreams.of("hello", "world")
+        .filter(word -&gt; word.length() &lt;= 5)
+        .map(String::toUpperCase)
+        .findFirst()
+        .run() // Run the stream (start publishing)
+        // Retrieve the result asynchronously, using a CompletionStage
+        .thenAccept(res -&gt; res
+                .ifPresent(s -&gt; System.out.println("Reactive Stream result: " + s)));</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The SmallRye implementation is based on <a href="https://github.com/ReactiveX/RxJava">RX Java 2</a>.</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>Processor. A processor stage has an inlet and an outlet.</p>
-</li>
-</ul>
-</div>
-<div class="imageblock" style="text-align: center">
-<div class="content">
-<img src="./images/processor-stage.svg" alt="Processor stage" width="250">
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Subscriber. A subscriber stage has an inlet, but no outlet.</p>
-</li>
-</ul>
-</div>
-<div class="imageblock" style="text-align: center">
-<div class="content">
-<img src="./images/subscriber-stage.svg" alt="Subscriber stage" width="180">
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_graphs"><a class="anchor" href="#_graphs"></a>Graphs</h3>
-<div class="paragraph">
-<p>Stream stages can be built into graphs, using the builders. There are four different shapes of graphs that can be built:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Publishers. A publisher has one outlet but no inlet, and is represented as a Reactive Streams <code>Publisher</code> when built.
-It contains one publisher stage, followed by zero or more processor stages. This is called a <code>PublisherBuilder</code></p>
-</li>
-</ul>
-</div>
-<div class="imageblock" style="text-align: center">
-<div class="content">
-<img src="./images/publisher-builder.svg" alt="Publisher" width="320">
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Processors. A processor has one inlet and one outlet, and is represented as a Reactive Streams <code>Processor</code> when built.
-It contains zero or more processor stages. This is called a <code>ProcessorBuilder</code>.</p>
-</li>
-</ul>
-</div>
-<div class="imageblock" style="text-align: center">
-<div class="content">
-<img src="./images/processor-builder.svg" alt="Processor" width="350">
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Subscribers. A subscriber has one inlet but no outlet, and it also has a result.
-It is represented as a product of a Reactive Streams <code>Subscriber</code> and a <code>CompletionStage</code> that is redeemed with the result, or error if the stream fails, when built.
-It contains zero or more processor stages, followed by a single subscriber stage. This is called a <code>SubscriberBuilder</code>.</p>
-</li>
-</ul>
-</div>
-<div class="imageblock" style="text-align: center">
-<div class="content">
-<img src="./images/subscriber-builder.svg" alt="Subscriber" width="300">
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Closed graphs. A closed graph has no inlet or outlet, both having being provided in during the construction of the graph.
-It is represented as a <code>CompletionStage</code> of the result of the stream.
-It contains a publisher stage, followed by zero or more processor stages, followed by a subscriber stage.
-This is called a <code>CompletionRunner</code>. The result is retrieved using the <code>run</code> method.</p>
-</li>
-</ul>
-</div>
-<div class="imageblock" style="text-align: center">
-<div class="content">
-<img src="./images/closed-graph-builder.svg" alt="Closed graph" width="420">
-</div>
-</div>
-<div class="paragraph">
-<p>While building a stream, the stream may change shape during its construction.
-For example, a publisher may be collected into a <code>List</code> of elements.
-When this happens, the stream becomes a closed graph, since there is no longer an outlet, but just a result, the result being the <code>List</code> of elements:</p>
-</div>
-<div class="paragraph">
-<p>Here&#8217;s an example of a more complex situation where a <code>PublisherBuilder</code> is plumbed to a <code>SubscriberBuilder</code>, producing a <code>CompletionRunner</code>:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">PublisherBuilder&lt;<span class="predefined-type">Integer</span>&gt; evenIntsPublisher =
-  ReactiveStreams.of(<span class="integer">1</span>, <span class="integer">2</span>, <span class="integer">3</span>, <span class="integer">4</span>)
-    .filter(i -&gt; i % <span class="integer">2</span> == <span class="integer">0</span>); <b class="conum">(1)</b>
-
-SubscriberBuilder&lt;<span class="predefined-type">Integer</span>, <span class="predefined-type">List</span>&lt;<span class="predefined-type">Integer</span>&gt;&gt; doublingSubscriber =
-  ReactiveStreams.&lt;<span class="predefined-type">Integer</span>&gt;builder()
-    .map(i -&gt; i = i * <span class="integer">2</span>)
-    .toList(); <b class="conum">(2)</b>
-
-CompletionRunner&lt;<span class="predefined-type">List</span>&lt;<span class="predefined-type">Integer</span>&gt;&gt; result =
-  eventIntsPublisher.to(doublingSubscriber); <b class="conum">(3)</b></code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<ol>
-<li>
-<p>A publisher of integers 2 and 4.</p>
+<p>The Javadoc of the specification is available <a href=":./spec-api/index.html">here</a>.</p>
 </li>
 <li>
-<p>A subscriber that first doubles integers, then collects into a list.</p>
-</li>
-<li>
-<p>A closed graph that when run, will produce the result in a <code>CompletionStage</code>.</p>
-</li>
-</ol>
-</div>
-<div class="imageblock" style="text-align: center">
-<div class="content">
-<img src="./images/change-shape.svg" alt="Combining two graphs" width="600">
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_usage"><a class="anchor" href="#_usage"></a>Usage</h3>
-<div class="paragraph">
-<p>When MicroProfile specifications provide an API that uses Reactive Streams, it is intended that application developers can return and pass the builder interfaces directly to the MicroProfile APIs.
-In many cases, application developers will not need to run the streams themselves.
-However, should they need to run the streams directly themselves, they can do so by using the streams <code>build</code> or <code>run</code>
-methods. <code>PublisherBuilder</code>, <code>SubscriberBuilder</code> and <code>ProcessorBuilder</code> all provide a <code>build</code> method that returns a
-<code>Publisher</code>, <code>CompletionSubscriber</code> and <code>Processor</code> respectively, while <code>CompletionRunner</code>, since it actually
-runs the stream, provides a <code>run</code> method that returns a <code>CompletionStage</code>.</p>
-</div>
-<div class="paragraph">
-<p>The <code>CompletionSubscriber</code> class is so named because, where a <code>CompletionStage</code> is a stage of asynchronous computation that completes with a value or an error, a <code>CompletionSubscriber</code> is subscriber to an asynchronous stream that completes with a value or an error.</p>
-</div>
-<div class="paragraph">
-<p>The <code>build</code> and <code>run</code> methods both provide a zero arg variant, which uses the default Reactive Streams engine provided by the platform, as well as a overload that takes a <code>ReactiveStreamsEngine</code>, allowing application developers to use a custom engine when they please.</p>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="reactivestreamsimplementation"><a class="anchor" href="#reactivestreamsimplementation"></a>Implementation</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The behavior of each stage is specified in the javadocs for stages in the SPI, and tested by the TCK.</p>
-</div>
-<div class="paragraph">
-<p>Generally, across all stages, the following requirements exist:</p>
-</div>
-<div class="sect2">
-<h3 id="_memory_visibility"><a class="anchor" href="#_memory_visibility"></a>Memory visibility</h3>
-<div class="paragraph">
-<p>Within a single stage in a single stream, implementations must guarantee a <em>happens-before</em> relationship between any invocation of all callbacks supplied to that stage.</p>
-</div>
-<div class="paragraph">
-<p>Between different stages of a single stream, it is recommended that a <em>happens-before</em> relationship exists between callbacks of different stages, however this is not required, and end users of the API must not depend on this.
-Implementations are expected to implement this for performance reasons, this is also known as operator fusing.
-Implementations may decide, for whatever reason, not to fuse stages in certain circumstances, when this is done, it is said that there is an asynchronous boundary between the two stages.</p>
-</div>
-<div class="paragraph">
-<p>When Reactive Streams interfaces, that is, <code>Publisher</code>, <code>Subscriber</code> or <code>Processor</code>, are wrapped in a stage, implementations may place an asynchronous boundary between that stage and its neighbors if they choose.
-Whether implementations do or don&#8217;t place an asynchronous boundary there, they must conform to the Reactive Streams specification with regards to memory visibility.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_user_exceptions"><a class="anchor" href="#_user_exceptions"></a>User exceptions</h3>
-<div class="paragraph">
-<p>Exceptions thrown by user supplied callbacks must be caught and propagated downstream, unless otherwise handled by an error handling stage.</p>
-</div>
-<div class="paragraph">
-<p>User exceptions must not be thrown by the <code>build</code> or <code>run</code> methods of the builders.
-For example, if a user supplies an <code>Iterable</code> as a source for a <code>PublisherBuilder</code>, and the <code>iterator()</code> method is invoked synchronously from the <code>build</code> method on the publisher, and it throws an exception, this exception must be caught, and propagated through the stream, not thrown from the <code>build</code> method.</p>
-</div>
-<div class="paragraph">
-<p>An exception to this is the callbacks provided in user supplied Reactive Streams, ie <code>Publisher</code>, <code>Subscriber</code> and <code>Processor</code>.
-Since these interfaces are specified not to throw any exceptions when the consumer is adhering to the spec, implementations may assume that these interfaces won&#8217;t throw exceptions, and the behavior of an implementation should these interfaces throw exceptions is unspecified.</p>
-</div>
-<div class="paragraph">
-<p>In some cases, exceptions may be wrapped, for example, <code>CompletableFuture</code> wraps exceptions in a <code>CompletionException</code>.
-It is recommended that implementations do not wrap exceptions if they don&#8217;t need to, but rather that they propagate them downstream as is.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_error_propagation"><a class="anchor" href="#_error_propagation"></a>Error propagation</h3>
-<div class="paragraph">
-<p>Errors may be eagerly propagated by stages if an implementation chooses to do this.
-Such propagation can aid with fast failure of stages, to ensure things like connection failures do not wait excessively to discover that they have failed.</p>
-</div>
-<div class="paragraph">
-<p>A consequence of this is that errors can in certain circumstances overtake elements.
-For example, the <code>flatMapCompletionStage</code> stage may receive an error while an element is being asynchronously processed.
-This error may immediately be propagated downstream, which will mean the eventual redemption of the <code>CompletionStage</code> returned by the mapper function for the stage will be ignored, and the element it is redeemed with will be dropped.</p>
-</div>
-<div class="paragraph">
-<p>When a user does not desire this behavior, and wants to guarantee that stages don&#8217;t drop elements when upstream errors arrive, they may insert an error recovery stage, such as <code>onErrorResume</code>, before the stage that they don&#8217;t want to drop elements from.
-They will then need to implement an out of band mechanism to propagate the error, such as wrapping it in an element, should they wish to handle it downstream.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_cleanup"><a class="anchor" href="#_cleanup"></a>Cleanup</h3>
-<div class="paragraph">
-<p>Implementations must assume that any <code>PublisherBuilder</code>, <code>SubscriberBuilder</code> or <code>ProcessorBuilder</code> supplied to them, or any stages within, potentially hold resources, and must be cleaned up when the stream shuts down.
-For example, a <code>concat</code> stage accepts two `PublisherBuilder&#8217;s.
-If the stream is cancelled before the first is finished, the second must still be built, and then cancelled too.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_null_elements"><a class="anchor" href="#_null_elements"></a>null elements</h3>
-<div class="paragraph">
-<p>Reactive Streams does not allow <code>null</code> elements. Hence, any user callbacks that return <code>null</code> as an element to be emitted by a stage must cause the stage to fail with a <code>NullPointerException</code>.</p>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="reactivestreamscdi"><a class="anchor" href="#reactivestreamscdi"></a>CDI Integration</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>MicroProfile Reactive Streams Operators implementations may be used independently of a CDI container.
-Consequently, implementations are not required to provide any integration with CDI.</p>
-</div>
-<div class="paragraph">
-<p>This section of the specification is intended to provide advice for how other specifications may integrate CDI with MicroProfile Reactive Streams Operators.</p>
-</div>
-<div class="sect2">
-<h3 id="_injection_of_engines"><a class="anchor" href="#_injection_of_engines"></a>Injection of engines</h3>
-<div class="paragraph">
-<p>If a MicroProfile container provides an implementation of MicroProfile Reactive Streams Operators, then it must make an application scoped <code>ReactiveStreamsEngine</code> available for injection.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_contexts"><a class="anchor" href="#_contexts"></a>Contexts</h3>
-<div class="paragraph">
-<p>This specification places no requirements on the propagation of CDI context, or what context(s) should be active when user supplied callbacks are executed during the running of a stream.</p>
-</div>
-<div class="paragraph">
-<p>Other specifications that use this specification may require that implementations make certain context&#8217;s to be active when user callbacks are executed.
-In this case, it is expected that such specifications will have the responsibility of running the streams.</p>
-</div>
-<div class="paragraph">
-<p>For example, a hypothetical WebSocket specification may allow user code to return a <code>ProcessorBuilder</code> to handle messages:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@WebSocket</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">/echo</span><span class="delimiter">&quot;</span></span>)
-<span class="directive">public</span> ProcessorBuilder&lt;Message, Message&gt; echoWebsocket() {
-  <span class="keyword">return</span> ReactiveStreams.&lt;Message&gt;builder().map(message -&gt;
-    <span class="keyword">new</span> Message(<span class="string"><span class="delimiter">&quot;</span><span class="content">Echoing </span><span class="delimiter">&quot;</span></span> + message.getText())
-  );
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>In this case, the implementation of that hypothetical WebSocket specification is responsible for running the <code>ProcessorBuilder</code> returned by the user, and that specification may require that the engine it uses to run it makes the request context active in callbacks, such as the <code>map</code> callback above.
-Since the implementation of that specification is in control of which engine is used to run the processor, this requirement can be made by that specification.
-It is the responsibility of that implementation (and the MicroProfile container that pulls these implementations together) to ensure that the MicroProfile Reactive Streams Operators implementation used is able to support CDI context propagation.</p>
-</div>
-<div class="paragraph">
-<p>In contrast, if a user is responsible for executing a stream, like in the following hypothetical example:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@WebSocket</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">/echo</span><span class="delimiter">&quot;</span></span>)
-<span class="directive">public</span> <span class="type">void</span> echoWebsocket(PublisherBuilder&lt;Message&gt; incoming,
-  SubscriberBuilder&lt;Message, <span class="predefined-type">Void</span>&gt; outgoing) {
-
-  incoming.map(message -&gt;
-    <span class="keyword">new</span> Message(<span class="string"><span class="delimiter">&quot;</span><span class="content">Echoing </span><span class="delimiter">&quot;</span></span> + message.getText()
-  ).to(outgoing).run();
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Then there is no clear way for the container to control how the engine used there, which in this case would be loaded through the Java <code>ServiceLoader</code> API, would propagate context.
-For this reason, any cases where users are running their own streams are not expected to require any CDI context propagation, and it is recommended that specifications favour APIs where the container runs the stream, not the user, to facilitate context propagation.</p>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="reactivestreamsexamples"><a class="anchor" href="#reactivestreamsexamples"></a>Reactive Streams Usage Examples</h2>
-<div class="sectionbody">
-<div class="sect2">
-<h3 id="_trivial_closed_graph"><a class="anchor" href="#_trivial_closed_graph"></a>Trivial closed graph</h3>
-<div class="paragraph">
-<p>This just shows the fluency of the API.
-It wouldn&#8217;t make sense to actually do the below in practice, since the JDK8 streams API itself is better for working with in memory streams.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">CompletionStage&lt;Optional&lt;<span class="predefined-type">Integer</span>&gt;&gt; result = ReactiveStreams
-    .fromIterable(() -&gt; IntStream.range(<span class="integer">1</span>, <span class="integer">1000</span>).boxed().iterator())
-    .filter(i -&gt; (i &amp; <span class="integer">1</span>) == <span class="integer">1</span>)
-    .map(i -&gt; i * <span class="integer">2</span>)
-    .collect(Collectors.reducing((i, j) -&gt; i + j))
-    .run();</code></pre>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_building_a_publisher"><a class="anchor" href="#_building_a_publisher"></a>Building a publisher</h3>
-<div class="paragraph">
-<p>This shows how common collection types can be converted to a <code>Publisher</code> of the elements in the collection.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="predefined-type">List</span>&lt;MyDomainObject&gt; domainObjects = ...
-
-Publisher&lt;<span class="predefined-type">ByteBuffer</span>&gt; publisher = ReactiveStreams
-    .fromIterable(domainObjects)
-    .buildRs(); <b class="conum">(1)</b></code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<ol>
-<li>
-<p>The <code>Rs</code> suffix indicates the method produces a Reactive Streams <code>Publisher</code>.</p>
-</li>
-</ol>
-</div>
-<div class="paragraph">
-<p>The above example shows a very simple conversion of a <code>List</code> to a <code>Publisher</code>, of course other operations can be done on the elements before building the <code>Publisher</code>, in this case we go on to transform each object to a line in a CSV file, and then represent it as a stream of bytes.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">Publisher&lt;<span class="predefined-type">ByteBuffer</span>&gt; publisher = ReactiveStreams
-    .map(obj -&gt; <span class="predefined-type">String</span>.format(<span class="string"><span class="delimiter">&quot;</span><span class="content">%s,%s</span><span class="char">\n</span><span class="delimiter">&quot;</span></span>, obj.getField1(), obj.getField2()))
-    .map(line -&gt; <span class="predefined-type">ByteBuffer</span>.wrap(line.getBytes()))
-    .buildRs();</code></pre>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_building_a_subscriber"><a class="anchor" href="#_building_a_subscriber"></a>Building a subscriber</h3>
-<div class="paragraph">
-<p>This shows building a subscriber for a byte stream, such as for the JDK9 HttpClient API.
-It assumes another library has provided a Reactive Streams Processor that parses byte streams into streams of objects.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">Processor&lt;<span class="predefined-type">ByteBuffer</span>, MyDomainObject&gt; parser = createParser();
-
-CompletionSubscriber&lt;<span class="predefined-type">ByteBuffer</span>, <span class="predefined-type">List</span>&lt;MyDomainObject&gt;&gt; subscriber =
-  ReactiveStreams.&lt;<span class="predefined-type">ByteBuffer</span>&gt;builder()
-    .via(parser)
-    .toList()
-    .build();
-
-Subscriber&lt;<span class="predefined-type">ByteBuffer</span>&gt; subscriber = subscriber; <b class="conum">(1)</b>
-CompletionStage&lt;<span class="predefined-type">List</span>&lt;MyDomainObject&gt;&gt; result = subscriber.getCompletion(); <b class="conum">(2)</b></code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<ol>
-<li>
-<p>The object can be deconstructed into the <code>Subscriber</code> part</p>
-</li>
-<li>
-<p>The <code>CompletionStage</code> can be retrieve using <code>getCompletion</code></p>
-</li>
-</ol>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_building_a_processor"><a class="anchor" href="#_building_a_processor"></a>Building a processor</h3>
-<div class="paragraph">
-<p>This shows building a processor, for example, a message library may require processing messages, and then emitting an ACK identifier so that each handled element can be acknowledged as handled.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">Processor&lt;Message&lt;MyDomainObject&gt;, MessageAck&gt; processor =
-    ReactiveStreams.&lt;Message&lt;MyDomainObject&gt;&gt;builder()
-      .map(message -&gt; {
-        handleDomainObject(message.getMessage());
-        <span class="keyword">return</span> message.getMessageAck();
-      })
-      .buildRs();
-  }</code></pre>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_consuming_a_publisher"><a class="anchor" href="#_consuming_a_publisher"></a>Consuming a publisher</h3>
-<div class="paragraph">
-<p>A library may provide a Reactive Streams publisher that the application developer needs to consume.
-This shows how that can be done.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">Publisher&lt;<span class="predefined-type">ByteBuffer</span>&gt; bytesPublisher = makeRequest();
-
-Processor&lt;<span class="predefined-type">ByteBuffer</span>, MyDomainObject&gt; parser = createParser();
-
-CompletionStage&lt;<span class="predefined-type">List</span>&lt;MyDomainObject&gt;&gt; result = ReactiveStreams
-    .fromPublisher(bytesPublisher)
-    .via(parser)
-    .toList()
-    .run();</code></pre>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_feeding_a_subscriber"><a class="anchor" href="#_feeding_a_subscriber"></a>Feeding a subscriber</h3>
-<div class="paragraph">
-<p>A library may provide a subscriber to feed a connection.
-This shows how that subscriber can be fed.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="predefined-type">List</span>&lt;MyDomainObject&gt; domainObjects = <span class="keyword">new</span> <span class="predefined-type">ArrayList</span>&lt;&gt;();
-
-Subscriber&lt;<span class="predefined-type">ByteBuffer</span>&gt; subscriber = createSubscriber();
-
-CompletionStage&lt;<span class="predefined-type">Void</span>&gt; completion = ReactiveStreams
-    .fromIterable(domainObjects)
-    .map(obj -&gt; <span class="predefined-type">String</span>.format(<span class="string"><span class="delimiter">&quot;</span><span class="content">%s,%s</span><span class="char">\n</span><span class="delimiter">&quot;</span></span>, obj.getField1(), obj.getField2()))
-    .map(line -&gt; <span class="predefined-type">ByteBuffer</span>.wrap(line.getBytes()))
-    .to(subscriber)
-    .run();</code></pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="reactivestreams-java-streams"><a class="anchor" href="#reactivestreams-java-streams"></a>Similarities and differences with the Java Stream API</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The API shares a lot of similarities with the <a href="https://docs.oracle.com/javase/9/docs/api/java/util/stream/Stream.html">Java
-Stream API</a>. This similarity has been done on purpose to ease the adoption of the API. However, there are some
-differences and this section highlights them.</p>
-</div>
-<div class="sect2">
-<h3 id="_asynchronous_processing"><a class="anchor" href="#_asynchronous_processing"></a>Asynchronous processing</h3>
-<div class="paragraph">
-<p>The goal of the Reactive Stream Operators specification is to define building blocks to enable the
-implementation of asynchronous processing of stream of data. On the other hand, the Java Stream API provides a synchronous
- approach to compute a result by analyzing data conveyed in a stream. Because of this asynchronous vs. synchronous
- processing, the terminal stages (such as <code>collect</code>, <code>findFirst</code>&#8230;&#8203;) define by this API return <code>CompletableStage&lt;T&gt;</code> and
- not <code>T</code>. Indeed, only when the result has been computed the returned <code>CompletableStage</code> is completed. As an example,
- here is the two versions of the same processing:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="predefined-type">List</span>&lt;<span class="predefined-type">Integer</span>&gt; list = <span class="predefined-type">Arrays</span>.asList(<span class="integer">1</span>, <span class="integer">2</span>, <span class="integer">3</span>, <span class="integer">4</span>, <span class="integer">5</span>, <span class="integer">6</span>, <span class="integer">7</span>, <span class="integer">8</span>, <span class="integer">9</span>, <span class="integer">10</span>);
-
-<span class="comment">// Java Stream version</span>
-<span class="type">int</span> sum = list.stream()
-  .map(i -&gt; i + <span class="integer">1</span>)
-  .mapToInt(i -&gt; i)
-  .sum();
-<span class="comment">// At the point the sum is computed</span>
-<span class="predefined-type">System</span>.out.println(<span class="string"><span class="delimiter">&quot;</span><span class="content">sum: </span><span class="delimiter">&quot;</span></span> + sum);
-
-<span class="comment">// Reactive Streams Operators version</span>
-CompletionStage&lt;<span class="predefined-type">Integer</span>&gt; future = ReactiveStreams.fromIterable(list)
-  .map(i -&gt; i + <span class="integer">1</span>)
-  .collect(Collectors.summingInt(i -&gt; i))
-  .run();
-future.whenComplete((res, err) -&gt; <span class="predefined-type">System</span>.out.println(<span class="string"><span class="delimiter">&quot;</span><span class="content">async sum: </span><span class="delimiter">&quot;</span></span> + res));</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The asynchronous vs. synchronous difference also means that the error propagation works differently. In the Java Streams
-API, the processing can be wrapped in a <code>try/catch</code> construct. In the asynchronous case, the error is propagated into the
-returned future. In the example above, the function passed to the <code>whenComplete</code> stage receives the result as well as the
-failure (if any). If the processing throws an exception, the function can react by looking at the <code>err</code> parameter.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_no_parallel_processing"><a class="anchor" href="#_no_parallel_processing"></a>No parallel processing</h3>
-<div class="paragraph">
-<p>The Reactive Streams specification is intrinsically sequential. So none of the parallel processing ability from the Java
-Stream API are supported. As a consequence, the API does not provide a <code>parallel​()</code> method. Also, operations like
-<code>findAny</code> are not provided as the behavior would be equivalent to the provided <code>findFirst</code> method.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_other_differences"><a class="anchor" href="#_other_differences"></a>Other differences</h3>
-<div class="ulist">
-<ul>
-<li>
-<p><code>allMatch</code>, <code>anyMatch</code> and <code>nonMatch</code> can be achieved by combining <code>filter</code> and <code>findFirst</code></p>
-</li>
-<li>
-<p><code>collect(Collector&lt;? super T,A,R&gt; collector)</code> - the combiner part of the collector is not used because of the sequential
-nature of Reactive Streams.</p>
-</li>
-<li>
-<p><code>collect(Supplier&lt;R&gt; supplier, BiConsumer&lt;R,? super T&gt; accumulator, BiConsumer&lt;R,R&gt; combiner)</code> is provided as <code>collect
-(Supplier&lt;R&gt; supplier, BiConsumer&lt;R,? super T&gt; accumulator)</code>. Indeed, the combiner is not used because of the sequential
-nature of Reactive Streams.</p>
-</li>
-<li>
-<p><code>count</code> is not provided but can be implemented using <code>.collect(Collectors.counting())</code> instead.</p>
-</li>
-<li>
-<p><code>findAny</code> is not supported, use <code>findFirst</code> instead. Because of the sequential nature of Reactive Streams, the method
-has the same semantic.</p>
-</li>
-<li>
-<p><code>flatMapTo</code> and <code>mapTo</code> are not provided. These can easily be replaced using regular <code>flatMap</code> and <code>map</code> methods, or
-methods from <code>Collectors</code>.</p>
-</li>
-<li>
-<p><code>forEachOrdered</code> is not provided as Reactive Streams mandates ordering. So <code>forEach</code> should be used instead.</p>
-</li>
-<li>
-<p><code>max</code> and <code>min</code> can be achieved using <code>.collect(Collectors.maxBy(&#8230;&#8203;))</code> and <code>.collect(Collectors.minBy(&#8230;&#8203;))</code></p>
-</li>
-<li>
-<p><code>sorted</code> is not supported</p>
-</li>
-<li>
-<p><code>toArray</code> is not supported, <code>toList</code> can be used instead</p>
-</li>
-<li>
-<p><code>onClose</code> is replaced by <code>onComplete</code>. Notice that the API also provides the <code>onError</code> and <code>onTerminate</code> methods.</p>
+<p>The Javadoc of SmallRye Reactive Streams Operators is available <a href=":./apidocs/index.html">here</a>.</p>
 </li>
 </ul>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_spi"><a class="anchor" href="#_spi"></a>SPI</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The API is responsible for building graphs of stages based on the operators the user invoked.
-The stages form an SPI for <code>ReactiveStreamsEngine</code> implementations to build into a running stream.
-Examples of stages include:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Map</p>
-</li>
-<li>
-<p>Filter</p>
-</li>
-<li>
-<p>Elements to publish</p>
-</li>
-<li>
-<p>Collect</p>
-</li>
-<li>
-<p>Instances of Reactive Streams <code>Publisher</code>, <code>Subscriber</code> and <code>Processor</code></p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>Each stage has either an inlet, an outlet, or both.
-A graph is a sequence of stages, consecutive stages will have an outlet and and inlet so that they can join - a graph that has a stage with no outlet followed by a stage that has an inlet is impossible, for example.
-Only the stages at the ends of the graph may have no inlet or outlet, whether these end stages have an inlet or outlet determines the shape of the overall graph.
-The API is responsible for ensuring that as graphs are constructed, only graphs that are logically possible are passed to the <code>ReactiveStreamsEngine</code> to construct.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="reactivestreamstck"><a class="anchor" href="#reactivestreamstck"></a>TCK</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The MicroProfile Reactive Streams Operators TCK is provided to test compliance of implementations to the specification.
-It provides a mechanism both for testing implementations independent from a MicroProfile container, as well as implementations provided by a container.</p>
-</div>
 <div class="sect2">
-<h3 id="_structure"><a class="anchor" href="#_structure"></a>Structure</h3>
+<h3 id="_getting_started">1. Getting Started</h3>
+<div class="sect3">
+<h4 id="_prerequisites">1.1. Prerequisites</h4>
 <div class="paragraph">
-<p>There are two parts to the TCK, an API TCK, and an SPI TCK.
-In addition, the whole TCK can either be run directly against an SPI implementation, or against a container with an Arquillian adapter.</p>
+<p>Unfortunately, right now, there are no release of this project, so you need to build it by yourself. The build process
+ requires Apache Maven and Java 8+.  You need to build the SmallRye Reactive Stream Operators implementation first:</p>
 </div>
-<div class="paragraph">
-<p>The TCK uses TestNG for testing, and contains many test classes.
-These test classes are brought together using TestNG <code>@Factory</code> annotated methods, so that running the TCK can be done by simply running a single test class that is a factory for the rest of the test classes.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">git clone https://github.com/eclipse/microprofile-reactive-streams.git
+cd microprofile-reactive-streams
+git checkout 1.0-RC1
+mvn clean install -DskipTests -Drat.skip=true
+
+git clone https://github.com/smallrye/smallrye-reactive-streams-operators.git
+cd smallrye-reactive-streams-operators
+mvn clean install</code></pre>
 </div>
-<div class="paragraph">
-<p>Additionally, this TCK also uses the <a href="https://github.com/reactive-streams/reactive-streams-jvm/tree/master/tck">Reactive Streams TCK</a>.
-The Reactive Streams TCK is used to test Reactive Streams <code>Publishers</code>, <code>Subscribers</code> and <code>Processors</code> to ensure that they conform to the Reactive Streams spec.
-Wherever possible, this TCK will use it to verify the <code>Publishers</code>, <code>Subscribers</code> and <code>Processors</code> built by the API.
-For example, the returned <code>Processor</code> built by building a simple <code>map</code> stage is run through the Reactive Streams <code>Processor</code> TCK verification.</p>
 </div>
-<div class="paragraph">
-<p>It should be noted that the Reactive Streams TCK is structured in such a way that each numbered requirement in the Reactive Streams specification has a test, even if that requirement is untestable by the TCK, or if its optional. In the case where requirements are optional or untested, the Reactive Streams TCK skips the test. Consequently, when running this TCK, there are a significant number of skipped tests.</p>
 </div>
 <div class="sect3">
-<h4 id="_api_tck"><a class="anchor" href="#_api_tck"></a>API TCK</h4>
+<h4 id="_quickstart">1.2. Quickstart</h4>
 <div class="paragraph">
-<p>This tests the API, to ensure that every API call results in the a graph with the right stages being built.
-It also tests that the necessary validation, for example for nulls, is done on each API call.
-The API TCK is particularly useful for clean room implementations that don&#8217;t depend on the Eclipse MicroProfile Reactive Streams Operators API artifact.
-Passing the API TCK ensures that different implementations of the SPI will be compatible with different implementations of the API.</p>
+<p>The easiest to start using SmallRye Reactive Stream Operators is to start it directly in a <em>main</em> class. You just need
+to put <code>smallrye-reactive-messaging-provider</code> in your <code>CLASSPATH</code> to use it.</p>
 </div>
 <div class="paragraph">
-<p>The API TCK doesn&#8217;t need an implementation of the SPI to run, and so can be run against any implementation of the API.
-It is run as part of the Eclipse MicroProfile Reactive Streams Operators API&#8217;s continuous integration.</p>
+<p>Creates a Maven project, and include the following dependency in your pom.xml:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+  &lt;groupId&gt;io.smallrye&lt;/groupId&gt;
+  &lt;artifactId&gt;smallrye-reactive-messaging-provider&lt;/artifactId&gt;
+  &lt;version&gt;1.0.0-SNAPSHOT&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Once created, create a class file with a <code>public static void main(String&#8230;&#8203; args)</code> method:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">package io.smallrye.reactive.operators.quickstart;
+
+import org.eclipse.microprofile.reactive.streams.ReactiveStreams;
+
+public class QuickStart {
+
+    public static void main(String[] args) {
+        // Create a stream of words
+        ReactiveStreams.of("hello", "from", "smallrye", "reactive", "stream", "operators")
+                .map(String::toUpperCase) // Transform the words
+                .filter(s -&gt; s.length() &gt; 4) // Filter items
+                .forEach(word -&gt; System.out.println("&gt;&gt; " + word)) // Terminal operation
+                .run(); // Run it (create the streams, subscribe to it...)
+    }
+
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Once everything is setup, you should be able to run the application using:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">mvn compile exec:java -Dexec.mainClass=io.smallrye.reactive.operators.quickstart.QuickStart</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Running the previous example should give the following output:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>&gt;&gt; HELLO
+&gt;&gt; SMALLRYE
+&gt;&gt; REACTIVE
+&gt;&gt; STREAM
+&gt;&gt; OPERATORS</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The Reactive Streams Operator is intended to be used in other software and not as a standalone <em>api</em>. But to give you a
+better overview the 2 following quickstart explains how to use it in an Eclipse Vert.x application and in a Apache Camel
+application.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_using_reactive_streams_operators_in_a_vert_x_application">1.3. Using Reactive Streams Operators in a Vert.x application</h4>
+<div class="paragraph">
+<p><a href="http://vertx.io">Eclipse Vert.x</a> is a toolkit to create reactive and distributed systems. In addition to the <em>bare</em> Vert.x
+API, you can also use Vert.x using RX Java 2. As a consequence, you can wrap Vert.x <em>streams</em> and use Reactive Stream
+Operators to manipulate them:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">package io.smallrye.reactive.operators.quickstart;
+
+import io.vertx.core.Future;
+import io.vertx.core.json.JsonObject;
+import io.vertx.reactivex.core.AbstractVerticle;
+import io.vertx.reactivex.core.eventbus.Message;
+import io.vertx.reactivex.core.eventbus.MessageConsumer;
+import org.eclipse.microprofile.reactive.streams.ReactiveStreams;
+
+public class DataProcessor extends AbstractVerticle {
+
+    private static final int PORT = 8080;
+
+    @Override
+    public void start(Future&lt;Void&gt; done) {
+        vertx.createHttpServer()
+                .requestHandler(request -&gt; {
+                    // Consume messages from the Vert.x event bus
+                    MessageConsumer&lt;JsonObject&gt; consumer = vertx.eventBus().consumer("data");
+                    // Wrap the stream and manipulate the data
+                    ReactiveStreams.fromPublisher(consumer.toFlowable())
+                            .limit(5) // Take only 5 messages
+                            .map(Message::body) // Extract the body
+                            .map(json -&gt; json.getInteger("value")) // Extract the value
+                            .peek(i -&gt; System.out.println("Got value: " + i)) // Print it
+                            .reduce(0, (acc, value) -&gt; acc + value)
+                            .run() // Begin to receive items
+                            .whenComplete((res, err) -&gt; {
+                                // When the 5 items has been consumed, write the result to the
+                                // HTTP response:
+                                if (err != null) {
+                                    request.response().setStatusCode(500).end(err.getMessage());
+                                } else {
+                                    request.response().end("Result is: " + res);
+                                }
+                            });
+                })
+                .listen(PORT, ar -&gt; done.handle(ar.mapEmpty()));
+
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This example creates a HTTP server and for each request collect 5 messages sent by another component on the Vert.x event
+bus. It computes the sum of these 5 elements and writes the result to the HTTP response. It&#8217;s important to notice that
+the messages coming from the event bus are sent asynchronously. So, it would not be possible to write the previous code
+using <em>java.util.streams</em>.</p>
+</div>
+<div class="paragraph">
+<p>When used in a Vert.x application, Reactive Stream Operators can be used to processed data and compute asynchronous
+result.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_using_reactive_streams_operators_in_a_camel_application">1.4. Using Reactive Streams Operators in a Camel application</h4>
+<div class="paragraph">
+<p><a href="https://camel.apache.org">Apache Camel</a> is a toolkit to define routing and mediation rules, mainly used to integrate
+systems, using enterprise integration patterns. Apache Camel provides more than 200+ components, so it can
+integrate virtually with anything.</p>
+</div>
+<div class="paragraph">
+<p>You can combine Reactive Stream Operators and Apache Camel thanks to the
+<a href="https://github.com/apache/camel/blob/master/components/camel-reactive-streams/src/main/docs/reactive-streams-component.adoc">Camel Reactive Stream Component</a>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">package io.smallrye.reactive.operators.quickstart;
+
+import org.apache.camel.CamelContext;
+import org.apache.camel.component.reactive.streams.api.CamelReactiveStreams;
+import org.apache.camel.component.reactive.streams.api.CamelReactiveStreamsService;
+import org.apache.camel.impl.DefaultCamelContext;
+import org.eclipse.microprofile.reactive.streams.ReactiveStreams;
+import org.reactivestreams.Subscriber;
+
+import java.io.File;
+import java.nio.file.Files;
+
+public class QuickStart {
+
+    public static void main(String[] args) throws Exception {
+        CamelContext context = new DefaultCamelContext();
+        CamelReactiveStreamsService camel = CamelReactiveStreams.get(context);
+        Subscriber&lt;String&gt; subscriber = camel
+                .subscriber("file:./target?fileName=values.txt&amp;fileExist=append", String.class);
+
+        ReactiveStreams.of("hello", "from", "smallrye", "reactive", "stream", "operators",
+                "using", "Apache", "Camel")
+                .map(String::toUpperCase) // Transform the words
+                .filter(s -&gt; s.length() &gt; 4) // Filter items
+                .peek(System.out::println)
+                .map(s -&gt; s + " ")
+                .to(subscriber)
+                .run();
+        context.start();
+
+        // Just wait until it's done.
+        Thread.sleep(1000);
+
+        Files.readAllLines(new File("target/values.txt").toPath())
+                .forEach(s -&gt; System.out.println("File &gt;&gt; " + s));
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can also use Camel to create Reactive Streams <code>Publisher</code> and transform the items using Reactive Streams Operators.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_operators">2. Operators</h3>
+<div class="paragraph">
+<p>As mentioned before, the Reactive Streams API is an asynchronous version of <code>java.util.stream</code> for Reactive Streams. This
+section list the operators that are provided.</p>
+</div>
+<div class="paragraph">
+<p>The Reactive Streams Operators introduce a set of types to allow creating <em>Reactive Streams</em>:</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 33%;">
+<col style="width: 33%;">
+<col style="width: 33%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Reactive Streams</th>
+<th class="tableblock halign-left valign-top">Reactive Stream Operators</th>
+<th class="tableblock halign-left valign-top">Termination</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Publisher</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PublisherBuilder</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>build()</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Processor</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ProcessorBuilder</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>build()</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Subscriber</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>SubscriberBuilder</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>build()</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>In addition, the Reactive Streams Operators introduce <code>CompletionRunner</code> that triggers the emission of the items and
+provides a way to retrieve the asynchronously computed result.</p>
+</div>
+<div class="sect3">
+<h4 id="_creating_streams">2.1. Creating streams</h4>
+<div class="paragraph">
+<p>The first part of the API allows to create <code>PublisherBuilder</code>. A <em>Reactive Streams</em> <code>Publisher</code> can be created from the
+builder using the <code>.buildRS</code> method.</p>
 </div>
 <div class="sect4">
-<h5 id="_running_the_api_tck"><a class="anchor" href="#_running_the_api_tck"></a>Running the API TCK</h5>
-<div class="paragraph">
-<p>The API TCK can be run by running the <code>org.eclipse.microprofile.reactive.streams.tck.api.ReactiveStreamsApiVerification</code> class.
-For convenience, implementations might decide to subclass this in their <code>src/test/java</code> folder, so that it gets automatically picked up and run by build tools like Maven.</p>
+<h5 id="_creating_empty_streams">2.1.1. Creating empty streams</h5>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Operator</strong>: <code>empty</code></p>
+</li>
+<li>
+<p><strong>Description</strong>: Creates an empty stream.</p>
+</li>
+</ul>
 </div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_spi_tck"><a class="anchor" href="#_spi_tck"></a>SPI TCK</h4>
-<div class="paragraph">
-<p>This tests implementations of the SPI, to ensure that each different stage defined by the SPI behaves correctly, and to ensure that the implementation of that stage conforms to the Reactive Streams specification.
-In general, each stage has a verification test, which tests the behavior of that stage, error, completion and cancellation propagation, and anything else that is necessary for each stage.
-Additionally, each stage defines one or more Reactive Streams TCK verification classes, which tests that the <code>Publisher</code>, <code>Processor</code> or <code>Subscriber</code> built by a graph that contains just that stage conforms to the Reactive Streams specification.</p>
-</div>
-<div class="sect4">
-<h5 id="_running_the_spi_tck"><a class="anchor" href="#_running_the_spi_tck"></a>Running the SPI TCK</h5>
-<div class="paragraph">
-<p>The SPI TCK can be run by running the whole TCK (this includes running the API TCK, since the SPI TCK uses the API to create the stages, it doesn&#8217;t make sense to verify an SPI without verifying that the API on top of it is doing the right thing too).</p>
-</div>
-<div class="paragraph">
-<p>The whole TCK can be run by creating a subclass of <code>org.eclipse.microprofile.reactive.streams.tck.ReactiveStreamsTck</code>.
-This requires passing an instance of <code>org.reactivestreams.tck.TestEnvironment</code> to the super constructor, which contains configuration like timeouts.
-Typically, the timeouts set by using the default constructor for <code>TestEnvironment</code> should be satisfactory.
-The <code>createEngine</code> method also needs to be implemented, this must create and return a <code>ReactiveStreamsEngine</code> for the TCK to test against.
-Optionally, a <code>shutdownEngine</code> method can be overridden to shutdown the engine if it holds any resources like thread pools.</p>
-</div>
-<div class="exampleblock">
-<div class="title">Example 1. An example of using the TCK</div>
+<div class="imageblock">
 <div class="content">
+<img src="assets/images/empty.png" alt="empty">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Example</strong>:</p>
+</li>
+</ul>
+</div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">MyReactiveStreamsTckTest</span> <span class="directive">extends</span> ReactiveStreamsTck&lt;MyEngine&gt; {
-
-  <span class="directive">public</span> MyReactiveStreamsTckTest() {
-    <span class="local-variable">super</span>(<span class="keyword">new</span> TestEnvironment());
-  }
-
-  <span class="annotation">@Override</span>
-  <span class="directive">protected</span> MyEngine createEngine() {
-    <span class="keyword">return</span> <span class="keyword">new</span> MyEngine();
-  }
-
-  <span class="annotation">@Override</span>
-  <span class="directive">protected</span> <span class="type">void</span> shutdownEngine(MyEngine engine) {
-    engine.shutdown();
-  }
-}</code></pre>
+<pre>        PublisherBuilder&lt;T&gt; empty = ReactiveStreams.empty();</pre>
 </div>
 </div>
+</div>
+<div class="sect4">
+<h5 id="_creating_streams_from_elements">2.1.2. Creating streams from elements</h5>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Operator</strong>: <code>of</code>, <code>ofNullable</code></p>
+</li>
+<li>
+<p><strong>Description</strong>: Creates a stream of 0, 1 or n elements.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="assets/images/of-single.png" alt="of single">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="assets/images/of-many.png" alt="of many">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Example</strong>:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>        PublisherBuilder&lt;T&gt; streamOfOne = ReactiveStreams.of(t1);
+        PublisherBuilder&lt;T&gt; streamOfThree = ReactiveStreams.of(t1, t2, t3);
+        PublisherBuilder&lt;T&gt; streamOfOneOrEmpty = ReactiveStreams.ofNullable(maybeNull);</pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_creating_failing_streams">2.1.3. Creating failing streams</h5>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Operator</strong>: <code>failed</code></p>
+</li>
+<li>
+<p><strong>Description</strong>: Creates a failed stream.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="assets/images/failed.png" alt="failed">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Example</strong>:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>        PublisherBuilder&lt;T&gt; failed = ReactiveStreams.failed(new Exception("BOOM!"));</pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_creating_streams_from_completionstage">2.1.4. Creating streams from CompletionStage</h5>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Operator</strong>: <code>fromCompletionStage</code>, <code>fromCompletionStageNullable</code></p>
+</li>
+<li>
+<p><strong>Description</strong>: Creates a stream of 0 or 1 element emitted when the passed <code>CompletionStage</code> is completed.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="assets/images/fromCompletionStage.png" alt="fromCompletionStage">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="assets/images/fromCompletionStageNullable.png" alt="fromCompletionStageNullable">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Example</strong>:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>        PublisherBuilder&lt;T&gt; streamOfOne = ReactiveStreams.fromCompletionStage(cs);
+        // If the redeemed value is `null`, an error is propagated in the stream.
+        PublisherBuilder&lt;T&gt; streamOfOne = ReactiveStreams.fromCompletionStageNullable(cs);
+        // If the redeemed value is `null`, the stream is completed immediately.</pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_creating_streams_from_collections">2.1.5. Creating streams from collections</h5>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Operator</strong>: <code>fromIterable</code></p>
+</li>
+<li>
+<p><strong>Description</strong>: Creates a stream emitting the elements from the passed iterable and then send the completion signal.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="assets/images/fromIterable.png" alt="fromIterable">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Example</strong>:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>        PublisherBuilder&lt;T&gt; stream = ReactiveStreams.fromIterable(iterable);
+        // If the iterable does not contain elements, the resulting stream is empty.</pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_wrapping_a_reactive_stream_publisher">2.1.6. Wrapping a Reactive Stream Publisher</h5>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Operator</strong>: <code>fromPublisher</code></p>
+</li>
+<li>
+<p><strong>Description</strong>: Creates a stream emitting the elements from the passed <code>Publisher</code>.</p>
+</li>
+<li>
+<p><strong>Example</strong>:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>        PublisherBuilder&lt;T&gt; stream = ReactiveStreams.fromPublisher(publisher);
+        // If the publisher does not emit elements, the resulting stream is empty.</pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_generating_infinite_streams">2.1.7. Generating infinite streams</h5>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Operator</strong>: <code>generate</code>, <code>iterate</code></p>
+</li>
+<li>
+<p><strong>Description</strong>: Creates a stream using the generator method. The number of generated element depends from the <em>request</em>.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="assets/images/generate.png" alt="generate">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="assets/images/iterate.png" alt="iterate">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Example</strong>:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>        AtomicInteger counter = new AtomicInteger();
+        PublisherBuilder&lt;Integer&gt; stream = ReactiveStreams
+                .generate(() -&gt; counter.getAndIncrement());
+        // The resulting stream is an infinite stream.
+        PublisherBuilder&lt;Integer&gt; stream = ReactiveStreams
+                .iterate(0, last -&gt; last + 1);
+        // The resulting stream is an infinite stream.</pre>
 </div>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_running_the_tck_in_a_container"><a class="anchor" href="#_running_the_tck_in_a_container"></a>Running the TCK in a container</h4>
+<h4 id="_processing_streams">2.2. Processing streams</h4>
 <div class="paragraph">
-<p>A test class for running the TCK in a MicroProfile container is provided so that containers can verify compliance with the spec.
-This container verification comes in the <code>org.eclipse.microprofile.reactive.streams:microprofile-reactive-streams-operators-tck-arquillian</code> artifact, which can be added as a dependency to a project that wishes to use it.</p>
+<p>These operators transform the items transiting on the streams.</p>
+</div>
+<div class="sect4">
+<h5 id="_creating_a_processor">2.2.1. Creating a processor</h5>
+<div class="paragraph">
+<p>A processor is a <em>Reactive Streams component</em> that is both a <code>Publisher</code> and a <code>Subscriber</code>. It consumes and emits elements.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Example</strong>:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>        ProcessorBuilder&lt;I, O&gt; builder = ReactiveStreams.&lt;I&gt;builder()
+                .map(i -&gt; (O) i); // Emit element of type O</pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_filtering_elements">2.2.2. Filtering elements</h5>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Operator</strong>: <code>filter</code>, <code>distinct</code>, <code>dropWhile</code>, <code>skip</code>, <code>limit</code>, <code>takeWhile</code></p>
+</li>
+<li>
+<p><strong>Description</strong>: These operators filter items transiting on the stream:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>filter - select the element using a predicate</p>
+</li>
+<li>
+<p>distinct - remove similar element (<strong>Attention</strong>: do not use on large or unbounded streams)</p>
+</li>
+<li>
+<p>dropWhile - drop elements until the predicate returns <code>true</code></p>
+</li>
+<li>
+<p>skip - ignore <em>x</em> elements</p>
+</li>
+<li>
+<p>takeWhile - forward elements until the predicate returns <code>true</code></p>
+</li>
+<li>
+<p>limit - pick <em>x</em> elements</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="assets/images/filter.png" alt="filter">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="assets/images/distinct.png" alt="distinct">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="assets/images/dropWhile.png" alt="dropWhile">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="assets/images/skip.png" alt="skip">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="assets/images/takeWhile.png" alt="takeWhile">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="assets/images/limit.png" alt="limit">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Example</strong>:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>        ReactiveStreams.of(1, 2, 3)
+                .filter(i -&gt; i &gt; 2); // (1, 2)
+
+        ReactiveStreams.of(2, 2, 3, 3, 2, 1)
+                .distinct(); // (2, 3, 1)
+
+        ReactiveStreams.of(2, 2, 3, 3, 2, 1)
+                .dropWhile(i -&gt; i == 2); // (3, 3, 2, 1)
+
+        ReactiveStreams.of(2, 2, 3, 3, 2, 1)
+                .skip(3); // (3, 2, 1)
+
+        ReactiveStreams.of(2, 2, 3, 3, 2, 1)
+                .limit(3); // (2, 2, 3)
+
+        ReactiveStreams.of(2, 2, 3, 3, 2, 1)
+                .takeWhile(i -&gt; i == 2); // (2, 2)</pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_composing_asynchronous_actions">2.2.3. Composing asynchronous actions</h5>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Operator</strong>: <code>flatMap</code>, <code>flatMapCompletionStage</code>, <code>flatMapIterable</code>, <code>flatMapRsPublisher</code></p>
+</li>
+<li>
+<p><strong>Description</strong>: Produces a stream for each element of the stream. The return stream is <em>flatten</em> (serialized) in the
+returned stream</p>
+<div class="ulist">
+<ul>
+<li>
+<p>flatMap - Returns a <code>PublisherBuilder</code> and serialize the elements in the returned stream.</p>
+</li>
+<li>
+<p>flatMapCompletionStage - Produces a <code>CompletionStage</code>. When completed, the result is passed to the returned stream.</p>
+</li>
+<li>
+<p>flatMapIterable - Produces an <code>Iterable</code> and flatten the element into the returned stream. This <code>flatMap</code> method is
+not asynchronous.</p>
+</li>
+<li>
+<p>flatMapRSPublisher - Like <code>flatMap</code> but return a <em>Reactive Streams</em> <code>Publisher</code></p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="assets/images/flatMap.png" alt="flatMap">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="assets/images/flatMapCompletionStage.png" alt="flatMapCompletionStage">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="assets/images/flatMapIterable.png" alt="flatMapIterable">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="assets/images/flatMapRSPublisher.png" alt="flatMapRSPublisher">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Example</strong>:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>        ReactiveStreams.of(1, 2)
+                .flatMap(i -&gt; ReactiveStreams.of(i, i)); // (1, 1, 2, 2)
+
+        ReactiveStreams.of(1, 2)
+                .flatMapIterable(i -&gt; Arrays.asList(i, i)); // (1, 1, 2, 2)
+
+        ReactiveStreams.of(1, 2)
+                .flatMap(i -&gt; ReactiveStreams.of(i, i)); // (1, 1, 2, 2)
+
+        ReactiveStreams.of(1, 2)
+                .flatMapCompletionStage(i -&gt; invokeAsyncService(i));</pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+===
+The produced value can be emitted asynchronously, except for <code>flatMapIterable</code>.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_transforming_items">2.2.4. Transforming items</h5>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Operator</strong>: <code>map</code></p>
+</li>
+<li>
+<p><strong>Description</strong>: Produces a value synchronously</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="assets/images/map.png" alt="map">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Example</strong>:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>        ReactiveStreams.of(1, 2, 3)
+                .map(i -&gt; i + 1); // (2, 3, 4)</pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_combining_a_processor">2.2.5. Combining a Processor</h5>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Operator</strong>: <code>via</code></p>
+</li>
+<li>
+<p><strong>Description</strong>: Forward the items to a <code>Processor</code> or <code>ProcessorBuilder</code></p>
+</li>
+<li>
+<p><strong>Example</strong>:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>        ProcessorBuilder&lt;Integer, String&gt; processor = ReactiveStreams
+                .&lt;Integer&gt;builder().map(i -&gt; Integer.toString(i));
+
+        ReactiveStreams.of(1, 2)
+                .via(processor); // ("1", "2")</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_action_operators">2.3. Action operators</h4>
+<div class="paragraph">
+<p>These operators give you the ability to react on the different events happening in the streams.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Operator</strong>: <code>peek</code>, <code>onComplete</code>, <code>onTerminate</code>, <code>onError</code></p>
+</li>
+<li>
+<p><strong>Description</strong>: These operators let you react to various events such as when a element is received, an error is
+propagated or when the stream completes.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>peek - called for each element</p>
+</li>
+<li>
+<p>onComplete - called when the stream completes</p>
+</li>
+<li>
+<p>onError - called when an error is propagated in the stream</p>
+</li>
+<li>
+<p>onTerminate - called either when an error is propagated or when the stream completes</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="assets/images/peek.png" alt="peek">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="assets/images/onComplete.png" alt="onComplete">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="assets/images/onError.png" alt="onError">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="assets/images/onTerminate.png" alt="onTerminate">
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_error_management_operators">2.4. Error management operators</h4>
+<div class="paragraph">
+<p>These operators allows recovering after a failure. Because you handle asynchronous streams of data, your can&#8217;t use
+<code>try/catch</code>, so these operators provide a similar feature.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Operator</strong>: <code>onErroResume</code>, <code>onErrorResumeWith</code>, <code>onErrorResumeWithRsPublisher</code></p>
+</li>
+<li>
+<p><strong>Description</strong>: These operators let you react to various events such as when a element is received, an error is
+propagated or when the stream completes.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>peek - called for each element</p>
+</li>
+<li>
+<p>onComplete - called when the stream completes</p>
+</li>
+<li>
+<p>onError - called when an error is propagated in the stream</p>
+</li>
+<li>
+<p>onTerminate - called either when an error is propagated or when the stream completes</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="assets/images/peek.png" alt="peek">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="assets/images/onComplete.png" alt="onComplete">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="assets/images/onError.png" alt="onError">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="assets/images/onTerminate.png" alt="onTerminate">
+</div>
+</div>
+<div class="sect4">
+<h5 id="_terminal_operator_and_computing_asynchronous_result">2.4.1. Terminal operator and computing asynchronous result</h5>
+<div class="paragraph">
+<p>These operators acts as <em>subscribers</em> and produce a result. As the result is computed asynchronously, you retrieve a
+<code>CompletionStage</code> object.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_cancelling_a_stream">2.4.2. Cancelling a stream</h5>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Operator</strong>: <code>cancel</code></p>
+</li>
+<li>
+<p><strong>Description</strong>: Cancel the subscription to a stream. You will not receive items anymore.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_ignoring_elements">2.4.3. Ignoring elements</h5>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Operator</strong>: <code>ignore</code></p>
+</li>
+<li>
+<p><strong>Description</strong>: Just ignore the elements transiting on the streams. The elements are still emitted, but ignored.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="assets/images/ignore.png" alt="ignore">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Example</strong>:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>        ReactiveStreams.of(1, 2, 3)
+                .peek(i -&gt; System.out.println("Receiving: " + i))
+                .ignore()
+                .run()
+                .thenAccept(x -&gt; System.out.println("Done!"));</pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_collecting_results">2.4.4. Collecting results</h5>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Operator</strong>: <code>collect</code>, <code>reduce</code>, <code>toList</code></p>
+</li>
+<li>
+<p><strong>Description</strong>: These operators allows accumulating items or intermediary results to compute a final value.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="assets/images/collect.png" alt="collect">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="assets/images/reduce.png" alt="reduce">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="assets/images/toList.png" alt="toList">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Example</strong>:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>        ReactiveStreams.of(1, 2, 3)
+                .collect(Collectors.summingInt(i -&gt; i))
+                .run()
+                // Produce 6
+                .thenAccept(res -&gt; System.out.println("Result is: " + res));
+
+        ReactiveStreams.of(1, 2, 3)
+                .collect(() -&gt; new AtomicInteger(1), AtomicInteger::addAndGet)
+                .run()
+                // Produce 7
+                .thenAccept(res -&gt; System.out.println("Result is: " + res));
+
+        ReactiveStreams.of(1, 2, 3)
+                .reduce((acc, item) -&gt; acc + item)
+                .run()
+                // Produce Optional<i class="conum" data-value="6"></i><b>(6)</b>
+                .thenAccept(res -&gt; res.ifPresent(sum -&gt;
+                        System.out.println("Result is: " + sum)));
+
+        ReactiveStreams.of(1, 2, 3)
+                .toList()
+                .run()
+                // Produce [1, 2, 3]
+                .thenAccept(res -&gt; System.out.println("Result is: " + res));</pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_get_the_first_item_of_a_stream">2.4.5. Get the first item of a stream</h5>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Operator</strong>: <code>findFirst</code></p>
+</li>
+<li>
+<p><strong>Description</strong>: Retrieves the first item of a stream if any</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="assets/images/findFirst.png" alt="findFirst">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Example</strong>:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>        ReactiveStreams.of(1, 2, 3)
+                .findFirst()
+                .run()
+                // Produce Optional[1]
+                .thenAccept(maybe -&gt; System.out.println(maybe));</pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_execute_a_method_for_each_element">2.4.6. Execute a method for each element</h5>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Operator</strong>: <code>forEach</code></p>
+</li>
+<li>
+<p><strong>Description</strong>: Execute a method for each element of a stream. Unlike <code>peek</code>, this is a terminal operation.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="assets/images/forEach.png" alt="forEach">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Example</strong>:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>        ReactiveStreams.of(1, 2, 3)
+                .forEach(
+                        i -&gt; System.out.println("Receiving " + i)
+                )
+                .run();</pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_pass_to_a_reactive_streams_subscriber">2.4.7. Pass to a Reactive Streams Subscriber</h5>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Operator</strong>: <code>to</code></p>
+</li>
+<li>
+<p><strong>Description</strong>: Forward the elements of a stream to a given <code>Subscriber</code> or <code>SubscriberBuilder</code>.</p>
+</li>
+<li>
+<p><strong>Example</strong>:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>        SubscriberBuilder&lt;Integer, Optional&lt;Integer&gt;&gt; subscriber
+                = ReactiveStreams.&lt;Integer&gt;builder()
+                    .map(i -&gt; i + 1)
+                    .findFirst();
+
+        ReactiveStreams.of(1, 2, 3)
+                .to(subscriber)
+                .run()
+                // Produce Optional[2]
+                .thenAccept(optional -&gt;
+                        optional.ifPresent(i -&gt; System.out.println("Result: " + i)));</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_execution_model">3. Execution Model</h3>
+<div class="paragraph">
+<p>SmallRye Reactive Stream Operators provides a way to control on which thread are the different callbacks invoked. By
+default it uses the caller thread.</p>
 </div>
 <div class="paragraph">
-<p>To run this TCK, the container must provide a <code>ReactiveStreamsEngine</code> to be tested as an injectable <code>ApplicationScoped</code> bean, and the MicroProfile Reactive Streams Operators API must be on the classpath.
-Having ensured this, the TCK can then be run by executing <code>org.eclipse.microprofile.reactive.streams.tkc.arquillian.ReactiveStreamsArquillianTck</code>.
-This class deploys the TCK to an Arquillian compatible container, and then runs all the tests in the container in its own configured TestNG suite on the container.</p>
+<p>If you are building a Vert.x application, add the following dependency to your project so enforce the Vert.x execution
+model:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+  &lt;groupId&gt;io.smallrye&lt;/groupId&gt;
+    &lt;artifactId&gt;smallrye-reactive-streams-vertx-execution-model&lt;/artifactId&gt;
+  &lt;version&gt;1.0.0-SNAPSHOT&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
 </div>
 <div class="paragraph">
-<p>For convenience, implementations may want to subclass this class in their own <code>src/test/java</code> class, so that it can automatically be run by build tools like Maven.</p>
-</div>
-</div>
-</div>
+<p>With this dependency, if you are calling <code>ReactiveStreams.x</code> from a Vert.x thread, the same thread is used to call the
+different callbacks and pass the result.</p>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
- 1.0-SNAPSHOT<br>
-Last updated 2018-08-09 11:10:20 AEST
+Version 1.0.0-SNAPSHOT<br>
+Last updated 2018-11-06 10:16:02 CET
 </div>
 </div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/github.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
 </body>
 </html>
