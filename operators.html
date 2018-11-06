@@ -476,7 +476,7 @@ section list the operators that are provided.</p>
 </tbody>
 </table>
 <div class="paragraph">
-<p>In addition, the Reactive Streams Operators introduce <code>CompletionRunner</code> that triggers the emission of the items and
+<p>Besides, the Reactive Streams Operators introduce <code>CompletionRunner</code> that triggers the emission of the items and
 provides a way to retrieve the asynchronously computed result.</p>
 </div>
 <div class="sect2">
@@ -681,7 +681,7 @@ builder using the <code>.buildRS</code> method.</p>
 <p><strong>Operator</strong>: <code>generate</code>, <code>iterate</code></p>
 </li>
 <li>
-<p><strong>Description</strong>: Creates a stream using the generator method. The number of generated element depends from the <em>request</em>.</p>
+<p><strong>Description</strong>: Creates a stream using the generator method. The number of generated elements depends on the <em>request</em>.</p>
 </li>
 </ul>
 </div>
@@ -978,7 +978,7 @@ The produced value can be emitted asynchronously, except for <code>flatMapIterab
 <div class="sect2">
 <h3 id="_action_operators">Action operators</h3>
 <div class="paragraph">
-<p>These operators give you the ability to react on the different events happening in the streams.</p>
+<p>These operators give you the ability to react to the different events happening in the streams.</p>
 </div>
 <div class="ulist">
 <ul>
@@ -986,7 +986,7 @@ The produced value can be emitted asynchronously, except for <code>flatMapIterab
 <p><strong>Operator</strong>: <code>peek</code>, <code>onComplete</code>, <code>onTerminate</code>, <code>onError</code></p>
 </li>
 <li>
-<p><strong>Description</strong>: These operators let you react to various events such as when a element is received, an error is
+<p><strong>Description</strong>: These operators let you react to various events such as when an element is received, an error is
 propagated or when the stream completes.</p>
 <div class="ulist">
 <ul>
@@ -1031,7 +1031,7 @@ propagated or when the stream completes.</p>
 <div class="sect2">
 <h3 id="_error_management_operators">Error management operators</h3>
 <div class="paragraph">
-<p>These operators allows recovering after a failure. Because you handle asynchronous streams of data, your can&#8217;t use
+<p>These operators allow recovering after a failure. Because you handle asynchronous streams of data, you can&#8217;t use
 <code>try/catch</code>, so these operators provide a similar feature.</p>
 </div>
 <div class="ulist">
@@ -1084,7 +1084,7 @@ propagated or when the stream completes.</p>
 <div class="sect3">
 <h4 id="_terminal_operator_and_computing_asynchronous_result">Terminal operator and computing asynchronous result</h4>
 <div class="paragraph">
-<p>These operators acts as <em>subscribers</em> and produce a result. As the result is computed asynchronously, you retrieve a
+<p>These operators act as <em>subscribers</em> and produce a result. As the result is computed asynchronously, you retrieve a
 <code>CompletionStage</code> object.</p>
 </div>
 </div>
@@ -1096,7 +1096,7 @@ propagated or when the stream completes.</p>
 <p><strong>Operator</strong>: <code>cancel</code></p>
 </li>
 <li>
-<p><strong>Description</strong>: Cancel the subscription to a stream. You will not receive items anymore.</p>
+<p><strong>Description</strong>: Cancel the subscription to a stream. No more items will be received.</p>
 </li>
 </ul>
 </div>
@@ -1109,7 +1109,7 @@ propagated or when the stream completes.</p>
 <p><strong>Operator</strong>: <code>ignore</code></p>
 </li>
 <li>
-<p><strong>Description</strong>: Just ignore the elements transiting on the streams. The elements are still emitted, but ignored.</p>
+<p><strong>Description</strong>: ignore the elements transiting on the streams. The elements are still emitted but ignored.</p>
 </li>
 </ul>
 </div>
@@ -1303,7 +1303,7 @@ propagated or when the stream completes.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2018-11-06 10:14:09 CET
+Last updated 2018-11-06 12:20:37 CET
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/github.min.css">

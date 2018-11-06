@@ -494,7 +494,7 @@ specification.</p>
 </div>
 <div class="paragraph">
 <p>The <a href="microprofile-reactive-streams-operators-spec.html">MicroProfile Reactive Stream Operators specification</a>
- defines a set of operators for Reactive Streams. You can:</p>
+ define a set of operators for Reactive Streams. You can:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -510,9 +510,9 @@ specification.</p>
 </ul>
 </div>
 <div class="paragraph">
-<p>The idea behind the specification is to provide the equivalent of <code>java.util.stream</code> but for Reactive Stream, so, inherently
-asynchronous, supporting back-pressure and with error and completion signals propagation. The following code snippet shows
-how close the API is:</p>
+<p>The idea behind the specification is to provide the equivalent of <code>java.util.stream</code> however, for Reactive Stream, so,
+inherently asynchronous, supporting back-pressure and with error and completion signals propagation. The following code
+ snippet shows how close the API is:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -553,8 +553,8 @@ ReactiveStreams.of("hello", "world")
 <div class="sect3">
 <h4 id="_prerequisites">1.1. Prerequisites</h4>
 <div class="paragraph">
-<p>Unfortunately, right now, there are no release of this project, so you need to build it by yourself. The build process
- requires Apache Maven and Java 8+.  You need to build the SmallRye Reactive Stream Operators implementation first:</p>
+<p>Unfortunately, right now, there is no release of this project, so you need to build it by yourself. The build process
+requires Apache Maven and Java 8+.  You need to build the SmallRye Reactive Stream Operators implementation first:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -572,7 +572,7 @@ mvn clean install</code></pre>
 <div class="sect3">
 <h4 id="_quickstart">1.2. Quickstart</h4>
 <div class="paragraph">
-<p>The easiest to start using SmallRye Reactive Stream Operators is to start it directly in a <em>main</em> class. You just need
+<p>The easiest to start using SmallRye Reactive Stream Operators is to start it directly in a <em>main</em> class. You only need
 to put <code>smallrye-reactive-messaging-provider</code> in your <code>CLASSPATH</code> to use it.</p>
 </div>
 <div class="paragraph">
@@ -612,7 +612,7 @@ public class QuickStart {
 </div>
 </div>
 <div class="paragraph">
-<p>Once everything is setup, you should be able to run the application using:</p>
+<p>Once everything is set up, you should be able to run the application using:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -632,9 +632,9 @@ public class QuickStart {
 </div>
 </div>
 <div class="paragraph">
-<p>The Reactive Streams Operator is intended to be used in other software and not as a standalone <em>api</em>. But to give you a
-better overview the 2 following quickstart explains how to use it in an Eclipse Vert.x application and in a Apache Camel
-application.</p>
+<p>The Reactive Streams Operator is intended to be used in other software and not as a standalone <em>api</em>. However, to give you a
+better overview the 2 following quickstart explains how to use it in Eclipse Vert.x applications and  Apache Camel
+applications.</p>
 </div>
 </div>
 <div class="sect3">
@@ -690,21 +690,20 @@ public class DataProcessor extends AbstractVerticle {
 </div>
 </div>
 <div class="paragraph">
-<p>This example creates a HTTP server and for each request collect 5 messages sent by another component on the Vert.x event
+<p>This example creates an HTTP server and for each request to collect 5 messages sent by another component on the Vert.x event
 bus. It computes the sum of these 5 elements and writes the result to the HTTP response. It&#8217;s important to notice that
 the messages coming from the event bus are sent asynchronously. So, it would not be possible to write the previous code
 using <em>java.util.streams</em>.</p>
 </div>
 <div class="paragraph">
-<p>When used in a Vert.x application, Reactive Stream Operators can be used to processed data and compute asynchronous
-result.</p>
+<p>When used in a Vert.x application, Reactive Stream Operators can be used to processed data and compute an asynchronous result.</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="_using_reactive_streams_operators_in_a_camel_application">1.4. Using Reactive Streams Operators in a Camel application</h4>
 <div class="paragraph">
 <p><a href="https://camel.apache.org">Apache Camel</a> is a toolkit to define routing and mediation rules, mainly used to integrate
-systems, using enterprise integration patterns. Apache Camel provides more than 200+ components, so it can
+systems, using enterprise integration patterns. Apache Camel provides more than 200+ components so that it can
 integrate virtually with anything.</p>
 </div>
 <div class="paragraph">
@@ -799,7 +798,7 @@ section list the operators that are provided.</p>
 </tbody>
 </table>
 <div class="paragraph">
-<p>In addition, the Reactive Streams Operators introduce <code>CompletionRunner</code> that triggers the emission of the items and
+<p>Besides, the Reactive Streams Operators introduce <code>CompletionRunner</code> that triggers the emission of the items and
 provides a way to retrieve the asynchronously computed result.</p>
 </div>
 <div class="sect3">
@@ -1004,7 +1003,7 @@ builder using the <code>.buildRS</code> method.</p>
 <p><strong>Operator</strong>: <code>generate</code>, <code>iterate</code></p>
 </li>
 <li>
-<p><strong>Description</strong>: Creates a stream using the generator method. The number of generated element depends from the <em>request</em>.</p>
+<p><strong>Description</strong>: Creates a stream using the generator method. The number of generated elements depends on the <em>request</em>.</p>
 </li>
 </ul>
 </div>
@@ -1301,7 +1300,7 @@ The produced value can be emitted asynchronously, except for <code>flatMapIterab
 <div class="sect3">
 <h4 id="_action_operators">2.3. Action operators</h4>
 <div class="paragraph">
-<p>These operators give you the ability to react on the different events happening in the streams.</p>
+<p>These operators give you the ability to react to the different events happening in the streams.</p>
 </div>
 <div class="ulist">
 <ul>
@@ -1309,7 +1308,7 @@ The produced value can be emitted asynchronously, except for <code>flatMapIterab
 <p><strong>Operator</strong>: <code>peek</code>, <code>onComplete</code>, <code>onTerminate</code>, <code>onError</code></p>
 </li>
 <li>
-<p><strong>Description</strong>: These operators let you react to various events such as when a element is received, an error is
+<p><strong>Description</strong>: These operators let you react to various events such as when an element is received, an error is
 propagated or when the stream completes.</p>
 <div class="ulist">
 <ul>
@@ -1354,7 +1353,7 @@ propagated or when the stream completes.</p>
 <div class="sect3">
 <h4 id="_error_management_operators">2.4. Error management operators</h4>
 <div class="paragraph">
-<p>These operators allows recovering after a failure. Because you handle asynchronous streams of data, your can&#8217;t use
+<p>These operators allow recovering after a failure. Because you handle asynchronous streams of data, you can&#8217;t use
 <code>try/catch</code>, so these operators provide a similar feature.</p>
 </div>
 <div class="ulist">
@@ -1407,7 +1406,7 @@ propagated or when the stream completes.</p>
 <div class="sect4">
 <h5 id="_terminal_operator_and_computing_asynchronous_result">2.4.1. Terminal operator and computing asynchronous result</h5>
 <div class="paragraph">
-<p>These operators acts as <em>subscribers</em> and produce a result. As the result is computed asynchronously, you retrieve a
+<p>These operators act as <em>subscribers</em> and produce a result. As the result is computed asynchronously, you retrieve a
 <code>CompletionStage</code> object.</p>
 </div>
 </div>
@@ -1419,7 +1418,7 @@ propagated or when the stream completes.</p>
 <p><strong>Operator</strong>: <code>cancel</code></p>
 </li>
 <li>
-<p><strong>Description</strong>: Cancel the subscription to a stream. You will not receive items anymore.</p>
+<p><strong>Description</strong>: Cancel the subscription to a stream. No more items will be received.</p>
 </li>
 </ul>
 </div>
@@ -1432,7 +1431,7 @@ propagated or when the stream completes.</p>
 <p><strong>Operator</strong>: <code>ignore</code></p>
 </li>
 <li>
-<p><strong>Description</strong>: Just ignore the elements transiting on the streams. The elements are still emitted, but ignored.</p>
+<p><strong>Description</strong>: ignore the elements transiting on the streams. The elements are still emitted but ignored.</p>
 </li>
 </ul>
 </div>

@@ -440,8 +440,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sect2">
 <h3 id="_prerequisites">Prerequisites</h3>
 <div class="paragraph">
-<p>Unfortunately, right now, there are no release of this project, so you need to build it by yourself. The build process
- requires Apache Maven and Java 8+.  You need to build the SmallRye Reactive Stream Operators implementation first:</p>
+<p>Unfortunately, right now, there is no release of this project, so you need to build it by yourself. The build process
+requires Apache Maven and Java 8+.  You need to build the SmallRye Reactive Stream Operators implementation first:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -459,7 +459,7 @@ mvn clean install</code></pre>
 <div class="sect2">
 <h3 id="_quickstart">Quickstart</h3>
 <div class="paragraph">
-<p>The easiest to start using SmallRye Reactive Stream Operators is to start it directly in a <em>main</em> class. You just need
+<p>The easiest to start using SmallRye Reactive Stream Operators is to start it directly in a <em>main</em> class. You only need
 to put <code>smallrye-reactive-messaging-provider</code> in your <code>CLASSPATH</code> to use it.</p>
 </div>
 <div class="paragraph">
@@ -499,7 +499,7 @@ public class QuickStart {
 </div>
 </div>
 <div class="paragraph">
-<p>Once everything is setup, you should be able to run the application using:</p>
+<p>Once everything is set up, you should be able to run the application using:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -519,9 +519,9 @@ public class QuickStart {
 </div>
 </div>
 <div class="paragraph">
-<p>The Reactive Streams Operator is intended to be used in other software and not as a standalone <em>api</em>. But to give you a
-better overview the 2 following quickstart explains how to use it in an Eclipse Vert.x application and in a Apache Camel
-application.</p>
+<p>The Reactive Streams Operator is intended to be used in other software and not as a standalone <em>api</em>. However, to give you a
+better overview the 2 following quickstart explains how to use it in Eclipse Vert.x applications and  Apache Camel
+applications.</p>
 </div>
 </div>
 <div class="sect2">
@@ -577,21 +577,20 @@ public class DataProcessor extends AbstractVerticle {
 </div>
 </div>
 <div class="paragraph">
-<p>This example creates a HTTP server and for each request collect 5 messages sent by another component on the Vert.x event
+<p>This example creates an HTTP server and for each request to collect 5 messages sent by another component on the Vert.x event
 bus. It computes the sum of these 5 elements and writes the result to the HTTP response. It&#8217;s important to notice that
 the messages coming from the event bus are sent asynchronously. So, it would not be possible to write the previous code
 using <em>java.util.streams</em>.</p>
 </div>
 <div class="paragraph">
-<p>When used in a Vert.x application, Reactive Stream Operators can be used to processed data and compute asynchronous
-result.</p>
+<p>When used in a Vert.x application, Reactive Stream Operators can be used to processed data and compute an asynchronous result.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_using_reactive_streams_operators_in_a_camel_application">Using Reactive Streams Operators in a Camel application</h3>
 <div class="paragraph">
 <p><a href="https://camel.apache.org">Apache Camel</a> is a toolkit to define routing and mediation rules, mainly used to integrate
-systems, using enterprise integration patterns. Apache Camel provides more than 200+ components, so it can
+systems, using enterprise integration patterns. Apache Camel provides more than 200+ components so that it can
 integrate virtually with anything.</p>
 </div>
 <div class="paragraph">
@@ -649,7 +648,7 @@ public class QuickStart {
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2018-11-06 10:15:38 CET
+Last updated 2018-11-06 12:15:12 CET
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/github.min.css">
