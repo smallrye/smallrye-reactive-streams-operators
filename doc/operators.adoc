@@ -181,9 +181,11 @@ include::../examples/snippets/src/main/java/io/smallrye/reactive/operators/snipp
 ----
 
 [NOTE]
-===
 The produced value can be emitted asynchronously, except for `flatMapIterable`.
 
+[IMPORTANT]
+The `CompletionStage` returned by `flatMapCompletionStage` must not redeem `null`, as `null` is an invalid value for
+Reactive Streams. So, you cannot use `CompletionStage<Void>`.
 
 ==== Transforming items
 
