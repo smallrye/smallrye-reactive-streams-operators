@@ -23,3 +23,6 @@ The SmallRye implementation is based on https://github.com/ReactiveX/RxJava[RX J
 * The Javadoc of the specification is available link:spec-api/index.html[here].
 * The Javadoc of SmallRye Reactive Streams Operators is available link:apidocs/index.html[here].
 
+The code is released under the Apache Software License 2.0 and is available on
+https://github.com/smallrye/smallrye-reactive-streams-operators[Github].
+

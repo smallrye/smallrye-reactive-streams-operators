@@ -14,8 +14,6 @@
         <maven.compiler.target>1.8</maven.compiler.target>
 
         <camel.version>2.22.0</camel.version>
-
-        <javadoc.skip>true</javadoc.skip>
     </properties>
 
     <dependencies>
