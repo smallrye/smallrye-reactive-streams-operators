@@ -172,7 +172,7 @@ not asynchronous.
 image::flatMap.png[]
 image::flatMapCompletionStage.png[]
 image::flatMapIterable.png[]
-image::flatMapRSPublisher.png[]
+image::flatMapRsPublisher.png[]
 
 * **Example**:
 [source, java, indent=0]
