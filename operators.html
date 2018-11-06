@@ -911,8 +911,20 @@ not asynchronous.</p>
 <div class="title">Note</div>
 </td>
 <td class="content">
-===
 The produced value can be emitted asynchronously, except for <code>flatMapIterable</code>.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">
+The <code>CompletionStage</code> returned by <code>flatMapCompletionStage</code> must not redeem <code>null</code>, as <code>null</code> is an invalid value for
+Reactive Streams. So, you cannot use <code>CompletionStage&lt;Void&gt;</code>.
 </td>
 </tr>
 </table>
@@ -1303,7 +1315,7 @@ propagated or when the stream completes.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2018-11-06 12:20:37 CET
+Last updated 2018-11-06 14:06:30 CET
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/github.min.css">

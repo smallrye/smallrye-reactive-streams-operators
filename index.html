@@ -1237,8 +1237,20 @@ not asynchronous.</p>
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-===
 The produced value can be emitted asynchronously, except for <code>flatMapIterable</code>.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+The <code>CompletionStage</code> returned by <code>flatMapCompletionStage</code> must not redeem <code>null</code>, as <code>null</code> is an invalid value for
+Reactive Streams. So, you cannot use <code>CompletionStage&lt;Void&gt;</code>.
 </td>
 </tr>
 </table>
