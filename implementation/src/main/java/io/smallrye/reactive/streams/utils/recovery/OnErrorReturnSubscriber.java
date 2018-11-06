@@ -21,7 +21,7 @@ public class OnErrorReturnSubscriber<T> extends SinglePostCompleteSubscriber<T, 
     @Override
     public void onNext(T t) {
         produced++;
-        actual.onNext(t);
+        downstream.onNext(t);
     }
 
     @Override
@@ -31,7 +31,7 @@ public class OnErrorReturnSubscriber<T> extends SinglePostCompleteSubscriber<T, 
             v = Objects.requireNonNull(valueSupplier.apply(t), "The valueSupplier returned a null value");
         } catch (Throwable ex) {
             Exceptions.throwIfFatal(ex);
-            actual.onError(ex);
+            downstream.onError(ex);
             return;
         }
         complete(v);
@@ -39,6 +39,6 @@ public class OnErrorReturnSubscriber<T> extends SinglePostCompleteSubscriber<T, 
 
     @Override
     public void onComplete() {
-        actual.onComplete();
+        downstream.onComplete();
     }
 }

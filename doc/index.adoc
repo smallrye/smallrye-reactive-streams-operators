@@ -9,10 +9,6 @@ Clement Escoffier;
 :icons: font
 :docinfo1:
 
-:weld-version: {weld-version}
-:smallrye-streams-version: {smallrye-streams-version}
-
-
 ifndef::ebook-format[:leveloffset: 1]
 
 ifdef::basebackend-html[toc::[]]
