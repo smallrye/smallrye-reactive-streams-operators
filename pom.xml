@@ -23,6 +23,11 @@
         <module>cdi</module>
         <module>tck</module>
         <module>vertx-execution-model</module>
+
+        <module>examples/quickstart</module>
+        <module>examples/quickstart-vertx</module>
+        <module>examples/quickstart-camel</module>
+        <module>examples/snippets</module>
     </modules>
 
     <properties>
@@ -33,6 +38,9 @@
 
         <cdi.version>2.0.SP1</cdi.version>
         <weld-core.version>3.0.4.Final</weld-core.version>
+
+        <asciidoctor-maven-plugin.version>1.5.3</asciidoctor-maven-plugin.version>
+        <asciidoctorj.version>1.5.4</asciidoctorj.version>
     </properties>
 
     <dependencies>
@@ -133,4 +141,80 @@
             </snapshots>
         </repository>
     </repositories>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.0.1</version>
+                <executions>
+                    <execution>
+                        <id>default-cli</id>
+                        <goals>
+                            <goal>aggregate</goal>
+                        </goals>
+                        <configuration>
+                            <reportOutputDirectory>target/generated-docs/apidocs</reportOutputDirectory>
+                            <excludePackageNames>*.quickstart:*.snippets</excludePackageNames>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>doc</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.asciidoctor</groupId>
+                        <artifactId>asciidoctor-maven-plugin</artifactId>
+                        <version>${asciidoctor-maven-plugin.version}</version>
+                        <configuration>
+                            <backend>html</backend>
+                            <sourceHighlighter>highlightjs</sourceHighlighter>
+                            <attributes>
+                                <toc>left</toc>
+                                <version>${project.version}</version>
+                                <weld-version>${weld-core.version}</weld-version>
+                                <smallrye-streams-version>${smallrye-reactive-streams-ops.version}</smallrye-streams-version>
+                                <smallrye-config-version>${smallrye-config.version}</smallrye-config-version>
+                            </attributes>
+                            <sourceDirectory>doc</sourceDirectory>
+                            <imagesDir>assets/images</imagesDir>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <version>3.1.1</version>
+                        <executions>
+                            <execution>
+                                <id>unpack</id>
+                                <goals>
+                                    <goal>unpack</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>org.eclipse.microprofile.reactive.streams</groupId>
+                                            <artifactId> microprofile-reactive-streams-operators</artifactId>
+                                            <version>${microprofile-reactive-streams.version}</version>
+                                            <type>jar</type>
+                                            <classifier>javadoc</classifier>
+                                            <overWrite>false</overWrite>
+                                            <outputDirectory>${project.build.directory}/generated-docs/spec-api</outputDirectory>
+                                        </artifactItem>
+                                    </artifactItems>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+                <defaultGoal>generate-resources asciidoctor:process-asciidoc</defaultGoal>
+            </build>
+        </profile>
+    </profiles>
 </project>

@@ -10,7 +10,7 @@ import java.util.Objects;
 
 /**
  * Implementation of the {@link Stage.Concat} stage. Because both streams can emits on different thread,
- * this operator takes care to called the user on a Vert.x context if the caller used one, otherwise it
+ * this operators takes care to called the user on a Vert.x context if the caller used one, otherwise it
  * uses the current thread.
  *
  * @author <a href="http://escoffier.me">Clement Escoffier</a>

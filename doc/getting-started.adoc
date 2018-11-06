@@ -1,0 +1,95 @@
+== Getting Started
+
+=== Prerequisites
+
+Unfortunately, right now, there is no release of this project, so you need to build it by yourself. The build process
+requires Apache Maven and Java 8+.  You need to build the SmallRye Reactive Stream Operators implementation first:
+
+```bash
+git clone https://github.com/eclipse/microprofile-reactive-streams.git
+cd microprofile-reactive-streams
+git checkout 1.0-RC1
+mvn clean install -DskipTests -Drat.skip=true
+
+git clone https://github.com/smallrye/smallrye-reactive-streams-operators.git
+cd smallrye-reactive-streams-operators
+mvn clean install
+```
+
+=== Quickstart
+
+The easiest to start using SmallRye Reactive Stream Operators is to start it directly in a _main_ class. You only need
+to put `smallrye-reactive-messaging-provider` in your `CLASSPATH` to use it.
+
+Creates a Maven project, and include the following dependency in your pom.xml:
+
+[source,xml,subs=attributes+]
+----
+<dependency>
+  <groupId>io.smallrye</groupId>
+  <artifactId>smallrye-reactive-messaging-provider</artifactId>
+  <version>{version}</version>
+</dependency>
+----
+
+Once created, create a class file with a `public static void main(String... args)` method:
+
+[source,java]
+----
+include::../examples/quickstart/src/main/java/io/smallrye/reactive/operators/quickstart/QuickStart.java[]
+----
+
+Once everything is set up, you should be able to run the application using:
+
+```bash
+mvn compile exec:java -Dexec.mainClass=io.smallrye.reactive.operators.quickstart.QuickStart
+```
+
+Running the previous example should give the following output:
+
+```
+>> HELLO
+>> SMALLRYE
+>> REACTIVE
+>> STREAM
+>> OPERATORS
+```
+
+The Reactive Streams Operator is intended to be used in other software and not as a standalone _api_. However, to give you a
+better overview the 2 following quickstart explains how to use it in Eclipse Vert.x applications and  Apache Camel
+applications.
+
+=== Using Reactive Streams Operators in a Vert.x application
+
+http://vertx.io[Eclipse Vert.x] is a toolkit to create reactive and distributed systems. In addition to the _bare_ Vert.x
+API, you can also use Vert.x using RX Java 2. As a consequence, you can wrap Vert.x _streams_ and use Reactive Stream
+Operators to manipulate them:
+
+[source, java, indent=0]
+----
+include::../examples/quickstart-vertx/src/main/java/io/smallrye/reactive/operators/quickstart/DataProcessor.java[]
+----
+
+This example creates an HTTP server and for each request to collect 5 messages sent by another component on the Vert.x event
+bus. It computes the sum of these 5 elements and writes the result to the HTTP response. It's important to notice that
+the messages coming from the event bus are sent asynchronously. So, it would not be possible to write the previous code
+using _java.util.streams_.
+
+When used in a Vert.x application, Reactive Stream Operators can be used to processed data and compute an asynchronous result.
+
+=== Using Reactive Streams Operators in a Camel application
+
+https://camel.apache.org[Apache Camel] is a toolkit to define routing and mediation rules, mainly used to integrate
+systems, using enterprise integration patterns. Apache Camel provides more than 200+ components so that it can
+integrate virtually with anything.
+
+You can combine Reactive Stream Operators and Apache Camel thanks to the
+https://github.com/apache/camel/blob/master/components/camel-reactive-streams/src/main/docs/reactive-streams-component.adoc[Camel Reactive Stream Component].
+
+[source, java, indent=0]
+----
+include::../examples/quickstart-camel/src/main/java/io/smallrye/reactive/operators/quickstart/QuickStart.java[]
+----
+
+You can also use Camel to create Reactive Streams `Publisher` and transform the items using Reactive Streams Operators.
+

@@ -1,0 +1,324 @@
+== Operators
+
+As mentioned before, the Reactive Streams API is an asynchronous version of `java.util.stream` for Reactive Streams. This
+section list the operators that are provided.
+
+The Reactive Streams Operators introduce a set of types to allow creating _Reactive Streams_:
+
+[cols=3*,options="header"]
+|===
+| Reactive Streams | Reactive Stream Operators | Termination
+| `Publisher` | `PublisherBuilder` | `build()`
+| `Processor` | `ProcessorBuilder` | `build()`
+| `Subscriber` | `SubscriberBuilder` | `build()`
+|===
+
+Besides, the Reactive Streams Operators introduce `CompletionRunner` that triggers the emission of the items and
+provides a way to retrieve the asynchronously computed result.
+
+=== Creating streams
+
+The first part of the API allows to create `PublisherBuilder`. A _Reactive Streams_ `Publisher` can be created from the
+builder using the `.buildRS` method.
+
+==== Creating empty streams
+
+* **Operator**: `empty`
+* **Description**: Creates an empty stream.
+
+image::empty.png[]
+
+* **Example**:
+[source, java, indent=0]
+----
+include::../examples/snippets/src/main/java/io/smallrye/reactive/operators/snippets/Operators.java[tag=empty]
+----
+
+==== Creating streams from elements
+
+* **Operator**: `of`, `ofNullable`
+* **Description**: Creates a stream of 0, 1 or n elements.
+
+image::of-single.png[]
+
+image::of-many.png[]
+
+* **Example**:
+[source, java, indent=0]
+----
+include::../examples/snippets/src/main/java/io/smallrye/reactive/operators/snippets/Operators.java[tag=of]
+include::../examples/snippets/src/main/java/io/smallrye/reactive/operators/snippets/Operators.java[tag=ofNullable]
+----
+
+==== Creating failing streams
+
+* **Operator**: `failed`
+* **Description**: Creates a failed stream.
+
+image::failed.png[]
+
+* **Example**:
+[source, java, indent=0]
+----
+include::../examples/snippets/src/main/java/io/smallrye/reactive/operators/snippets/Operators.java[tag=failed]
+----
+
+==== Creating streams from CompletionStage
+
+* **Operator**: `fromCompletionStage`, `fromCompletionStageNullable`
+* **Description**: Creates a stream of 0 or 1 element emitted when the passed `CompletionStage` is completed.
+
+image::fromCompletionStage.png[]
+
+image::fromCompletionStageNullable.png[]
+
+* **Example**:
+[source, java, indent=0]
+----
+include::../examples/snippets/src/main/java/io/smallrye/reactive/operators/snippets/Operators.java[tag=fromCompletionStage]
+include::../examples/snippets/src/main/java/io/smallrye/reactive/operators/snippets/Operators.java[tag=fromCompletionStageNullable]
+----
+
+==== Creating streams from collections
+
+* **Operator**: `fromIterable`
+* **Description**: Creates a stream emitting the elements from the passed iterable and then send the completion signal.
+
+image::fromIterable.png[]
+
+* **Example**:
+[source, java, indent=0]
+----
+include::../examples/snippets/src/main/java/io/smallrye/reactive/operators/snippets/Operators.java[tag=fromIterable]
+----
+
+==== Wrapping a Reactive Stream Publisher
+
+* **Operator**: `fromPublisher`
+* **Description**: Creates a stream emitting the elements from the passed `Publisher`.
+
+* **Example**:
+[source, java, indent=0]
+----
+include::../examples/snippets/src/main/java/io/smallrye/reactive/operators/snippets/Operators.java[tag=fromPublisher]
+----
+
+==== Generating infinite streams
+
+* **Operator**: `generate`, `iterate`
+* **Description**: Creates a stream using the generator method. The number of generated elements depends on the _request_.
+
+image::generate.png[]
+image::iterate.png[]
+
+* **Example**:
+[source, java, indent=0]
+----
+include::../examples/snippets/src/main/java/io/smallrye/reactive/operators/snippets/Operators.java[tag=generate]
+include::../examples/snippets/src/main/java/io/smallrye/reactive/operators/snippets/Operators.java[tag=iterate]
+----
+
+=== Processing streams
+
+These operators transform the items transiting on the streams.
+
+==== Creating a processor
+
+A processor is a _Reactive Streams component_ that is both a `Publisher` and a `Subscriber`. It consumes and emits elements.
+
+* **Example**:
+[source, java, indent=0]
+----
+include::../examples/snippets/src/main/java/io/smallrye/reactive/operators/snippets/Operators.java[tag=builder]
+----
+
+==== Filtering elements
+
+* **Operator**: `filter`, `distinct`, `dropWhile`, `skip`, `limit`, `takeWhile`
+* **Description**: These operators filter items transiting on the stream:
+
+** filter - select the element using a predicate
+** distinct - remove similar element (**Attention**: do not use on large or unbounded streams)
+** dropWhile - drop elements until the predicate returns `true`
+** skip - ignore _x_ elements
+** takeWhile - forward elements until the predicate returns `true`
+** limit - pick _x_ elements
+
+image::filter.png[]
+image::distinct.png[]
+image::dropWhile.png[]
+image::skip.png[]
+image::takeWhile.png[]
+image::limit.png[]
+
+* **Example**:
+[source, java, indent=0]
+----
+include::../examples/snippets/src/main/java/io/smallrye/reactive/operators/snippets/Operators.java[tag=filtering]
+----
+
+==== Composing asynchronous actions
+
+* **Operator**: `flatMap`, `flatMapCompletionStage`, `flatMapIterable`, `flatMapRsPublisher`
+* **Description**: Produces a stream for each element of the stream. The return stream is _flatten_ (serialized) in the
+returned stream
+
+** flatMap - Returns a `PublisherBuilder` and serialize the elements in the returned stream.
+** flatMapCompletionStage - Produces a `CompletionStage`. When completed, the result is passed to the returned stream.
+** flatMapIterable - Produces an `Iterable` and flatten the element into the returned stream. This `flatMap` method is
+not asynchronous.
+** flatMapRSPublisher - Like `flatMap` but return a _Reactive Streams_ `Publisher`
+
+image::flatMap.png[]
+image::flatMapCompletionStage.png[]
+image::flatMapIterable.png[]
+image::flatMapRSPublisher.png[]
+
+* **Example**:
+[source, java, indent=0]
+----
+include::../examples/snippets/src/main/java/io/smallrye/reactive/operators/snippets/Operators.java[tag=composition]
+----
+
+[NOTE]
+===
+The produced value can be emitted asynchronously, except for `flatMapIterable`.
+
+
+==== Transforming items
+
+* **Operator**: `map`
+* **Description**: Produces a value synchronously
+
+image::map.png[]
+
+* **Example**:
+[source, java, indent=0]
+----
+include::../examples/snippets/src/main/java/io/smallrye/reactive/operators/snippets/Operators.java[tag=map]
+----
+
+==== Combining a Processor
+
+* **Operator**: `via`
+* **Description**: Forward the items to a `Processor` or `ProcessorBuilder`
+
+* **Example**:
+[source, java, indent=0]
+----
+include::../examples/snippets/src/main/java/io/smallrye/reactive/operators/snippets/Operators.java[tag=via]
+----
+
+=== Action operators
+
+These operators give you the ability to react to the different events happening in the streams.
+
+* **Operator**: `peek`, `onComplete`, `onTerminate`, `onError`
+* **Description**: These operators let you react to various events such as when an element is received, an error is
+propagated or when the stream completes.
+
+** peek - called for each element
+** onComplete - called when the stream completes
+** onError - called when an error is propagated in the stream
+** onTerminate - called either when an error is propagated or when the stream completes
+
+image::peek.png[]
+image::onComplete.png[]
+image::onError.png[]
+image::onTerminate.png[]
+
+=== Error management operators
+
+These operators allow recovering after a failure. Because you handle asynchronous streams of data, you can't use
+`try/catch`, so these operators provide a similar feature.
+
+* **Operator**: `onErroResume`, `onErrorResumeWith`, `onErrorResumeWithRsPublisher`
+* **Description**: These operators let you react to various events such as when a element is received, an error is
+propagated or when the stream completes.
+
+** peek - called for each element
+** onComplete - called when the stream completes
+** onError - called when an error is propagated in the stream
+** onTerminate - called either when an error is propagated or when the stream completes
+
+image::peek.png[]
+image::onComplete.png[]
+image::onError.png[]
+image::onTerminate.png[]
+
+==== Terminal operator and computing asynchronous result
+
+These operators act as _subscribers_ and produce a result. As the result is computed asynchronously, you retrieve a
+`CompletionStage` object.
+
+==== Cancelling a stream
+
+* **Operator**: `cancel`
+* **Description**: Cancel the subscription to a stream. No more items will be received.
+
+==== Ignoring elements
+
+* **Operator**: `ignore`
+* **Description**: ignore the elements transiting on the streams. The elements are still emitted but ignored.
+
+image::ignore.png[]
+
+* **Example**:
+[source, java, indent=0]
+----
+include::../examples/snippets/src/main/java/io/smallrye/reactive/operators/snippets/Operators.java[tag=ignore]
+----
+
+==== Collecting results
+
+* **Operator**: `collect`, `reduce`, `toList`
+* **Description**: These operators allows accumulating items or intermediary results to compute a final value.
+
+image::collect.png[]
+image::reduce.png[]
+image::toList.png[]
+
+* **Example**:
+[source, java, indent=0]
+----
+include::../examples/snippets/src/main/java/io/smallrye/reactive/operators/snippets/Operators.java[tag=collect]
+----
+
+==== Get the first item of a stream
+
+* **Operator**: `findFirst`
+* **Description**: Retrieves the first item of a stream if any
+
+image::findFirst.png[]
+
+* **Example**:
+[source, java, indent=0]
+----
+include::../examples/snippets/src/main/java/io/smallrye/reactive/operators/snippets/Operators.java[tag=findFirst]
+----
+
+==== Execute a method for each element
+
+
+* **Operator**: `forEach`
+* **Description**: Execute a method for each element of a stream. Unlike `peek`, this is a terminal operation.
+
+image::forEach.png[]
+
+* **Example**:
+[source, java, indent=0]
+----
+include::../examples/snippets/src/main/java/io/smallrye/reactive/operators/snippets/Operators.java[tag=forEach]
+----
+
+==== Pass to a Reactive Streams Subscriber
+
+* **Operator**: `to`
+* **Description**: Forward the elements of a stream to a given `Subscriber` or `SubscriberBuilder`.
+
+* **Example**:
+[source, java, indent=0]
+----
+include::../examples/snippets/src/main/java/io/smallrye/reactive/operators/snippets/Operators.java[tag=to]
+----
+

@@ -1,0 +1,25 @@
+
+SmallRye Reactive Stream Operators is an implementation of the Eclipse MicroProfile Reactive Stream Operators
+specification.
+
+The link:microprofile-reactive-streams-operators-spec.html[MicroProfile Reactive Stream Operators specification]
+ define a set of operators for Reactive Streams. You can:
+
+* Create Reactive Streams
+* Process the data transiting in the streams
+* Accumulate results
+
+The idea behind the specification is to provide the equivalent of `java.util.stream` however, for Reactive Stream, so,
+inherently asynchronous, supporting back-pressure and with error and completion signals propagation. The following code
+ snippet shows how close the API is:
+
+[source, java, indent=0]
+----
+include::../examples/snippets/src/main/java/io/smallrye/reactive/operators/snippets/Comparison.java[tag=snippet]
+----
+
+The SmallRye implementation is based on https://github.com/ReactiveX/RxJava[RX Java 2].
+
+* The Javadoc of the specification is available link:spec-api/index.html[here].
+* The Javadoc of SmallRye Reactive Streams Operators is available link:apidocs/index.html[here].
+

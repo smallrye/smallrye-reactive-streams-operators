@@ -9,7 +9,7 @@ import org.reactivestreams.Processor;
 import java.util.Objects;
 
 /**
- * Implementation of the {@link Stage.ProcessorStage} stage ({@code via} operator).
+ * Implementation of the {@link Stage.ProcessorStage} stage ({@code via} operators).
  *
  * @author <a href="http://escoffier.me">Clement Escoffier</a>
  */

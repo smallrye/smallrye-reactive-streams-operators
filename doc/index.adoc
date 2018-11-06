@@ -1,0 +1,28 @@
+= SmallRye Reactive Streams Operators
+Clement Escoffier;
+:revnumber: {version}
+:revdate: {localdate}
+:toc: macro
+:toclevels: 4
+:toc-title: SmallRye Reactive Streams Operators
+:doctype: book
+:icons: font
+:docinfo1:
+
+:weld-version: {weld-version}
+:smallrye-streams-version: {smallrye-streams-version}
+
+
+ifndef::ebook-format[:leveloffset: 1]
+
+ifdef::basebackend-html[toc::[]]
+
+:numbered:
+:sectnums:
+:sectnumlevels: 4
+
+
+include::./intro.adoc[]
+include::./getting-started.adoc[]
+include::./operators.adoc[]
+include::./execution-model.adoc[]

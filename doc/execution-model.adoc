@@ -1,0 +1,21 @@
+== Execution Model
+
+SmallRye Reactive Stream Operators provides a way to control on which thread are the different callbacks invoked. By
+default it uses the caller thread.
+
+If you are building a Vert.x application, add the following dependency to your project so enforce the Vert.x execution
+model:
+
+[source,xml,subs=attributes+]
+----
+<dependency>
+  <groupId>io.smallrye</groupId>
+    <artifactId>smallrye-reactive-streams-vertx-execution-model</artifactId>
+  <version>{version}</version>
+</dependency>
+----
+
+With this dependency, if you are calling `ReactiveStreams.x` from a Vert.x thread, the same thread is used to call the
+different callbacks and pass the result.
+
+

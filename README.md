@@ -1,39 +1,7 @@
 # Implementation of the MicroProfile Reactive Streams Operator specification
 
 
-## How to use
-
-Add the artifact into your classpath. For Maven, use:
-
-```xml
-<dependency>
-  <groupId>io.smallrye.reactive</groupId>
-  <artifactId>smallrye-reactive-streams-operators</artifactId>
-  <version>${VERSION}</version>
-</dependency>
-
-<!-- or CDI version -->
-<dependency>
-  <groupId>io.smallrye.reactive</groupId>
-  <artifactId>smallrye-reactive-streams-operators-cdi</artifactId>
-  <version>${VERSION}</version>
-</dependency>
-
-```
-
-Then, in your code, just use it:
-
-```java
-CompletionStage<Integer> stage = ReactiveStreams.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
-      .filter(i -> i % 2 == 0)
-      .collect(Collectors.summingInt(i -> i)).run();
-```
-
-## Threading model
-
-This implementation is based on RX Java 2. By adding the Vert.x Execution Model to your classpath, it enforces the 
-Vert.x threading model automatically. So operations triggered from a Vert.x context (event loop or worker) are always 
-handled in the same context, even if stream emissions are done in another thread. 
+**Documentation:** https://www.smallrye.io/smallrye-reactive-streams-operators/
 
 ## How to build
 
