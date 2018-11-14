@@ -41,6 +41,13 @@
         </developer>
     </developers>
 
+    <scm>
+        <connection>scm:git:git@github.com:smallrye/smallrye-reactive-streams-operators.git</connection>
+        <developerConnection>scm:git:git@github.com:smallrye/smallrye-reactive-streams-operators.git</developerConnection>
+        <url>https://github.com/smallrye/smallrye-reactive-streams-operators</url>
+        <tag>HEAD</tag>
+    </scm>
+
     <modules>
         <module>implementation</module>
         <module>cdi</module>
