@@ -11,9 +11,9 @@
 
     <groupId>io.smallrye.reactive</groupId>
     <artifactId>smallrye-reactive-streams-operators-project</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>0.2.0-SNAPSHOT</version>
 
-    <name>MicroProfile Reactive Streams Operators Implementation</name>
+    <name>MicroProfile Reactive Streams Operators (spec version: ${microprofile-reactive-streams.version})</name>
     <description>An implementation of the MicroProfile Reactive Streams Operators specification</description>
 
     <packaging>pom</packaging>
@@ -33,7 +33,7 @@
     <properties>
         <vertx.version>3.5.4</vertx.version>
         <log4j2.version>2.11.1</log4j2.version>
-        <microprofile-reactive-streams.version>1.0-RC1</microprofile-reactive-streams.version>
+        <microprofile-reactive-streams.version>1.0-RC2</microprofile-reactive-streams.version>
         <rxjava.version>2.2.3</rxjava.version>
 
         <cdi.version>2.0</cdi.version>
@@ -124,11 +124,12 @@
             </snapshots>
         </repository>
         <repository>
-            <id>staging</id>
-            <url>https://oss.sonatype.org/content/repositories/orgeclipsemicroprofile-1119/</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <id>bintray-jroper-maven</id>
+            <name>bintray</name>
+            <url>https://dl.bintray.com/jroper/maven</url>
         </repository>
         <repository>
             <id>microprofile-snapshots</id>
