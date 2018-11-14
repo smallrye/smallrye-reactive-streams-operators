@@ -2,9 +2,10 @@ package io.smallrye.reactive.streams.spi;
 
 import io.reactivex.Flowable;
 
-@FunctionalInterface
-public interface ExecutionModel {
+import java.util.function.UnaryOperator;
 
-    Flowable transform(Flowable input);
+@FunctionalInterface
+public interface ExecutionModel extends UnaryOperator<Flowable> {
+    
 
 }

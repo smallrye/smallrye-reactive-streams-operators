@@ -6,10 +6,13 @@ import org.eclipse.microprofile.reactive.streams.ReactiveStreams;
 import org.eclipse.microprofile.reactive.streams.spi.Stage;
 import org.junit.After;
 import org.junit.Test;
+import org.reactivestreams.Publisher;
+import org.reactivestreams.Subscriber;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -63,7 +66,35 @@ public class FlatMapCompletionStageFactoryTest extends StageTestBase {
 
     @Test(expected = NullPointerException.class)
     public void createWithoutFunction() {
-        factory.create(null, new Stage.FlatMapCompletionStage(null));
+        factory.create(null, () -> null);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testInjectingANullCompletionStage() {
+        AtomicReference<Subscriber<? super String>> reference = new AtomicReference<>();
+        Publisher<String> publisher = reference::set;
+
+        ReactiveStreams.fromPublisher(publisher)
+                .flatMapCompletionStage(s -> (CompletionStage<String>) null)
+                .toList()
+                .run()
+                .toCompletableFuture();
+
+        reference.get().onNext("a");
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testInjectingANullItem() {
+        AtomicReference<Subscriber<? super String>> reference = new AtomicReference<>();
+        Publisher<String> publisher = reference::set;
+
+        ReactiveStreams.fromPublisher(publisher)
+                .flatMapCompletionStage(s -> (CompletionStage<String>) null)
+                .toList()
+                .run()
+                .toCompletableFuture();
+
+        reference.get().onNext(null);
     }
 
 }

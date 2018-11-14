@@ -1,6 +1,8 @@
 package io.smallrye.reactive.streams.stages;
 
 import io.smallrye.reactive.streams.Engine;
+import io.smallrye.reactive.streams.operators.ProcessingStage;
+import io.smallrye.reactive.streams.operators.ProcessingStageFactory;
 import io.smallrye.reactive.streams.utils.Casts;
 import org.eclipse.microprofile.reactive.streams.spi.Stage;
 
@@ -15,8 +17,8 @@ import java.util.function.Function;
 public class MapStageFactory implements ProcessingStageFactory<Stage.Map> {
 
     @Override
-    public <IN, OUT> ProcessingStage<IN, OUT> create(Engine engine, Stage.Map stage) {
-        Function<IN, OUT> mapper = Casts.cast(stage.getMapper());
+    public <I, O> ProcessingStage<I, O> create(Engine engine, Stage.Map stage) {
+        Function<I, O> mapper = Casts.cast(stage.getMapper());
         Objects.requireNonNull(mapper);
         return source -> source.map(mapper::apply);
     }

@@ -2,6 +2,8 @@ package io.smallrye.reactive.streams.stages;
 
 import io.reactivex.Flowable;
 import io.smallrye.reactive.streams.Engine;
+import io.smallrye.reactive.streams.operators.PublisherStage;
+import io.smallrye.reactive.streams.operators.PublisherStageFactory;
 import io.smallrye.reactive.streams.utils.Casts;
 import org.eclipse.microprofile.reactive.streams.spi.Stage;
 
@@ -14,10 +16,10 @@ public class FromCompletionStageNullableFactory implements PublisherStageFactory
 
 
     @Override
-    public <OUT> PublisherStage<OUT> create(Engine engine, Stage.FromCompletionStageNullable stage) {
+    public <O> PublisherStage<O> create(Engine engine, Stage.FromCompletionStageNullable stage) {
         Objects.requireNonNull(stage);
         return () -> {
-            CompletionStage<OUT> cs = Casts.cast(stage.getCompletionStage());
+            CompletionStage<O> cs = Casts.cast(Objects.requireNonNull(stage.getCompletionStage()));
             return Flowable.fromPublisher(fromCompletionStage(cs, true));
         };
     }

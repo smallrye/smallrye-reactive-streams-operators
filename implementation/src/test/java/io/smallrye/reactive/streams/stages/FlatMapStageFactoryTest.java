@@ -4,7 +4,6 @@ import io.reactivex.Flowable;
 import io.reactivex.schedulers.Schedulers;
 import org.eclipse.microprofile.reactive.streams.PublisherBuilder;
 import org.eclipse.microprofile.reactive.streams.ReactiveStreams;
-import org.eclipse.microprofile.reactive.streams.spi.Stage;
 import org.junit.After;
 import org.junit.Test;
 
@@ -63,7 +62,7 @@ public class FlatMapStageFactoryTest extends StageTestBase {
 
     @Test(expected = NullPointerException.class)
     public void createWithoutFunction() {
-        factory.create(null, new Stage.FlatMap(null));
+        factory.create(null, () -> null);
     }
 
 }

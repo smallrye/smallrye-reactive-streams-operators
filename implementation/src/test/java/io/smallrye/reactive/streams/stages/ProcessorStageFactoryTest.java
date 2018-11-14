@@ -4,7 +4,6 @@ import io.reactivex.Flowable;
 import io.reactivex.schedulers.Schedulers;
 import org.eclipse.microprofile.reactive.streams.ProcessorBuilder;
 import org.eclipse.microprofile.reactive.streams.ReactiveStreams;
-import org.eclipse.microprofile.reactive.streams.spi.Stage;
 import org.junit.Test;
 import org.reactivestreams.Processor;
 
@@ -76,7 +75,7 @@ public class ProcessorStageFactoryTest extends StageTestBase {
 
     @Test(expected = NullPointerException.class)
     public void createWithoutFunction() {
-        factory.create(null, new Stage.ProcessorStage(null));
+        factory.create(null, () -> null);
     }
 
 }

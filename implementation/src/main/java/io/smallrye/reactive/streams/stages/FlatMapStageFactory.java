@@ -2,6 +2,8 @@ package io.smallrye.reactive.streams.stages;
 
 import io.reactivex.Flowable;
 import io.smallrye.reactive.streams.Engine;
+import io.smallrye.reactive.streams.operators.ProcessingStage;
+import io.smallrye.reactive.streams.operators.ProcessingStageFactory;
 import io.smallrye.reactive.streams.utils.Casts;
 import io.smallrye.reactive.streams.utils.DelegatingSubscriber;
 import org.eclipse.microprofile.reactive.streams.spi.Graph;
@@ -19,31 +21,31 @@ import java.util.function.Function;
 public class FlatMapStageFactory implements ProcessingStageFactory<Stage.FlatMap> {
 
     @Override
-    public <IN, OUT> ProcessingStage<IN, OUT> create(Engine engine, Stage.FlatMap stage) {
-        Function<IN, Graph> mapper = Casts.cast(stage.getMapper());
+    public <I, O> ProcessingStage<I, O> create(Engine engine, Stage.FlatMap stage) {
+        Function<I, Graph> mapper = Casts.cast(stage.getMapper());
         return new FlatMapStage<>(engine, mapper);
     }
 
-    private static class FlatMapStage<IN, OUT> implements ProcessingStage<IN, OUT> {
+    private static class FlatMapStage<I, O> implements ProcessingStage<I, O> {
         private final Engine engine;
-        private final Function<IN, Graph> mapper;
+        private final Function<I, Graph> mapper;
 
-        private FlatMapStage(Engine engine, Function<IN, Graph> mapper) {
+        private FlatMapStage(Engine engine, Function<I, Graph> mapper) {
             this.mapper = Objects.requireNonNull(mapper);
             this.engine = engine;
         }
 
         @Override
-        public Flowable<OUT> process(Flowable<IN> source) {
+        public Flowable<O> apply(Flowable<I> source) {
             return source
-                    .concatMap(e -> {
-                        Graph graph = mapper.apply(e);
-                        Flowable<OUT> publisher = Flowable.fromPublisher(
+                    .concatMap((I item) -> {
+                        Graph graph = mapper.apply(item);
+                        Flowable<O> publisher = Flowable.fromPublisher(
                                 Objects.requireNonNull(engine.buildPublisher(Objects.requireNonNull(graph))));
 
-                        return delegate -> {
+                        return (Subscriber<? super O> delegate) -> {
                             // Required because RX FlatMap subscriber does not enforce the reactive stream spec.
-                            Subscriber<OUT> facade = new DelegatingSubscriber<>(delegate);
+                            Subscriber<O> facade = new DelegatingSubscriber<>(delegate);
                             publisher.subscribe(facade);
                         };
 

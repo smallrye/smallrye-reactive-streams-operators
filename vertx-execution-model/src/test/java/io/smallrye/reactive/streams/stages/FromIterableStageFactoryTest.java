@@ -1,7 +1,6 @@
 package io.smallrye.reactive.streams.stages;
 
 import org.eclipse.microprofile.reactive.streams.ReactiveStreams;
-import org.eclipse.microprofile.reactive.streams.spi.Stage;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -52,7 +51,7 @@ public class FromIterableStageFactoryTest extends StageTestBase {
 
     @Test(expected = NullPointerException.class)
     public void createWithoutFunction() {
-        factory.create(null, new Stage.Of(null));
+        factory.create(null, () -> null);
     }
 
 }

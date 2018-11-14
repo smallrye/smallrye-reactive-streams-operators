@@ -58,7 +58,7 @@ public class PeekStageFactoryTest extends StageTestBase {
 
     @Test(expected = NullPointerException.class)
     public void createWithoutFunction() {
-        factory.create(null, new Stage.Peek(null));
+        factory.create(null, () -> null);
     }
 
 }

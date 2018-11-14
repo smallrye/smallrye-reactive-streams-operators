@@ -2,6 +2,8 @@ package io.smallrye.reactive.streams.stages;
 
 import io.reactivex.Flowable;
 import io.smallrye.reactive.streams.Engine;
+import io.smallrye.reactive.streams.operators.ProcessingStage;
+import io.smallrye.reactive.streams.operators.ProcessingStageFactory;
 import org.eclipse.microprofile.reactive.streams.spi.Stage;
 
 import java.util.Objects;
@@ -16,10 +18,10 @@ public class PeekStageFactory implements ProcessingStageFactory<Stage.Peek> {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <IN, OUT> ProcessingStage<IN, OUT> create(Engine engine, Stage.Peek stage) {
-        Consumer<IN> consumer = (Consumer<IN>) Objects.requireNonNull(stage)
+    public <I, O> ProcessingStage<I, O> create(Engine engine, Stage.Peek stage) {
+        Consumer<I> consumer = (Consumer<I>) Objects.requireNonNull(stage)
                 .getConsumer();
         Objects.requireNonNull(consumer);
-        return source -> (Flowable<OUT>) source.doOnNext(consumer::accept);
+        return source -> (Flowable<O>) source.doOnNext(consumer::accept);
     }
 }

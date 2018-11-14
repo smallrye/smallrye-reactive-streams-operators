@@ -3,6 +3,8 @@ package io.smallrye.reactive.streams.stages;
 import io.reactivex.Flowable;
 import io.reactivex.plugins.RxJavaPlugins;
 import io.smallrye.reactive.streams.Engine;
+import io.smallrye.reactive.streams.operators.ProcessingStage;
+import io.smallrye.reactive.streams.operators.ProcessingStageFactory;
 import io.smallrye.reactive.streams.utils.recovery.OnErrorReturn;
 import org.eclipse.microprofile.reactive.streams.spi.Stage;
 
@@ -18,9 +20,9 @@ public class OnErrorResumeStageFactory implements ProcessingStageFactory<Stage.O
 
     @SuppressWarnings("unchecked")
     @Override
-    public <IN, OUT> ProcessingStage<IN, OUT> create(Engine engine, Stage.OnErrorResume stage) {
-        Function<Throwable, IN> function = (Function<Throwable, IN>) Objects.requireNonNull(stage).getFunction();
+    public <I, O> ProcessingStage<I, O> create(Engine engine, Stage.OnErrorResume stage) {
+        Function<Throwable, I> function = (Function<Throwable, I>) Objects.requireNonNull(stage).getFunction();
         Objects.requireNonNull(function);
-        return source -> (Flowable<OUT>) RxJavaPlugins.onAssembly(new OnErrorReturn<>(source, function));
+        return source -> (Flowable<O>) RxJavaPlugins.onAssembly(new OnErrorReturn<>(source, function));
     }
 }

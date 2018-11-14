@@ -2,6 +2,8 @@ package io.smallrye.reactive.streams.stages;
 
 import io.reactivex.Flowable;
 import io.smallrye.reactive.streams.Engine;
+import io.smallrye.reactive.streams.operators.PublisherStage;
+import io.smallrye.reactive.streams.operators.PublisherStageFactory;
 import io.smallrye.reactive.streams.utils.CancellablePublisher;
 import org.eclipse.microprofile.reactive.streams.spi.Graph;
 import org.eclipse.microprofile.reactive.streams.spi.Stage;
@@ -18,7 +20,7 @@ import java.util.Objects;
 public class ConcatStageFactory implements PublisherStageFactory<Stage.Concat> {
 
     @Override
-    public <OUT> PublisherStage<OUT> create(Engine engine, Stage.Concat stage) {
+    public <O> PublisherStage<O> create(Engine engine, Stage.Concat stage) {
         Objects.requireNonNull(engine);
         Objects.requireNonNull(stage);
         Graph g1 = stage.getFirst();
@@ -26,7 +28,7 @@ public class ConcatStageFactory implements PublisherStageFactory<Stage.Concat> {
         return new ConcatStage<>(engine, g1, g2);
     }
 
-    private class ConcatStage<OUT> implements PublisherStage<OUT> {
+    private class ConcatStage<O> implements PublisherStage<O> {
         private final Engine engine;
         private final Graph first;
         private final Graph second;
@@ -38,8 +40,8 @@ public class ConcatStageFactory implements PublisherStageFactory<Stage.Concat> {
         }
 
         @Override
-        public Flowable<OUT> create() {
-            CancellablePublisher<OUT> cancellable = new CancellablePublisher<>(engine.buildPublisher(second));
+        public Flowable<O> get() {
+            CancellablePublisher<O> cancellable = new CancellablePublisher<>(engine.buildPublisher(second));
             return Flowable.concat(engine.buildPublisher(first), cancellable)
                     .doOnCancel(cancellable::cancelIfNotSubscribed)
                     .doOnTerminate(cancellable::cancelIfNotSubscribed);

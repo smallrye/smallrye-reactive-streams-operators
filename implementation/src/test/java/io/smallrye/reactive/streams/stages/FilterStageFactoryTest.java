@@ -39,7 +39,7 @@ public class FilterStageFactoryTest extends StageTestBase {
 
     @Test(expected = NullPointerException.class)
     public void createWithoutPredicate() {
-        factory.create(null, new Stage.Filter(null));
+        factory.create(null, () -> null);
     }
 
 

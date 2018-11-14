@@ -2,6 +2,8 @@ package io.smallrye.reactive.streams.stages;
 
 import io.reactivex.Flowable;
 import io.smallrye.reactive.streams.Engine;
+import io.smallrye.reactive.streams.operators.ProcessingStage;
+import io.smallrye.reactive.streams.operators.ProcessingStageFactory;
 import org.eclipse.microprofile.reactive.streams.spi.Stage;
 
 import java.util.Objects;
@@ -16,8 +18,8 @@ public class TakeWhileStageFactory implements ProcessingStageFactory<Stage.TakeW
 
     @SuppressWarnings("unchecked")
     @Override
-    public <IN, OUT> ProcessingStage<IN, OUT> create(Engine engine, Stage.TakeWhile stage) {
-        Predicate<IN> predicate = (Predicate<IN>) Objects.requireNonNull(stage.getPredicate());
-        return source -> (Flowable<OUT>) source.takeWhile(predicate::test);
+    public <I, O> ProcessingStage<I, O> create(Engine engine, Stage.TakeWhile stage) {
+        Predicate<I> predicate = (Predicate<I>) Objects.requireNonNull(stage.getPredicate());
+        return source -> (Flowable<O>) source.takeWhile(predicate::test);
     }
 }

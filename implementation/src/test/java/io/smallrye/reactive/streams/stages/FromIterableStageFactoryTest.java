@@ -40,7 +40,7 @@ public class FromIterableStageFactoryTest extends StageTestBase {
 
     @Test(expected = NullPointerException.class)
     public void createWithoutFunction() {
-        factory.create(null, new Stage.Of(null));
+        factory.create(null, () -> null);
     }
 
 }

@@ -21,7 +21,8 @@ public class ReactiveEngineProvider {
         if (iterator.hasNext()) {
             return iterator.next();
         }
-        throw new IllegalStateException("No implementation of the " + ReactiveStreamsEngine.class.getName() + " found in the Classpath");
+        throw new IllegalStateException("No implementation of the "
+                + ReactiveStreamsEngine.class.getName() + " found in the Classpath");
     }
 
 }

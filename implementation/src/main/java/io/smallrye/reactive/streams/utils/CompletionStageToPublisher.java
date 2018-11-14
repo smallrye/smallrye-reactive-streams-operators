@@ -15,7 +15,7 @@ public class CompletionStageToPublisher {
     public static <T> Flowable<T> fromCompletionStage(CompletionStage<T> future, boolean acceptNullValue) {
         AsyncProcessor<T> processor = AsyncProcessor.create();
 
-        Objects.requireNonNull(future).whenComplete((v, e) -> {
+        Objects.requireNonNull(future).whenComplete((T v, Throwable e) -> {
             if (e != null) {
                 processor.onError(e);
             } else if (v != null) {

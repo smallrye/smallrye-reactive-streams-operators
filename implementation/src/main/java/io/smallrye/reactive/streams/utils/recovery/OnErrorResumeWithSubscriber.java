@@ -63,8 +63,7 @@ public class OnErrorResumeWithSubscriber<T> implements FlowableSubscriber<T> {
 
         try {
             p = nextSupplier.apply(t);
-        } catch (Throwable e) {
-            Exceptions.throwIfFatal(e);
+        } catch (Exception e) {
             actual.onError(e);
             return;
         }

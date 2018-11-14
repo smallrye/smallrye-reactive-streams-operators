@@ -36,7 +36,7 @@ public class TakeWhileStageFactoryTest extends StageTestBase {
 
     @Test(expected = NullPointerException.class)
     public void createWithoutPredicate() {
-        factory.create(null, new Stage.TakeWhile(null));
+        factory.create(null, () -> null);
     }
 
 

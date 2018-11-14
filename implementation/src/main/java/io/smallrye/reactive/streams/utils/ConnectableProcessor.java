@@ -48,7 +48,8 @@ public class ConnectableProcessor<T> implements Processor<T, T> {
         // Set the state, if failed, report the error
         if (!state.compareAndSet(State.IDLE, State.HAS_SUBSCRIBER)) {
             // We were not in the idle state, the behavior depends on our current state
-            // For failure and completed, we just creates an empty subscription and immediately report the error or completion
+            // For failure and completed, we just creates an empty subscription and immediately
+            // report the error or completion
             if (state.get() == State.FAILED) {
                 manageSubscribeInFailedState(subscriber);
             } else if (state.get() == State.COMPLETE) {
@@ -56,7 +57,8 @@ public class ConnectableProcessor<T> implements Processor<T, T> {
             } else if (state.get() == State.HAS_SUBSCRIPTION) {
                 manageSubscribeInTheHasSubscriptionState(subscriber);
             } else {
-                throw new RuntimeException("Illegal transition - subscribe happened in the " + state.get().name() + " state");
+                throw new IllegalStateException("Illegal transition - subscribe happened in the "
+                        + state.get().name() + " state");
             }
 
         }

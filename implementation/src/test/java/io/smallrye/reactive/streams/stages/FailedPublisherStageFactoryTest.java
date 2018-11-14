@@ -1,7 +1,7 @@
 package io.smallrye.reactive.streams.stages;
 
 import io.reactivex.subscribers.TestSubscriber;
-import org.eclipse.microprofile.reactive.streams.spi.Stage;
+import io.smallrye.reactive.streams.operators.PublisherStage;
 import org.junit.Test;
 
 
@@ -17,14 +17,14 @@ public class FailedPublisherStageFactoryTest extends StageTestBase {
     @Test
     public void createWithError() {
         Exception failure = new Exception("Boom");
-        PublisherStage<Object> boom = factory.create(null, new Stage.Failed(failure));
-        TestSubscriber<Object> test = boom.create().test();
+        PublisherStage<Object> boom = factory.create(null, () -> failure);
+        TestSubscriber<Object> test = boom.get().test();
         test.assertError(failure);
     }
 
     @Test(expected = NullPointerException.class)
     public void createWithoutError() {
-        factory.create(null, new Stage.Failed(null));
+        factory.create(null, () -> null);
     }
 
     @Test(expected = NullPointerException.class)

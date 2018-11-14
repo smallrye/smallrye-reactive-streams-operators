@@ -2,6 +2,8 @@ package io.smallrye.reactive.streams.stages;
 
 import io.reactivex.Flowable;
 import io.smallrye.reactive.streams.Engine;
+import io.smallrye.reactive.streams.operators.ProcessingStage;
+import io.smallrye.reactive.streams.operators.ProcessingStageFactory;
 import io.smallrye.reactive.streams.utils.Casts;
 import org.eclipse.microprofile.reactive.streams.spi.Stage;
 
@@ -16,20 +18,20 @@ import java.util.function.Predicate;
 public class DropWhileStageFactory implements ProcessingStageFactory<Stage.DropWhile> {
 
     @Override
-    public <IN, OUT> ProcessingStage<IN, OUT> create(Engine engine, Stage.DropWhile stage) {
-        Predicate<IN> predicate = Casts.cast(stage.getPredicate());
+    public <I, O> ProcessingStage<I, O> create(Engine engine, Stage.DropWhile stage) {
+        Predicate<I> predicate = Casts.cast(stage.getPredicate());
         return Casts.cast(new TakeWhile<>(predicate));
     }
 
-    private static class TakeWhile<IN> implements ProcessingStage<IN, IN> {
-        private final Predicate<IN> predicate;
+    private static class TakeWhile<I> implements ProcessingStage<I, I> {
+        private final Predicate<I> predicate;
 
-        TakeWhile(Predicate<IN> predicate) {
+        TakeWhile(Predicate<I> predicate) {
             this.predicate = Objects.requireNonNull(predicate);
         }
 
         @Override
-        public Flowable<IN> process(Flowable<IN> source) {
+        public Flowable<I> apply(Flowable<I> source) {
             return source.skipWhile(predicate::test);
         }
     }

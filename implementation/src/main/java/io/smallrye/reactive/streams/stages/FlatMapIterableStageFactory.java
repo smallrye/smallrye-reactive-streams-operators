@@ -2,6 +2,8 @@ package io.smallrye.reactive.streams.stages;
 
 import io.reactivex.Flowable;
 import io.smallrye.reactive.streams.Engine;
+import io.smallrye.reactive.streams.operators.ProcessingStage;
+import io.smallrye.reactive.streams.operators.ProcessingStageFactory;
 import io.smallrye.reactive.streams.utils.Casts;
 import org.eclipse.microprofile.reactive.streams.spi.Stage;
 
@@ -14,20 +16,20 @@ import java.util.function.Function;
 public class FlatMapIterableStageFactory implements ProcessingStageFactory<Stage.FlatMapIterable> {
 
     @Override
-    public <IN, OUT> ProcessingStage<IN, OUT> create(Engine engine, Stage.FlatMapIterable stage) {
-        Function<IN, Iterable<OUT>> mapper = Casts.cast(stage.getMapper());
+    public <I, O> ProcessingStage<I, O> create(Engine engine, Stage.FlatMapIterable stage) {
+        Function<I, Iterable<O>> mapper = Casts.cast(stage.getMapper());
         return new FlatMapIterable<>(mapper);
     }
 
-    private static class FlatMapIterable<IN, OUT> implements ProcessingStage<IN, OUT> {
-        private final Function<IN, Iterable<OUT>> mapper;
+    private static class FlatMapIterable<I, O> implements ProcessingStage<I, O> {
+        private final Function<I, Iterable<O>> mapper;
 
-        private FlatMapIterable(Function<IN, Iterable<OUT>> mapper) {
+        private FlatMapIterable(Function<I, Iterable<O>> mapper) {
             this.mapper = Objects.requireNonNull(mapper);
         }
 
         @Override
-        public Flowable<OUT> process(Flowable<IN> source) {
+        public Flowable<O> apply(Flowable<I> source) {
             return source.concatMapIterable(mapper::apply);
         }
     }
