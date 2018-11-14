@@ -1,5 +1,6 @@
 io.smallrye.reactive.streams
 io.smallrye.reactive.streams.cdi
+io.smallrye.reactive.streams.operators
 io.smallrye.reactive.streams.spi
 io.smallrye.reactive.streams.stages
 io.smallrye.reactive.streams.utils
