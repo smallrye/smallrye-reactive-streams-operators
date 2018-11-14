@@ -36,7 +36,7 @@
         <microprofile-reactive-streams.version>1.0-RC1</microprofile-reactive-streams.version>
         <rxjava.version>2.2.3</rxjava.version>
 
-        <cdi.version>2.0.SP1</cdi.version>
+        <cdi.version>2.0</cdi.version>
         <weld-core.version>3.0.5.Final</weld-core.version>
 
         <asciidoctor-maven-plugin.version>1.5.7.1</asciidoctor-maven-plugin.version>
