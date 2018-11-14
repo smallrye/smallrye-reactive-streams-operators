@@ -190,6 +190,7 @@
                             <attributes>
                                 <toc>left</toc>
                                 <version>${project.version}</version>
+                                <spec-version>${microprofile-reactive-streams.version}</spec-version>
                             </attributes>
                             <sourceDirectory>doc</sourceDirectory>
                             <imagesDir>assets/images</imagesDir>

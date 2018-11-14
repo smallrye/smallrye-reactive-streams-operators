@@ -1,6 +1,6 @@
 
 SmallRye Reactive Stream Operators is an implementation of the Eclipse MicroProfile Reactive Stream Operators
-specification.
+specification (version **{spec-version}**).
 
 The link:microprofile-reactive-streams-operators-spec.html[MicroProfile Reactive Stream Operators specification]
  define a set of operators for Reactive Streams. You can:
