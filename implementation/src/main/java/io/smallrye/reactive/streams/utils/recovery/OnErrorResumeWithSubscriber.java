@@ -24,7 +24,7 @@ public class OnErrorResumeWithSubscriber<T> implements FlowableSubscriber<T> {
                                 Function<? super Throwable, ? extends Publisher<? extends T>> nextSupplier) {
         this.actual = actual;
         this.nextSupplier = nextSupplier;
-        this.arbiter = new SubscriptionArbiter();
+        this.arbiter = new SubscriptionArbiter(false);
     }
 
     @Override
