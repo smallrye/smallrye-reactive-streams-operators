@@ -60,7 +60,7 @@
     </modules>
 
     <properties>
-        <vertx.version>3.5.4</vertx.version>
+        <vertx.version>3.6.0</vertx.version>
         <log4j2.version>2.11.1</log4j2.version>
         <microprofile-reactive-streams.version>1.0-RC2</microprofile-reactive-streams.version>
         <rxjava.version>2.2.4</rxjava.version>
