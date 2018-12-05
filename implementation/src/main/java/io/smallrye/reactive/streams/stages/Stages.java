@@ -38,6 +38,7 @@ public class Stages {
         ALL.add(new ProcessorOperator<>(Stage.DropWhile.class, new DropWhileStageFactory()));
         ALL.add(new ProcessorOperator<>(Stage.Limit.class, new LimitStageFactory()));
         ALL.add(new ProcessorOperator<>(Stage.Skip.class, new SkipStageFactory()));
+        ALL.add(new ProcessorOperator<>(Stage.Coupled.class, new CoupledStageFactory()));
 
         ALL.add(new PublisherOperator<>(Stage.Concat.class, new ConcatStageFactory()));
         ALL.add(new PublisherOperator<>(Stage.Failed.class, new FailedPublisherStageFactory()));
