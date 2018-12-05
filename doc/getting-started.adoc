@@ -3,15 +3,15 @@
 === Quickstart
 
 The easiest to start using SmallRye Reactive Stream Operators is to start it directly in a _main_ class. You only need
-to put `smallrye-reactive-messaging-provider` in your `CLASSPATH` to use it.
+to put `smallrye-reactive-streams-operators` in your `CLASSPATH` to use it.
 
 Creates a Maven project, and include the following dependency in your pom.xml:
 
 [source,xml,subs=attributes+]
 ----
 <dependency>
-  <groupId>io.smallrye</groupId>
-  <artifactId>smallrye-reactive-messaging-provider</artifactId>
+    <groupId>io.smallrye.reactive</groupId>
+    <artifactId>smallrye-reactive-streams-operators</artifactId>
   <version>{version}</version>
 </dependency>
 ----
