@@ -451,10 +451,9 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel2">
 <li><a href="#_getting_started">1. Getting Started</a>
 <ul class="sectlevel3">
-<li><a href="#_prerequisites">1.1. Prerequisites</a></li>
-<li><a href="#_quickstart">1.2. Quickstart</a></li>
-<li><a href="#_using_reactive_streams_operators_in_a_vert_x_application">1.3. Using Reactive Streams Operators in a Vert.x application</a></li>
-<li><a href="#_using_reactive_streams_operators_in_a_camel_application">1.4. Using Reactive Streams Operators in a Camel application</a></li>
+<li><a href="#_quickstart">1.1. Quickstart</a></li>
+<li><a href="#_using_reactive_streams_operators_in_a_vert_x_application">1.2. Using Reactive Streams Operators in a Vert.x application</a></li>
+<li><a href="#_using_reactive_streams_operators_in_a_camel_application">1.3. Using Reactive Streams Operators in a Camel application</a></li>
 </ul>
 </li>
 <li><a href="#_operators">2. Operators</a>
@@ -568,26 +567,7 @@ ReactiveStreams.of("hello", "world")
 <div class="sect2">
 <h3 id="_getting_started">1. Getting Started</h3>
 <div class="sect3">
-<h4 id="_prerequisites">1.1. Prerequisites</h4>
-<div class="paragraph">
-<p>Unfortunately, right now, there is no release of this project, so you need to build it by yourself. The build process
-requires Apache Maven and Java 8+.  You need to build the SmallRye Reactive Stream Operators implementation first:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">git clone https://github.com/eclipse/microprofile-reactive-streams.git
-cd microprofile-reactive-streams
-git checkout 1.0-RC1
-mvn clean install -DskipTests -Drat.skip=true
-
-git clone https://github.com/smallrye/smallrye-reactive-streams-operators.git
-cd smallrye-reactive-streams-operators
-mvn clean install</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_quickstart">1.2. Quickstart</h4>
+<h4 id="_quickstart">1.1. Quickstart</h4>
 <div class="paragraph">
 <p>The easiest to start using SmallRye Reactive Stream Operators is to start it directly in a <em>main</em> class. You only need
 to put <code>smallrye-reactive-messaging-provider</code> in your <code>CLASSPATH</code> to use it.</p>
@@ -655,7 +635,7 @@ applications.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_using_reactive_streams_operators_in_a_vert_x_application">1.3. Using Reactive Streams Operators in a Vert.x application</h4>
+<h4 id="_using_reactive_streams_operators_in_a_vert_x_application">1.2. Using Reactive Streams Operators in a Vert.x application</h4>
 <div class="paragraph">
 <p><a href="http://vertx.io">Eclipse Vert.x</a> is a toolkit to create reactive and distributed systems. In addition to the <em>bare</em> Vert.x
 API, you can also use Vert.x using RX Java 2. As a consequence, you can wrap Vert.x <em>streams</em> and use Reactive Stream
@@ -717,7 +697,7 @@ using <em>java.util.streams</em>.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_using_reactive_streams_operators_in_a_camel_application">1.4. Using Reactive Streams Operators in a Camel application</h4>
+<h4 id="_using_reactive_streams_operators_in_a_camel_application">1.3. Using Reactive Streams Operators in a Camel application</h4>
 <div class="paragraph">
 <p><a href="https://camel.apache.org">Apache Camel</a> is a toolkit to define routing and mediation rules, mainly used to integrate
 systems, using enterprise integration patterns. Apache Camel provides more than 200+ components so that it can
