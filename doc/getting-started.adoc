@@ -1,34 +1,18 @@
 == Getting Started
 
-=== Prerequisites
-
-Unfortunately, right now, there is no release of this project, so you need to build it by yourself. The build process
-requires Apache Maven and Java 8+.  You need to build the SmallRye Reactive Stream Operators implementation first:
-
-```bash
-git clone https://github.com/eclipse/microprofile-reactive-streams.git
-cd microprofile-reactive-streams
-git checkout 1.0-RC1
-mvn clean install -DskipTests -Drat.skip=true
-
-git clone https://github.com/smallrye/smallrye-reactive-streams-operators.git
-cd smallrye-reactive-streams-operators
-mvn clean install
-```
-
 === Quickstart
 
 The easiest to start using SmallRye Reactive Stream Operators is to start it directly in a _main_ class. You only need
-to put `smallrye-reactive-messaging-provider` in your `CLASSPATH` to use it.
+to put `smallrye-reactive-streams-operators` in your `CLASSPATH` to use it.
 
 Creates a Maven project, and include the following dependency in your pom.xml:
 
 [source,xml,subs=attributes+]
 ----
 <dependency>
-  <groupId>io.smallrye</groupId>
-  <artifactId>smallrye-reactive-messaging-provider</artifactId>
-  <version>{version}</version>
+    <groupId>io.smallrye.reactive</groupId>
+    <artifactId>smallrye-reactive-streams-operators</artifactId>
+    <version>{version}</version>
 </dependency>
 ----
 
