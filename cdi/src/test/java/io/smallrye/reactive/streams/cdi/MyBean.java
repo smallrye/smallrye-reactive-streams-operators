@@ -1,7 +1,7 @@
 package io.smallrye.reactive.streams.cdi;
 
-import org.eclipse.microprofile.reactive.streams.ReactiveStreams;
-import org.eclipse.microprofile.reactive.streams.spi.ReactiveStreamsEngine;
+import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
+import org.eclipse.microprofile.reactive.streams.operators.spi.ReactiveStreamsEngine;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;

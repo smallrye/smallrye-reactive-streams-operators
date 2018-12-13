@@ -1,6 +1,6 @@
 package io.smallrye.reactive.operators.snippets;
 
-import org.eclipse.microprofile.reactive.streams.ReactiveStreams;
+import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
 
 import java.util.stream.Stream;
 

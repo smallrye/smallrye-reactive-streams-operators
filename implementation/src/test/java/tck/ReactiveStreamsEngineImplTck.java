@@ -1,7 +1,7 @@
 package tck;
 
 import io.smallrye.reactive.streams.Engine;
-import org.eclipse.microprofile.reactive.streams.tck.ReactiveStreamsTck;
+import org.eclipse.microprofile.reactive.streams.operators.tck.ReactiveStreamsTck;
 import org.reactivestreams.tck.TestEnvironment;
 
 /**
@@ -10,7 +10,7 @@ import org.reactivestreams.tck.TestEnvironment;
 public class ReactiveStreamsEngineImplTck extends ReactiveStreamsTck<Engine> {
 
     public ReactiveStreamsEngineImplTck() {
-        super(new TestEnvironment(1000));
+        super(new TestEnvironment(500));
     }
 
     @Override

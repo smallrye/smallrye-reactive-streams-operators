@@ -5,7 +5,7 @@ import io.smallrye.reactive.streams.Engine;
 import io.smallrye.reactive.streams.operators.PublisherStage;
 import io.smallrye.reactive.streams.operators.PublisherStageFactory;
 import io.smallrye.reactive.streams.utils.Casts;
-import org.eclipse.microprofile.reactive.streams.spi.Stage;
+import org.eclipse.microprofile.reactive.streams.operators.spi.Stage;
 
 import java.util.Objects;
 import java.util.concurrent.CompletionStage;

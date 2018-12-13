@@ -62,7 +62,7 @@
     <properties>
         <vertx.version>3.6.0</vertx.version>
         <log4j2.version>2.11.1</log4j2.version>
-        <microprofile-reactive-streams.version>1.0-RC3</microprofile-reactive-streams.version>
+        <microprofile-reactive-streams.version>1.0-SNAPSHOT</microprofile-reactive-streams.version>
         <rxjava.version>2.2.4</rxjava.version>
         <cdi.version>2.0</cdi.version>
         <weld-core.version>3.0.5.Final</weld-core.version>
@@ -74,25 +74,19 @@
     <dependencies>
         <!-- The spec -->
         <dependency>
-            <groupId>org.eclipse.microprofile.reactive.streams</groupId>
-            <artifactId>microprofile-reactive-streams-operators</artifactId>
+            <groupId>org.eclipse.microprofile.reactive-streams-operators</groupId>
+            <artifactId>microprofile-reactive-streams-operators-api</artifactId>
             <version>${microprofile-reactive-streams.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.eclipse.microprofile.reactive.streams</groupId>
+            <groupId>org.eclipse.microprofile.reactive-streams-operators</groupId>
             <artifactId>microprofile-reactive-streams-operators-tck</artifactId>
             <scope>test</scope>
             <version>${microprofile-reactive-streams.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.eclipse.microprofile.reactive.streams</groupId>
+            <groupId>org.eclipse.microprofile.reactive-streams-operators</groupId>
             <artifactId>microprofile-reactive-streams-operators-core</artifactId>
-            <version>${microprofile-reactive-streams.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.microprofile.reactive.streams</groupId>
-            <artifactId>microprofile-reactive-streams-operators-tck-arquillian</artifactId>
-            <scope>test</scope>
             <version>${microprofile-reactive-streams.version}</version>
         </dependency>
 
@@ -213,7 +207,7 @@
                                 <configuration>
                                     <artifactItems>
                                         <artifactItem>
-                                            <groupId>org.eclipse.microprofile.reactive.streams</groupId>
+                                            <groupId>org.eclipse.microprofile.reactive-streams-operators</groupId>
                                             <artifactId> microprofile-reactive-streams-operators</artifactId>
                                             <version>${microprofile-reactive-streams.version}</version>
                                             <type>jar</type>

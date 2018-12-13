@@ -4,7 +4,7 @@ import io.reactivex.Flowable;
 import io.smallrye.reactive.streams.Engine;
 import io.smallrye.reactive.streams.operators.ProcessingStage;
 import io.smallrye.reactive.streams.operators.ProcessingStageFactory;
-import org.eclipse.microprofile.reactive.streams.spi.Stage;
+import org.eclipse.microprofile.reactive.streams.operators.spi.Stage;
 
 /**
  * Implementation of the {@link Stage.Limit} stage.

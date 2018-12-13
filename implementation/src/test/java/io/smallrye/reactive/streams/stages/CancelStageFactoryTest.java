@@ -3,8 +3,8 @@ package io.smallrye.reactive.streams.stages;
 import io.reactivex.Flowable;
 import io.reactivex.schedulers.Schedulers;
 import io.smallrye.reactive.streams.operators.TerminalStage;
-import org.eclipse.microprofile.reactive.streams.ReactiveStreams;
-import org.eclipse.microprofile.reactive.streams.spi.Stage;
+import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
+import org.eclipse.microprofile.reactive.streams.operators.spi.Stage;
 import org.junit.Test;
 import org.reactivestreams.Subscription;
 

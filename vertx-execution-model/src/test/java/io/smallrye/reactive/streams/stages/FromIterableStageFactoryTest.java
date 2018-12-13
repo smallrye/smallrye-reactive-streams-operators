@@ -1,6 +1,6 @@
 package io.smallrye.reactive.streams.stages;
 
-import org.eclipse.microprofile.reactive.streams.ReactiveStreams;
+import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
 import org.junit.Test;
 
 import java.util.Arrays;

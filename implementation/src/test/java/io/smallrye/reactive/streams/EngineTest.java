@@ -1,11 +1,11 @@
 package io.smallrye.reactive.streams;
 
 import io.reactivex.Flowable;
-import org.eclipse.microprofile.reactive.streams.CompletionSubscriber;
-import org.eclipse.microprofile.reactive.streams.ReactiveStreams;
-import org.eclipse.microprofile.reactive.streams.spi.Graph;
-import org.eclipse.microprofile.reactive.streams.spi.Stage;
-import org.eclipse.microprofile.reactive.streams.spi.UnsupportedStageException;
+import org.eclipse.microprofile.reactive.streams.operators.CompletionSubscriber;
+import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
+import org.eclipse.microprofile.reactive.streams.operators.spi.Graph;
+import org.eclipse.microprofile.reactive.streams.operators.spi.Stage;
+import org.eclipse.microprofile.reactive.streams.operators.spi.UnsupportedStageException;
 import org.junit.Test;
 import org.reactivestreams.Publisher;
 
