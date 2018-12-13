@@ -1,6 +1,6 @@
 package io.smallrye.reactive.streams;
 
-import org.eclipse.microprofile.reactive.streams.*;
+import org.eclipse.microprofile.reactive.streams.operators.*;
 import org.junit.After;
 import org.junit.Test;
 import org.reactivestreams.Processor;

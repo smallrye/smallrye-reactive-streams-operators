@@ -7,11 +7,11 @@ import io.smallrye.reactive.streams.stages.Stages;
 import io.smallrye.reactive.streams.utils.ConnectableProcessor;
 import io.smallrye.reactive.streams.utils.DefaultSubscriberWithCompletionStage;
 import io.smallrye.reactive.streams.utils.WrappedProcessor;
-import org.eclipse.microprofile.reactive.streams.spi.Graph;
-import org.eclipse.microprofile.reactive.streams.spi.ReactiveStreamsEngine;
-import org.eclipse.microprofile.reactive.streams.spi.Stage;
-import org.eclipse.microprofile.reactive.streams.spi.SubscriberWithCompletionStage;
-import org.eclipse.microprofile.reactive.streams.spi.UnsupportedStageException;
+import org.eclipse.microprofile.reactive.streams.operators.spi.Graph;
+import org.eclipse.microprofile.reactive.streams.operators.spi.ReactiveStreamsEngine;
+import org.eclipse.microprofile.reactive.streams.operators.spi.Stage;
+import org.eclipse.microprofile.reactive.streams.operators.spi.SubscriberWithCompletionStage;
+import org.eclipse.microprofile.reactive.streams.operators.spi.UnsupportedStageException;
 import org.reactivestreams.Processor;
 import org.reactivestreams.Publisher;
 

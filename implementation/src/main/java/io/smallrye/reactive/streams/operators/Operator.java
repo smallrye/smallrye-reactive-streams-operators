@@ -1,6 +1,6 @@
 package io.smallrye.reactive.streams.operators;
 
-import org.eclipse.microprofile.reactive.streams.spi.Stage;
+import org.eclipse.microprofile.reactive.streams.operators.spi.Stage;
 
 import java.util.Objects;
 import java.util.function.Predicate;

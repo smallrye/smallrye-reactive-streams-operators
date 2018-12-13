@@ -5,7 +5,7 @@ import io.smallrye.reactive.streams.Engine;
 import io.smallrye.reactive.streams.operators.ProcessingStage;
 import io.smallrye.reactive.streams.operators.ProcessingStageFactory;
 import io.smallrye.reactive.streams.utils.Casts;
-import org.eclipse.microprofile.reactive.streams.spi.Stage;
+import org.eclipse.microprofile.reactive.streams.operators.spi.Stage;
 import org.reactivestreams.Processor;
 
 import java.util.Objects;

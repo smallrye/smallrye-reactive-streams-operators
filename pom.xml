@@ -74,25 +74,19 @@
     <dependencies>
         <!-- The spec -->
         <dependency>
-            <groupId>org.eclipse.microprofile.reactive.streams</groupId>
-            <artifactId>microprofile-reactive-streams-operators</artifactId>
+            <groupId>org.eclipse.microprofile.reactive-streams-operators</groupId>
+            <artifactId>microprofile-reactive-streams-operators-api</artifactId>
             <version>${microprofile-reactive-streams.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.eclipse.microprofile.reactive.streams</groupId>
+            <groupId>org.eclipse.microprofile.reactive-streams-operators</groupId>
             <artifactId>microprofile-reactive-streams-operators-tck</artifactId>
             <scope>test</scope>
             <version>${microprofile-reactive-streams.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.eclipse.microprofile.reactive.streams</groupId>
+            <groupId>org.eclipse.microprofile.reactive-streams-operators</groupId>
             <artifactId>microprofile-reactive-streams-operators-core</artifactId>
-            <version>${microprofile-reactive-streams.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.microprofile.reactive.streams</groupId>
-            <artifactId>microprofile-reactive-streams-operators-tck-arquillian</artifactId>
-            <scope>test</scope>
             <version>${microprofile-reactive-streams.version}</version>
         </dependency>
 
@@ -213,7 +207,7 @@
                                 <configuration>
                                     <artifactItems>
                                         <artifactItem>
-                                            <groupId>org.eclipse.microprofile.reactive.streams</groupId>
+                                            <groupId>org.eclipse.microprofile.reactive-streams-operators</groupId>
                                             <artifactId> microprofile-reactive-streams-operators</artifactId>
                                             <version>${microprofile-reactive-streams.version}</version>
                                             <type>jar</type>

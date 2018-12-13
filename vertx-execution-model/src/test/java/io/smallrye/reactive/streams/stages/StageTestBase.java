@@ -1,8 +1,8 @@
 package io.smallrye.reactive.streams.stages;
 
 import io.vertx.reactivex.core.Vertx;
-import org.eclipse.microprofile.reactive.streams.PublisherBuilder;
-import org.eclipse.microprofile.reactive.streams.ReactiveStreams;
+import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
+import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
 import org.junit.After;
 import org.junit.Before;
 

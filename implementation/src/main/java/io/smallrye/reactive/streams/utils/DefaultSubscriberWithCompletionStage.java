@@ -1,7 +1,7 @@
 package io.smallrye.reactive.streams.utils;
 
-import org.eclipse.microprofile.reactive.streams.CompletionSubscriber;
-import org.eclipse.microprofile.reactive.streams.spi.SubscriberWithCompletionStage;
+import org.eclipse.microprofile.reactive.streams.operators.CompletionSubscriber;
+import org.eclipse.microprofile.reactive.streams.operators.spi.SubscriberWithCompletionStage;
 import org.reactivestreams.Processor;
 import org.reactivestreams.Subscriber;
 

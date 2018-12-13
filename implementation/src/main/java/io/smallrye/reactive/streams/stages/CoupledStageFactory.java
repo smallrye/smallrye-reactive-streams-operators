@@ -5,9 +5,9 @@ import io.smallrye.reactive.streams.Engine;
 import io.smallrye.reactive.streams.operators.ProcessingStage;
 import io.smallrye.reactive.streams.operators.ProcessingStageFactory;
 import io.smallrye.reactive.streams.utils.CouplingProcessor;
-import org.eclipse.microprofile.reactive.streams.spi.Graph;
-import org.eclipse.microprofile.reactive.streams.spi.Stage;
-import org.eclipse.microprofile.reactive.streams.spi.SubscriberWithCompletionStage;
+import org.eclipse.microprofile.reactive.streams.operators.spi.Graph;
+import org.eclipse.microprofile.reactive.streams.operators.spi.Stage;
+import org.eclipse.microprofile.reactive.streams.operators.spi.SubscriberWithCompletionStage;
 import org.reactivestreams.Publisher;
 
 import java.util.Objects;

@@ -1,6 +1,6 @@
 package io.smallrye.reactive.operators.quickstart;
 
-import org.eclipse.microprofile.reactive.streams.ReactiveStreams;
+import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
 
 public class QuickStart {
 

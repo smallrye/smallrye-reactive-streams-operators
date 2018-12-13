@@ -4,7 +4,7 @@ import io.reactivex.Flowable;
 import io.reactivex.schedulers.Schedulers;
 import io.smallrye.reactive.streams.Engine;
 import io.smallrye.reactive.streams.operators.TerminalStage;
-import org.eclipse.microprofile.reactive.streams.tck.spi.QuietRuntimeException;
+import org.eclipse.microprofile.reactive.streams.operators.tck.spi.QuietRuntimeException;
 import org.junit.Test;
 
 import java.util.ArrayList;

@@ -6,7 +6,7 @@ import io.smallrye.reactive.streams.Engine;
 import io.smallrye.reactive.streams.operators.TerminalStage;
 import io.smallrye.reactive.streams.operators.TerminalStageFactory;
 import io.smallrye.reactive.streams.utils.FlowableCollector;
-import org.eclipse.microprofile.reactive.streams.spi.Stage;
+import org.eclipse.microprofile.reactive.streams.operators.spi.Stage;
 
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;

@@ -2,8 +2,8 @@ package io.smallrye.reactive.streams.stages;
 
 import io.reactivex.Flowable;
 import io.reactivex.schedulers.Schedulers;
-import org.eclipse.microprofile.reactive.streams.ProcessorBuilder;
-import org.eclipse.microprofile.reactive.streams.ReactiveStreams;
+import org.eclipse.microprofile.reactive.streams.operators.ProcessorBuilder;
+import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
 import org.junit.Test;
 import org.reactivestreams.Processor;
 

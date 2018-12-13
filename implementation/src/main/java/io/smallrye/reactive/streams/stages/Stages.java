@@ -4,8 +4,8 @@ import io.smallrye.reactive.streams.operators.Operator;
 import io.smallrye.reactive.streams.operators.ProcessorOperator;
 import io.smallrye.reactive.streams.operators.PublisherOperator;
 import io.smallrye.reactive.streams.operators.TerminalOperator;
-import org.eclipse.microprofile.reactive.streams.spi.Stage;
-import org.eclipse.microprofile.reactive.streams.spi.UnsupportedStageException;
+import org.eclipse.microprofile.reactive.streams.operators.spi.Stage;
+import org.eclipse.microprofile.reactive.streams.operators.spi.UnsupportedStageException;
 
 import java.util.ArrayList;
 import java.util.List;
