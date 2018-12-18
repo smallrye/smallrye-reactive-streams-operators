@@ -57,6 +57,9 @@
         <module>examples/quickstart-vertx</module>
         <module>examples/quickstart-camel</module>
         <module>examples/snippets</module>
+
+        <module>converters/converter-api</module>
+        <module>converters/converter-rxjava2</module>
     </modules>
 
     <properties>
