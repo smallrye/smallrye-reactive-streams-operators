@@ -8,6 +8,7 @@ import org.reactivestreams.Publisher;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
 
 /**
@@ -71,7 +72,11 @@ public class SingleConverter implements ReactiveTypeConverter<Single> {
                         future.<X>whenComplete((X res, Throwable err) -> {
                             if (!emitter.isUnsubscribed()) {
                                 if (err != null) {
-                                    emitter.onError(err);
+                                    if (err instanceof CompletionException) {
+                                        emitter.onError(err.getCause());
+                                    } else {
+                                        emitter.onError(err);
+                                    }
                                 } else {
                                     emitter.onSuccess(res);
                                 }

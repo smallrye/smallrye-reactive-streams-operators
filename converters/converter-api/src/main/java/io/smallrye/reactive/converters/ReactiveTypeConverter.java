@@ -44,10 +44,34 @@ public interface ReactiveTypeConverter<T> {
     <X>Publisher<X> toRSPublisher(T instance);
 
     /**
+     * Transforms an instance of {@link CompletionStage} to an instance of {@code T}. The value emitted by {@code T}
+     * depends on the completion of the passed {@link CompletionStage}. Each converter instances can use specific rules,
+     * however the following set of rules are mandatory:
      *
-     * @param cs
-     * @param <X>
-     * @return
+     * <ul>
+     *     <li>The returned {@code T} must never be {@code null}.</li>
+     *     <li>If the passed {@link CompletionStage} never completes, no values are emitted by the returned
+     *     {@code T}.</li>
+     *     <li>If the passed {@link CompletionStage} redeems a {@code null} value, and if {@code T} support {@code null}
+     *     values, {@code null} is emitted by the returned instance of {@code T}.</li>
+     *     <li>If the passed {@link CompletionStage} redeems a {@code null} value, and if {@code T} does not support
+     *     {@code null} values,a failure is emitted by the returned instance of {@code T}.</li>
+     *     <li>If the passed {@link CompletionStage} redeems a {@code non-null} value, the value is emitted by the
+     *     returned instance of {@code T}.</li>
+     *     <li>If the passed {@link CompletionStage} is completed with a failure, the same failure is emitted by
+     *     the returned instance of {@code T}.</li>
+     *     <li>If the passed {@link CompletionStage} is cancelled before having completed, the
+     *     {@link java.util.concurrent.CancellationException} must be emitted by the returned instance.</li>
+     * </ul>
+     *
+     * Implementations must not expect the {@link CompletionStage} to be instances of
+     * {@link java.util.concurrent.CompletableFuture}.
+     *
+     * Implementations may decide to adapt the emitted result when receiving container object such as {@link Optional}.
+     *
+     * @param cs the instance of {@link CompletionStage}, must not be {@code null}
+     * @param <X> the type of result provided by the {@link CompletionStage}
+     * @return the instance of T, generally emitting instances of {@code X}.
      */
     <X> T fromCompletionStage(CompletionStage<X> cs);
 

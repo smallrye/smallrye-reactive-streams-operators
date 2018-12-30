@@ -10,6 +10,7 @@ import org.reactivestreams.Publisher;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
 
 /**
@@ -70,7 +71,7 @@ public class MaybeConverter implements ReactiveTypeConverter<Maybe> {
                                 return;
                             }
                             if (err != null) {
-                                emitter.onError(err);
+                                emitter.onError(err instanceof CompletionException ? err.getCause() : err);
                             } else {
                                 if (res == null) {
                                     emitter.onComplete();

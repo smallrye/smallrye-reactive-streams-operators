@@ -9,6 +9,7 @@ import rx.Observable;
 
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
 
 /**
@@ -83,7 +84,11 @@ public class ObservableConverter implements ReactiveTypeConverter<Observable> {
     private static <X> void toStreamEvents(CompletionStage<X> cs, Emitter<Object> emitter) {
         cs.whenComplete((X res, Throwable err) -> {
             if (err != null) {
-                emitter.onError(err);
+                if (err instanceof CompletionException) {
+                    emitter.onError(err.getCause());
+                } else {
+                    emitter.onError(err);
+                }
             } else {
                 emitter.onNext(res);
                 emitter.onCompleted();

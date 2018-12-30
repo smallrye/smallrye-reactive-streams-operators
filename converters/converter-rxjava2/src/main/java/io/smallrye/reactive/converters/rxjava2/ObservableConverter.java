@@ -8,6 +8,7 @@ import org.reactivestreams.Publisher;
 
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
 
 /**
@@ -81,7 +82,7 @@ public class ObservableConverter implements ReactiveTypeConverter<Observable> {
                 emitter.onComplete();
             } else {
                 if (err != null) {
-                    emitter.onError(err);
+                    emitter.onError(err instanceof CompletionException ? err.getCause(): err);
                 } else {
                     emitter.onComplete();
                 }

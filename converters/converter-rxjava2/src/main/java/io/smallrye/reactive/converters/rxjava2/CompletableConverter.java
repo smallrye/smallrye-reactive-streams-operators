@@ -8,6 +8,7 @@ import org.reactivestreams.Publisher;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
 
 /**
@@ -59,7 +60,11 @@ public class CompletableConverter implements ReactiveTypeConverter<Completable> 
                         future.<Void>whenComplete((Object res, Throwable err) -> {
                             if (!emitter.isDisposed()) {
                                 if (err != null) {
-                                    emitter.onError(err);
+                                    if (err instanceof CompletionException) {
+                                        emitter.onError(err.getCause());
+                                    } else {
+                                        emitter.onError(err);
+                                    }
                                 } else {
                                     emitter.onComplete();
                                 }

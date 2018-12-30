@@ -9,9 +9,10 @@ import io.smallrye.reactive.converters.Registry;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.concurrent.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -97,140 +98,6 @@ public class CompletableConverterTest {
                 .doOnComplete(() -> reference.set(true))
                 .blockingAwait();
         assertThat(reference).isTrue();
-    }
-
-    @Test
-    public void testFromCompletionStageWithImmediateCompletion() {
-        AtomicBoolean reference = new AtomicBoolean();
-        @SuppressWarnings("unchecked")
-        Completable completable = converter
-                .fromCompletionStage(CompletableFuture.runAsync(() -> {}));
-        completable
-                .doOnComplete(() -> reference.set(true))
-                .blockingAwait();
-        assertThat(reference).isTrue();
-    }
-
-    @Test
-    public void testFromCompletionStageWithDelayedValue() {
-        AtomicBoolean reference = new AtomicBoolean();
-        CompletableFuture<String> future = CompletableFuture.supplyAsync(() -> "hello");
-        @SuppressWarnings("unchecked")
-        Completable completable = converter
-                .fromCompletionStage(future);
-        completable
-                .doOnComplete(() -> reference.set(true))
-                .blockingAwait();
-        assertThat(reference).isTrue();
-    }
-
-    @Test
-    public void testFromCompletionStageWithDelayedCompletion() {
-        AtomicBoolean reference = new AtomicBoolean();
-        CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {});
-        @SuppressWarnings("unchecked")
-        Completable completable = converter
-                .fromCompletionStage(future);
-        completable
-                .doOnComplete(() -> reference.set(true))
-                .blockingAwait();
-        assertThat(reference).isTrue();
-    }
-
-    @Test
-    public void testFromCompletionStageWithImmediateFailure() {
-        AtomicReference<Throwable> reference = new AtomicReference<>();
-        CompletableFuture<String> future = new CompletableFuture<>();
-        @SuppressWarnings("unchecked")
-        Completable completable = converter
-                .fromCompletionStage(future);
-        future.completeExceptionally(new BoomException("BOOM"));
-        try {
-            completable
-                    .doOnError(reference::set)
-                    .blockingAwait();
-            fail("Exception expected");
-        } catch (BoomException e) {
-            assertThat(e).hasMessage("BOOM");
-        }
-        assertThat(reference.get()).isInstanceOf(BoomException.class).hasMessage("BOOM");
-    }
-
-    @Test
-    public void testFromCompletionStageWithDelayedFailure() {
-        AtomicReference<Throwable> reference = new AtomicReference<>();
-        CompletableFuture<String> future = CompletableFuture.supplyAsync(() -> {
-            throw new BoomException("BOOM");
-        });
-
-        @SuppressWarnings("unchecked")
-        Completable completable = converter
-                .fromCompletionStage(future);
-        try {
-            completable
-                    .doOnError(reference::set)
-                    .blockingAwait();
-            fail("Exception expected");
-        } catch (CompletionException e) {
-            assertThat(e.getCause())
-                    .isInstanceOf(BoomException.class)
-                    .hasMessage("BOOM");
-        }
-        assertThat(reference.get()).isInstanceOf(CompletionException.class).hasMessageContaining("BOOM");
-    }
-
-    @Test
-    public void testFromCompletionStageWithNullValue() {
-        CompletionStage<Void> future = CompletableFuture.completedFuture(null);
-        @SuppressWarnings("unchecked")
-        Completable completable = converter
-                .fromCompletionStage(future);
-        AtomicBoolean reference = new AtomicBoolean();
-        completable
-                .doOnComplete(() -> reference.set(true))
-                .blockingAwait();
-        assertThat(reference).isTrue();
-    }
-
-    @Test
-    public void testFromCompletionStageWithDelayedNullValue() {
-        CompletionStage<Void> future = CompletableFuture.supplyAsync(() -> null);
-        @SuppressWarnings("unchecked")
-        Completable completable = converter
-                .fromCompletionStage(future);
-        AtomicBoolean reference = new AtomicBoolean();
-        completable
-                .doOnComplete(() -> reference.set(true))
-                .blockingAwait();
-        assertThat(reference).isTrue();
-    }
-
-    @Test
-    public void testFromCompletionStageThatGetCancelled() {
-        CompletableFuture<String> future = new CompletableFuture<>();
-        @SuppressWarnings("unchecked")
-        Completable completable = converter
-                .fromCompletionStage(future);
-        future.cancel(false);
-        try {
-            completable.blockingAwait();
-            fail("Exception expected");
-        } catch (Exception e) {
-            assertThat(e)
-                    .isInstanceOf(CancellationException.class);
-        }
-    }
-
-    @Test
-    public void testFromCompletionStageWithoutRedeemingAValue() throws InterruptedException {
-        CompletionStage<String> never = new CompletableFuture<>();
-        @SuppressWarnings("unchecked") Completable completable = converter.fromCompletionStage(never);
-        CountDownLatch latch = new CountDownLatch(1);
-        new Thread(() -> {
-            completable.blockingAwait();
-            latch.countDown();
-        }).start();
-        assertThat(latch.await(10, TimeUnit.MILLISECONDS)).isFalse();
     }
 
 
