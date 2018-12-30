@@ -11,10 +11,9 @@ import org.junit.Test;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -27,146 +26,6 @@ public class ObservableConverterTest {
     public void lookup() {
         converter = Registry.lookup(Observable.class)
                 .orElseThrow(() -> new AssertionError("Observable converter should be found"));
-    }
-
-    @Test
-    public void testToPublisherWithImmediateValue() {
-        Observable<String> stream = Observable.just("hello");
-        Observable<String> flowable = Observable.fromPublisher(converter.toRSPublisher(stream));
-        String res = flowable.blockingFirst();
-        assertThat(res).isEqualTo("hello");
-    }
-
-    @Test
-    public void testToPublisherWithDelayedValue() {
-        Observable<String> stream = Observable.just("hello").delay(10, TimeUnit.MILLISECONDS);
-        Observable<String> flowable = Observable.fromPublisher(converter.toRSPublisher(stream));
-        String res = flowable.blockingFirst();
-        assertThat(res).isEqualTo("hello");
-    }
-
-    @Test
-    public void testToPublisherWithImmediateValues() {
-        Observable<String> stream = Observable.just("h", "e", "l", "l", "o");
-        Observable<String> flowable = Observable.fromPublisher(converter.toRSPublisher(stream));
-        List<String> res = flowable.toList().blockingGet();
-        assertThat(res).containsExactly("h", "e", "l", "l", "o");
-    }
-
-    @Test
-    public void testToPublisherWithDelayedValues() {
-        Observable<String> stream = Observable.just("h", "e", "l", "l", "o").delay(10, TimeUnit.MILLISECONDS);
-        Flowable<String> flowable = Flowable.fromPublisher(converter.toRSPublisher(stream));
-        List<String> res = flowable.toList().blockingGet();
-        assertThat(res).containsExactly("h", "e", "l", "l", "o");
-    }
-
-    @Test
-    public void testToPublisherWithImmediateFailure() {
-        Observable<String> stream = Observable.error(new BoomException("BOOM"));
-        Flowable<String> flowable = Flowable.fromPublisher(converter.toRSPublisher(stream));
-        try {
-            //noinspection ResultOfMethodCallIgnored
-            flowable.blockingFirst();
-            fail("Exception expected");
-        } catch (BoomException e) {
-            assertThat(e).hasMessage("BOOM");
-        }
-    }
-
-    @Test
-    public void testToPublisherWithDelayedFailure() {
-        Observable<String> stream = Observable.just("hello")
-                .delay(10, TimeUnit.MILLISECONDS)
-                .map(x -> {
-                    throw new BoomException("BOOM");
-                });
-        Observable<String> flowable = Observable.fromPublisher(converter.toRSPublisher(stream));
-        try {
-            //noinspection ResultOfMethodCallIgnored
-            flowable.blockingFirst();
-            fail("Exception expected");
-        } catch (BoomException e) {
-            assertThat(e).hasMessage("BOOM");
-        }
-    }
-
-    @Test
-    public void testToPublisherWithItemAndFailure() {
-        Observable<String> stream = Observable.just("a", "b", "c")
-                .map(s -> {
-                    if (s.equalsIgnoreCase("c")) {
-                        throw new BoomException("BOOM");
-                    }
-                    return s;
-                });
-        Observable<String> flowable = Observable.fromPublisher(converter.toRSPublisher(stream));
-        List<String> items = new CopyOnWriteArrayList<>();
-        try {
-            //noinspection ResultOfMethodCallIgnored
-            flowable
-                    .doOnNext(items::add)
-                    .toList()
-                    .blockingGet();
-            fail("Exception expected");
-        } catch (BoomException e) {
-            assertThat(e).hasMessage("BOOM");
-        }
-        assertThat(items).containsExactly("a", "b");
-    }
-
-    @Test
-    public void testToPublisherWithDelayedItemAndFailure() {
-        Observable<String> stream = Observable.just("a", "b", "c")
-                .delay(10, TimeUnit.MILLISECONDS)
-                .map(s -> {
-                    if (s.equalsIgnoreCase("c")) {
-                        throw new BoomException("BOOM");
-                    }
-                    return s;
-                });
-        Observable<String> flowable = Observable.fromPublisher(converter.toRSPublisher(stream));
-        List<String> items = new CopyOnWriteArrayList<>();
-        try {
-            //noinspection ResultOfMethodCallIgnored
-            flowable
-                    .doOnNext(items::add)
-                    .toList()
-                    .blockingGet();
-            fail("Exception expected");
-        } catch (BoomException e) {
-            assertThat(e).hasMessage("BOOM");
-        }
-        assertThat(items).containsExactly("a", "b");
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void testToPublisherWithNullValue() {
-        @SuppressWarnings("ConstantConditions") Observable<String> stream = Observable.just(null);
-        Flowable<String> flowable = Flowable.fromPublisher(converter.toRSPublisher(stream));
-        //noinspection ResultOfMethodCallIgnored
-        flowable.blockingFirst();
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void testToPublisherWithDelayedNullValue() {
-        Observable<String> stream = Observable.just("goo").delay(10, TimeUnit.MILLISECONDS).map(s -> null);
-        Flowable<String> flowable = Flowable.fromPublisher(converter.toRSPublisher(stream));
-        //noinspection ResultOfMethodCallIgnored
-        flowable.blockingFirst();
-    }
-
-    @Test
-    public void testToPublisherWithStreamNotEmitting() throws InterruptedException {
-        Observable<String> stream = Observable.never();
-        Flowable<String> flowable = Flowable.fromPublisher(converter.toRSPublisher(stream));
-        CountDownLatch latch = new CountDownLatch(1);
-        new Thread(() -> {
-            //noinspection ResultOfMethodCallIgnored
-            flowable.blockingFirst();
-            latch.countDown();
-        }).start();
-        assertThat(latch.await(10, TimeUnit.MILLISECONDS)).isFalse();
     }
 
     @SuppressWarnings("unchecked")
@@ -272,8 +131,6 @@ public class ObservableConverterTest {
         }).start();
         assertThat(latch.await(10, TimeUnit.MILLISECONDS)).isFalse();
     }
-
-    
 
 
 }

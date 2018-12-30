@@ -5,13 +5,13 @@ import io.reactivex.Flowable;
 import io.reactivex.schedulers.Schedulers;
 import io.smallrye.reactive.converters.ReactiveTypeConverter;
 import io.smallrye.reactive.converters.Registry;
-import io.smallrye.reactive.converters.tck.ToCompletionStageTCK;
+import io.smallrye.reactive.converters.tck.ToRSPublisherTCK;
 import org.junit.Before;
 
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-public class FlowableToCompletionStageTest extends ToCompletionStageTCK<Flowable> {
+public class FlowableToRSPublisherTest extends ToRSPublisherTCK<Flowable> {
 
 
     private static final int DELAY = 10;

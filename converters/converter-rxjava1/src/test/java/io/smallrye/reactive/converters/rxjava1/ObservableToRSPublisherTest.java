@@ -1,16 +1,18 @@
-package io.smallrye.reactive.converters.rxjava2;
+package io.smallrye.reactive.converters.rxjava1;
 
-import io.reactivex.Observable;
-import io.reactivex.schedulers.Schedulers;
 import io.smallrye.reactive.converters.ReactiveTypeConverter;
 import io.smallrye.reactive.converters.Registry;
 import io.smallrye.reactive.converters.tck.ToCompletionStageTCK;
+import io.smallrye.reactive.converters.tck.ToRSPublisherTCK;
 import org.junit.Before;
+import rx.Emitter;
+import rx.Observable;
+import rx.schedulers.Schedulers;
 
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-public class ObservableToCompletionStageTest extends ToCompletionStageTCK<Observable> {
+public class ObservableToRSPublisherTest extends ToRSPublisherTCK<Observable> {
 
 
     private static final int DELAY = 10;
@@ -30,7 +32,7 @@ public class ObservableToCompletionStageTest extends ToCompletionStageTCK<Observ
     @Override
     protected Optional<Observable> createInstanceEmittingASingleValueAsynchronously(String value) {
         return Optional.of(
-                Observable.just(value).delay(DELAY, TimeUnit.MILLISECONDS).observeOn(Schedulers.computation())
+            Observable.just(value).delay(DELAY, TimeUnit.MILLISECONDS).observeOn(Schedulers.computation())
         );
     }
 
@@ -51,22 +53,19 @@ public class ObservableToCompletionStageTest extends ToCompletionStageTCK<Observ
 
     @Override
     protected Optional<Observable> createInstanceEmittingANullValueImmediately() {
-        return Optional.of(Observable.just("X").map(s -> null));
+        return Optional.of(Observable.just(null));
     }
 
     @Override
     protected Optional<Observable> createInstanceEmittingANullValueAsynchronously() {
-        return Optional.of(
-                Observable.just("X")
-                        .delay(DELAY, TimeUnit.MILLISECONDS)
-                        .observeOn(Schedulers.computation())
-                        .map(s -> null)
-        );
+        return Optional.of(Observable.just(null)
+                .delay(DELAY, TimeUnit.MILLISECONDS)
+                .observeOn(Schedulers.computation()));
     }
 
     @Override
     protected Optional<Observable> createInstanceEmittingMultipleValues(String... values) {
-        return Optional.of(Observable.fromArray(values));
+        return Optional.of(Observable.from(values));
     }
 
     @Override
@@ -76,7 +75,7 @@ public class ObservableToCompletionStageTest extends ToCompletionStageTCK<Observ
             emitter.onNext(v1);
             emitter.onNext(v2);
             emitter.onError(e);
-        });
+        }, Emitter.BackpressureMode.ERROR);
         return Optional.of(stream);
     }
 
@@ -111,6 +110,6 @@ public class ObservableToCompletionStageTest extends ToCompletionStageTCK<Observ
 
     @Override
     protected boolean supportNullValues() {
-        return false;
+        return true;
     }
 }

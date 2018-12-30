@@ -8,8 +8,8 @@ import io.smallrye.reactive.converters.Registry;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -22,81 +22,6 @@ public class MaybeConverterTest {
     public void lookup() {
         converter = Registry.lookup(Maybe.class)
                 .orElseThrow(() -> new AssertionError("Maybe converter should be found"));
-    }
-
-    @Test
-    public void testToPublisherWithImmediateValue() {
-        Maybe<String> maybe = Maybe.just("hello");
-        Flowable<String> flowable = Flowable.fromPublisher(converter.toRSPublisher(maybe));
-        String res = flowable.blockingFirst();
-        assertThat(res).isEqualTo("hello");
-    }
-
-    @Test
-    public void testToPublisherWithDelayedValue() {
-        Maybe<String> maybe = Maybe.just("hello").delay(10, TimeUnit.MILLISECONDS);
-        Flowable<String> flowable = Flowable.fromPublisher(converter.toRSPublisher(maybe));
-        String res = flowable.blockingFirst();
-        assertThat(res).isEqualTo("hello");
-    }
-
-    @Test
-    public void testToPublisherWithImmediateFailure() {
-        Maybe<String> maybe = Maybe.error(new BoomException("BOOM"));
-        Flowable<String> flowable = Flowable.fromPublisher(converter.toRSPublisher(maybe));
-        try {
-            //noinspection ResultOfMethodCallIgnored
-            flowable.blockingFirst();
-            fail("Exception expected");
-        } catch (BoomException e) {
-            assertThat(e).hasMessage("BOOM");
-        }
-    }
-
-    @Test
-    public void testToPublisherWithDelayedFailure() {
-        Maybe<String> maybe = Maybe.just("hello")
-                .delay(10, TimeUnit.MILLISECONDS)
-                .map(x -> {
-                    throw new BoomException("BOOM");
-                });
-        Flowable<String> flowable = Flowable.fromPublisher(converter.toRSPublisher(maybe));
-        try {
-            //noinspection ResultOfMethodCallIgnored
-            flowable.blockingFirst();
-            fail("Exception expected");
-        } catch (BoomException e) {
-            assertThat(e).hasMessage("BOOM");
-        }
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void testToPublisherWithNullValue() {
-        @SuppressWarnings("ConstantConditions") Maybe<String> maybe = Maybe.just(null);
-        Flowable<String> flowable = Flowable.fromPublisher(converter.toRSPublisher(maybe));
-        //noinspection ResultOfMethodCallIgnored
-        flowable.blockingFirst();
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void testToPublisherWithDelayedNullValue() {
-        Maybe<String> maybe = Maybe.just("goo").delay(10, TimeUnit.MILLISECONDS).map(s -> null);
-        Flowable<String> flowable = Flowable.fromPublisher(converter.toRSPublisher(maybe));
-        //noinspection ResultOfMethodCallIgnored
-        flowable.blockingFirst();
-    }
-
-    @Test
-    public void testToPublisherWithStreamNotEmitting() throws InterruptedException {
-        Maybe<String> maybe = Maybe.never();
-        Flowable<String> flowable = Flowable.fromPublisher(converter.toRSPublisher(maybe));
-        CountDownLatch latch = new CountDownLatch(1);
-        new Thread(() -> {
-            //noinspection ResultOfMethodCallIgnored
-            flowable.blockingFirst();
-            latch.countDown();
-        }).start();
-        assertThat(latch.await(10, TimeUnit.MILLISECONDS)).isFalse();
     }
 
     @SuppressWarnings("unchecked")

@@ -1,19 +1,22 @@
-package io.smallrye.reactive.converters.rxjava1;
+package io.smallrye.reactive.converters.rxjava2;
 
+import io.reactivex.Completable;
+import io.reactivex.Flowable;
+import io.reactivex.Observable;
+import io.reactivex.Single;
+import io.reactivex.schedulers.Schedulers;
 import io.smallrye.reactive.converters.ReactiveTypeConverter;
 import io.smallrye.reactive.converters.Registry;
-import io.smallrye.reactive.converters.tck.ToCompletionStageTCK;
+import io.smallrye.reactive.converters.tck.ToRSPublisherTCK;
 import org.junit.Before;
-import rx.CompletableSubscriber;
-import rx.Observable;
-import rx.Completable;
-import rx.schedulers.Schedulers;
+import org.junit.Test;
 
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-public class CompletableToCompletionStageTest extends ToCompletionStageTCK<Completable> {
+import static org.assertj.core.api.Assertions.assertThat;
 
+public class CompletableToRSPublisherTest extends ToRSPublisherTCK<Completable> {
 
     private static final int DELAY = 10;
     private ReactiveTypeConverter<Completable> converter;
@@ -49,14 +52,12 @@ public class CompletableToCompletionStageTest extends ToCompletionStageTCK<Compl
 
     @Override
     protected Optional<Completable> createInstanceEmittingANullValueImmediately() {
-        return Optional.of(Completable.complete());
+        return Optional.empty();
     }
 
     @Override
     protected Optional<Completable> createInstanceEmittingANullValueAsynchronously() {
-        return Optional.of(Completable.complete()
-                .delay(DELAY, TimeUnit.MILLISECONDS)
-                .observeOn(Schedulers.computation()));
+        return Optional.empty();
     }
 
     @Override
@@ -66,7 +67,7 @@ public class CompletableToCompletionStageTest extends ToCompletionStageTCK<Compl
 
     @Override
     protected Optional<Completable> createInstanceEmittingAMultipleValuesAndFailure(String v1, String v2,
-                                                                               RuntimeException e) {
+                                                                                    RuntimeException e) {
         return Optional.empty();
     }
 
@@ -87,7 +88,7 @@ public class CompletableToCompletionStageTest extends ToCompletionStageTCK<Compl
 
     @Override
     protected Optional<Completable> never() {
-        return Optional.of(Observable.never().toCompletable());
+        return Optional.of(Observable.never().ignoreElements());
     }
 
     @Override
@@ -102,6 +103,22 @@ public class CompletableToCompletionStageTest extends ToCompletionStageTCK<Compl
 
     @Override
     protected boolean supportNullValues() {
-        return true;
+        return false;
+    }
+
+    @Test
+    public void testToPublisherWithImmediateCompletion() {
+        Completable completable = Completable.complete();
+        Flowable<String> flowable = Flowable.fromPublisher(converter.toRSPublisher(completable));
+        String res = flowable.blockingFirst("DEFAULT");
+        assertThat(res).isEqualTo("DEFAULT");
+    }
+
+    @Test
+    public void testToPublisherWithDelayedCompletion() {
+        Completable completable = Single.just("hello").delay(10, TimeUnit.MILLISECONDS).ignoreElement();
+        Flowable<String> flowable = Flowable.fromPublisher(converter.toRSPublisher(completable));
+        String res = flowable.blockingFirst("DEFAULT");
+        assertThat(res).isEqualTo("DEFAULT");
     }
 }

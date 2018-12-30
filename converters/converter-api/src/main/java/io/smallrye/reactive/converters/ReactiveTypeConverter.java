@@ -8,6 +8,9 @@ import java.util.concurrent.CompletionStage;
 /**
  * Converts a specific reactive types from and to {@link CompletionStage} and {@code Publisher}.
  * @param <T> the converted type.
+ *
+ * Implementations must be tested against the TCK by extending the test case from the
+ * {@code io.smallrye.reactive.converters.tck} packages.
  */
 public interface ReactiveTypeConverter<T> {
 
@@ -35,12 +38,40 @@ public interface ReactiveTypeConverter<T> {
      * </ul>
      *
      * @param instance the instance to convert to a {@link CompletionStage}. Must not be {@code null}.
-     * @param <X> the type wrapped into the resulting {@link Optional} emitted by the return {@link CompletionStage}. It
-     *           is generally the type of data emitted by the passed {@code instance}.
+     * @param <X> the type wrapped into the resulting {@link Optional} emitted by the returned {@link CompletionStage}.
+     *          It is generally the type of data emitted by the passed {@code instance}.
      * @return a {@code non-null} {@link CompletionStage}.
      */
     <X> CompletionStage<Optional<X>> toCompletionStage(T instance);
 
+    /**
+     * Transforms an instance of {@code T} to a {@link Publisher}.
+     * Each converter instances can use specific rules, however the following set of rules are mandatory:
+     *
+     * <ul>
+     *     <li>The returned {@link Publisher} must never be {@code null}.</li>
+     *     <li>All values emitted by the {@code instance} are emitted by the returned {@link Publisher}.</li>
+     *     <li>If the {@code instance} emits a failure, {@link Publisher} propagates the same failure and
+     *     terminates.</li>
+     *     <li>If the {@code instance} completes, {@link Publisher} also completes.</li>*
+     *     <li>If the passed {@code instance} does not emit any value and does not fail or complete, the returned
+     *     {@code Publisher} does not send any signals or values.</li>
+     *     <li>If the passed {@code instance} completes <strong>before</strong> emitting a value, the {@link Publisher}
+     *     also completes empty.</li>
+     *     <li>If the passed {@code instance} emits {@code null}, the {@link Publisher} must send a failure
+     *     ({@link NullPointerException}.</li>
+     *     <li>If the {@code instance} support back-pressure, the resulting {@link Publisher} must enforce
+     *     back-pressure. When the {@code instance} does not support back-pressure, the {@link Publisher} consumes
+     *     the data without back-pressure using an unbounded-buffer. In other words, this operation is a pass-through
+     *     for back-pressure and its behavior is determined by the back-pressure behavior of the passed
+     *     {@code instance}.</li>
+     * </ul>
+     *
+     * @param instance the instance to convert to a {@link Publisher}. Must not be {@code null}.
+     * @param <X> the type emitted by the returned {@link Publisher}. It
+     *           is generally the type of data emitted by the passed {@code instance}.
+     * @return a {@code non-null} {@link Publisher}.
+     */
     <X>Publisher<X> toRSPublisher(T instance);
 
     /**

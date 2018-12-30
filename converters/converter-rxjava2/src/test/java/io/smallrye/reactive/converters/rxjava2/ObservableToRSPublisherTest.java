@@ -4,13 +4,13 @@ import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
 import io.smallrye.reactive.converters.ReactiveTypeConverter;
 import io.smallrye.reactive.converters.Registry;
-import io.smallrye.reactive.converters.tck.ToCompletionStageTCK;
+import io.smallrye.reactive.converters.tck.ToRSPublisherTCK;
 import org.junit.Before;
 
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-public class ObservableToCompletionStageTest extends ToCompletionStageTCK<Observable> {
+public class ObservableToRSPublisherTest extends ToRSPublisherTCK<Observable> {
 
 
     private static final int DELAY = 10;

@@ -3,16 +3,16 @@ package io.smallrye.reactive.converters.rxjava1;
 import io.smallrye.reactive.converters.ReactiveTypeConverter;
 import io.smallrye.reactive.converters.Registry;
 import io.smallrye.reactive.converters.tck.ToCompletionStageTCK;
+import io.smallrye.reactive.converters.tck.ToRSPublisherTCK;
 import org.junit.Before;
-import rx.CompletableSubscriber;
-import rx.Observable;
 import rx.Completable;
+import rx.Observable;
 import rx.schedulers.Schedulers;
 
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-public class CompletableToCompletionStageTest extends ToCompletionStageTCK<Completable> {
+public class CompletableToRSPublisherTest extends ToRSPublisherTCK<Completable> {
 
 
     private static final int DELAY = 10;
@@ -49,14 +49,12 @@ public class CompletableToCompletionStageTest extends ToCompletionStageTCK<Compl
 
     @Override
     protected Optional<Completable> createInstanceEmittingANullValueImmediately() {
-        return Optional.of(Completable.complete());
+        return Optional.empty();
     }
 
     @Override
     protected Optional<Completable> createInstanceEmittingANullValueAsynchronously() {
-        return Optional.of(Completable.complete()
-                .delay(DELAY, TimeUnit.MILLISECONDS)
-                .observeOn(Schedulers.computation()));
+        return Optional.empty();
     }
 
     @Override

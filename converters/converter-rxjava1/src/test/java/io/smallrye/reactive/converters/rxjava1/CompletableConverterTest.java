@@ -25,66 +25,6 @@ public class CompletableConverterTest {
                 .orElseThrow(() -> new AssertionError("Completable converter should be found"));
     }
 
-    @Test
-    public void testToPublisherWithImmediateCompletion() {
-        Completable completable = Completable.complete();
-        Flowable<String> flowable = Flowable.fromPublisher(converter.toRSPublisher(completable));
-        String res = flowable.blockingFirst("DEFAULT");
-        assertThat(res).isEqualTo("DEFAULT");
-    }
-
-    @Test
-    public void testToPublisherWithDelayedCompletion() {
-        Completable completable = Observable.just("hello").delay(10, TimeUnit.MILLISECONDS).toCompletable();
-        Flowable<String> flowable = Flowable.fromPublisher(converter.toRSPublisher(completable));
-        String res = flowable.blockingFirst("DEFAULT");
-        assertThat(res).isEqualTo("DEFAULT");
-    }
-
-    @Test
-    public void testToPublisherWithImmediateFailure() {
-        Completable completable = Completable.error(new BoomException("BOOM"));
-        Flowable<String> flowable = Flowable.fromPublisher(converter.toRSPublisher(completable));
-        try {
-            //noinspection ResultOfMethodCallIgnored
-            flowable.blockingFirst();
-            fail("Exception expected");
-        } catch (BoomException e) {
-            assertThat(e).hasMessage("BOOM");
-        }
-    }
-
-    @Test
-    public void testToPublisherWithDelayedFailure() {
-        Completable completable = Observable.just("hello")
-                .delay(10, TimeUnit.MILLISECONDS)
-                .map(x -> {
-                    throw new BoomException("BOOM");
-                })
-                .toCompletable();
-        Flowable<String> flowable = Flowable.fromPublisher(converter.toRSPublisher(completable));
-        try {
-            //noinspection ResultOfMethodCallIgnored
-            flowable.blockingFirst();
-            fail("Exception expected");
-        } catch (BoomException e) {
-            assertThat(e).hasMessage("BOOM");
-        }
-    }
-
-    @Test
-    public void testToPublisherWithStreamNotEmitting() throws InterruptedException {
-        Completable completable = Completable.fromObservable(Observable.never());
-        Flowable<String> flowable = Flowable.fromPublisher(converter.toRSPublisher(completable));
-        CountDownLatch latch = new CountDownLatch(1);
-        new Thread(() -> {
-            //noinspection ResultOfMethodCallIgnored
-            flowable.blockingFirst();
-            latch.countDown();
-        }).start();
-        assertThat(latch.await(10, TimeUnit.MILLISECONDS)).isFalse();
-    }
-
     @SuppressWarnings("unchecked")
     @Test
     public void testFromPublisherEmittingOneImmediateValue() {

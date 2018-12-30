@@ -3,6 +3,7 @@ package io.smallrye.reactive.converters.rxjava1;
 import io.smallrye.reactive.converters.ReactiveTypeConverter;
 import io.smallrye.reactive.converters.Registry;
 import io.smallrye.reactive.converters.tck.ToCompletionStageTCK;
+import io.smallrye.reactive.converters.tck.ToRSPublisherTCK;
 import org.junit.Before;
 import rx.Observable;
 import rx.Single;
@@ -11,7 +12,7 @@ import rx.schedulers.Schedulers;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-public class SingleToCompletionStageTest extends ToCompletionStageTCK<Single> {
+public class SingleToRSPublisherTest extends ToRSPublisherTCK<Single> {
 
     private static final int DELAY = 10;
     private ReactiveTypeConverter<Single> converter;

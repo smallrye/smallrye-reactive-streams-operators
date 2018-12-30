@@ -63,7 +63,7 @@ public class ObservableToCompletionStageTest extends ToCompletionStageTCK<Observ
     }
 
     @Override
-    protected Optional<Observable> createInstanceEmittingAMultipleValues(String... values) {
+    protected Optional<Observable> createInstanceEmittingMultipleValues(String... values) {
         return Optional.of(Observable.from(values));
     }
 

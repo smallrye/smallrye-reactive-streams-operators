@@ -1,12 +1,12 @@
 package io.smallrye.reactive.converters.rxjava2;
 
+import io.reactivex.Completable;
+import io.reactivex.Observable;
+import io.reactivex.schedulers.Schedulers;
 import io.smallrye.reactive.converters.ReactiveTypeConverter;
 import io.smallrye.reactive.converters.Registry;
 import io.smallrye.reactive.converters.tck.ToCompletionStageTCK;
 import org.junit.Before;
-import io.reactivex.Completable;
-import io.reactivex.Observable;
-import io.reactivex.schedulers.Schedulers;
 
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -56,13 +56,13 @@ public class CompletableToCompletionStageTest extends ToCompletionStageTCK<Compl
     }
 
     @Override
-    protected Optional<Completable> createInstanceEmittingAMultipleValues(String... values) {
+    protected Optional<Completable> createInstanceEmittingMultipleValues(String... values) {
         return Optional.empty();
     }
 
     @Override
     protected Optional<Completable> createInstanceEmittingAMultipleValuesAndFailure(String v1, String v2,
-                                                                               RuntimeException e) {
+                                                                                    RuntimeException e) {
         return Optional.empty();
     }
 

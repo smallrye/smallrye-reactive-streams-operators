@@ -1,8 +1,11 @@
 package io.smallrye.reactive.converters.tck;
 
+import io.reactivex.Flowable;
 import io.smallrye.reactive.converters.ReactiveTypeConverter;
 import org.junit.Test;
+import org.reactivestreams.Publisher;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.*;
@@ -10,7 +13,7 @@ import java.util.concurrent.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
-public abstract class ToCompletionStageTCK<T> {
+public abstract class ToRSPublisherTCK<T> {
 
     protected abstract Optional<T> createInstanceEmittingASingleValueImmediately(String value);
 
@@ -44,49 +47,49 @@ public abstract class ToCompletionStageTCK<T> {
     public void testWithImmediateValue() {
         String uuid = UUID.randomUUID().toString();
         Optional<T> instance = createInstanceEmittingASingleValueImmediately(uuid);
-        if (! instance.isPresent()) {
+        if (!instance.isPresent()) {
             // Test ignored.
             return;
         }
-        CompletionStage<Optional<String>> stage = converter().toCompletionStage(instance.get());
-        Optional<String> res = stage.toCompletableFuture().join();
-        assertThat(res).contains(uuid);
+        Publisher<String> publisher = converter().toRSPublisher(instance.get());
+        String res = Flowable.fromPublisher(publisher).blockingFirst();
+        assertThat(res).isEqualTo(uuid);
     }
 
     @Test
     public void testWithAsynchronousValue() {
         String uuid = UUID.randomUUID().toString();
         Optional<T> instance = createInstanceEmittingASingleValueAsynchronously(uuid);
-        if (! instance.isPresent()) {
+        if (!instance.isPresent()) {
             // Test ignored.
             return;
         }
-        CompletionStage<Optional<String>> stage = converter().toCompletionStage(instance.get());
-        Optional<String> res = stage.toCompletableFuture().join();
-        assertThat(res).contains(uuid);
+        Publisher<String> publisher = converter().toRSPublisher(instance.get());
+        String res = Flowable.fromPublisher(publisher).blockingFirst();
+        assertThat(res).isEqualTo(uuid);
     }
 
     @Test
     public void testWithImmediateFailure() {
         T instance = createInstanceFailingImmediately(new BoomException());
-        CompletionStage<Optional<String>> stage = converter().toCompletionStage(instance);
+        Publisher<String> publisher = converter().toRSPublisher(instance);
         try {
-            stage.toCompletableFuture().join();
+            Flowable.fromPublisher(publisher).blockingSubscribe();
             fail("Exception expected");
-        } catch (CompletionException e) {
-            assertThat(e.getCause()).isInstanceOf(BoomException.class);
+        } catch (Exception e) {
+            assertThat(e).isInstanceOf(BoomException.class);
         }
     }
 
     @Test
     public void testWithAsynchronousFailure() {
         T instance = createInstanceFailingAsynchronously(new BoomException());
-        CompletionStage<Optional<String>> stage = converter().toCompletionStage(instance);
+        Publisher<String> publisher = converter().toRSPublisher(instance);
         try {
-            stage.toCompletableFuture().join();
+            Flowable.fromPublisher(publisher).blockingSubscribe();
             fail("Exception expected");
-        } catch (CompletionException e) {
-            assertThat(e.getCause()).isInstanceOf(BoomException.class);
+        } catch (Exception e) {
+            assertThat(e).isInstanceOf(BoomException.class);
         }
     }
 
@@ -97,9 +100,34 @@ public abstract class ToCompletionStageTCK<T> {
             // Test ignored.
             return;
         }
-        CompletionStage<Optional<String>> stage = converter().toCompletionStage(optional.get());
-        assertNullValue(stage);
+        Publisher<String> publisher = converter().toRSPublisher(optional.get());
+        try {
+            Flowable.fromPublisher(publisher).blockingSubscribe();
+            fail("NullPointerException expected");
+        } catch (Exception e) {
+            assertThat(e).isInstanceOf(NullPointerException.class);
+        }
     }
+
+    @Test
+    public void testWithImmediateNullValueInAStream() {
+        if (! supportNullValues()) {
+            return;
+        }
+        Optional<T> optional = createInstanceEmittingMultipleValues("a", "b", null, "c");
+        if (!optional.isPresent()) {
+            // Test ignored.
+            return;
+        }
+        Publisher<String> publisher = converter().toRSPublisher(optional.get());
+        try {
+            Flowable.fromPublisher(publisher).blockingSubscribe();
+            fail("NullPointerException expected");
+        } catch (Exception e) {
+            assertThat(e).isInstanceOf(NullPointerException.class);
+        }
+    }
+
 
     @Test
     public void testWithAsynchronousNullValue() {
@@ -108,26 +136,17 @@ public abstract class ToCompletionStageTCK<T> {
             // Test ignored.
             return;
         }
-        CompletionStage<Optional<String>> stage = converter().toCompletionStage(optional.get());
-        assertNullValue(stage);
-    }
-
-    private void assertNullValue(CompletionStage<Optional<String>> stage) {
-        if (supportNullValues()) {
-            Optional<String> val = stage.toCompletableFuture().join();
-            assertThat(val).isEmpty();
-        } else {
-            try {
-                stage.toCompletableFuture().join();
-                fail("Exception expected");
-            } catch (CompletionException e) {
-                assertThat(e.getCause()).isInstanceOf(NullPointerException.class);
-            }
+        Publisher<String> publisher = converter().toRSPublisher(optional.get());
+        try {
+            Flowable.fromPublisher(publisher).blockingSubscribe();
+            fail("NullPointerException expected");
+        } catch (Exception e) {
+            assertThat(e).isInstanceOf(NullPointerException.class);
         }
     }
 
     @Test
-    public void testThatOnlyTheFirstValueIsConsidered() {
+    public void testWithSeveralValues() {
         String uuid = UUID.randomUUID().toString();
         String uuid2 = UUID.randomUUID().toString();
         String uuid3 = UUID.randomUUID().toString();
@@ -136,13 +155,13 @@ public abstract class ToCompletionStageTCK<T> {
             // Test ignored.
             return;
         }
-        CompletionStage<Optional<String>> stage = converter().toCompletionStage(instance.get());
-        Optional<String> res = stage.toCompletableFuture().join();
-        assertThat(res).contains(uuid);
+        Publisher<String> publisher = converter().toRSPublisher(instance.get());
+        List<String> list = Flowable.fromPublisher(publisher).toList().blockingGet();
+        assertThat(list).containsExactly(uuid, uuid2, uuid3);
     }
 
     @Test
-    public void testThatOnlyTheFirstValueIsConsideredEvenIfAFailureIsEmittedLater() {
+    public void testtSeveralValuesAndAFailure() {
         String uuid = UUID.randomUUID().toString();
         String uuid2 = UUID.randomUUID().toString();
         Optional<T> instance = createInstanceEmittingAMultipleValuesAndFailure(uuid, uuid2, new BoomException());
@@ -150,43 +169,45 @@ public abstract class ToCompletionStageTCK<T> {
             // Test ignored.
             return;
         }
-        CompletionStage<Optional<String>> stage = converter().toCompletionStage(instance.get());
-        Optional<String> res = stage.toCompletableFuture().join();
-        assertThat(res).contains(uuid);
+        Publisher<String> publisher = converter().toRSPublisher(instance.get());
+        try {
+            Flowable.fromPublisher(publisher).blockingSubscribe();
+            fail("Boom exception expected");
+        } catch (Exception e) {
+            assertThat(e).isInstanceOf(BoomException.class);
+        }
     }
 
 
     @Test
-    public void testThatTheCompletionStageIsNotCompletedIfTheInstanceDoesNotEmitSignals() throws InterruptedException {
+    public void testWithNever() throws InterruptedException {
         Optional<T> instance = never();
         if (!instance.isPresent()) {
             // Test ignored.
             return;
         }
-        CompletableFuture<Optional<String>> stage = converter().<String>toCompletionStage(instance.get()).toCompletableFuture();
+        Publisher<String> publisher = converter().toRSPublisher(instance.get());
         CountDownLatch latch = new CountDownLatch(1);
 
-        new Thread(() -> {
-            stage.join();
+        Future<?> future = Executors.newSingleThreadExecutor().submit(() -> {
+            Flowable.fromPublisher(publisher).blockingSubscribe();
             latch.countDown();
         });
 
         boolean terminated = latch.await(10, TimeUnit.MILLISECONDS);
-        stage.cancel(true);
-
+        future.cancel(false);
         assertThat(terminated).isFalse();
     }
 
     @Test
-    public void testWithEmptyStream() {
+    public void testWithEmpty() {
         Optional<T> instance = empty();
         if (!instance.isPresent()) {
             // Test ignored
             return;
         }
-        CompletionStage<Optional<String>> stage = converter().toCompletionStage(instance.get());
-        Optional<String> optional = stage.toCompletableFuture().join();
-        assertThat(optional).isEmpty();
+        Publisher<String> publisher = converter().toRSPublisher(instance.get());
+        assertThat(Flowable.fromPublisher(publisher).isEmpty().blockingGet()).isTrue();
     }
 
     @Test
@@ -196,9 +217,8 @@ public abstract class ToCompletionStageTCK<T> {
             // Test ignored
             return;
         }
-        CompletionStage<Optional<String>> stage = converter().toCompletionStage(instance.get());
-        Optional<String> optional = stage.toCompletableFuture().join();
-        assertThat(optional).isEmpty();
+        Publisher<String> publisher = converter().toRSPublisher(instance.get());
+        assertThat(Flowable.fromPublisher(publisher).isEmpty().blockingGet()).isTrue();
     }
 
     @Test
@@ -208,9 +228,8 @@ public abstract class ToCompletionStageTCK<T> {
             // Test ignored
             return;
         }
-        CompletionStage<Optional<String>> stage = converter().toCompletionStage(instance.get());
-        Optional<String> optional = stage.toCompletableFuture().join();
-        assertThat(optional).isEmpty();
+        Publisher<String> publisher = converter().toRSPublisher(instance.get());
+        assertThat(Flowable.fromPublisher(publisher).isEmpty().blockingGet()).isTrue();
     }
 
 

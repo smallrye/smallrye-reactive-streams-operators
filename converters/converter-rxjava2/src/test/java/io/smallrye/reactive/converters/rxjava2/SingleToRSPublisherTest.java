@@ -1,17 +1,17 @@
-package io.smallrye.reactive.converters.rxjava1;
+package io.smallrye.reactive.converters.rxjava2;
 
+import io.reactivex.Observable;
+import io.reactivex.Single;
+import io.reactivex.schedulers.Schedulers;
 import io.smallrye.reactive.converters.ReactiveTypeConverter;
 import io.smallrye.reactive.converters.Registry;
-import io.smallrye.reactive.converters.tck.ToCompletionStageTCK;
+import io.smallrye.reactive.converters.tck.ToRSPublisherTCK;
 import org.junit.Before;
-import rx.Observable;
-import rx.Single;
-import rx.schedulers.Schedulers;
 
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-public class SingleToCompletionStageTest extends ToCompletionStageTCK<Single> {
+public class SingleToRSPublisherTest extends ToRSPublisherTCK<Single> {
 
     private static final int DELAY = 10;
     private ReactiveTypeConverter<Single> converter;
@@ -49,13 +49,14 @@ public class SingleToCompletionStageTest extends ToCompletionStageTCK<Single> {
 
     @Override
     protected Optional<Single> createInstanceEmittingANullValueImmediately() {
-        return Optional.of(Single.just(null));
+        return Optional.of(Single.just("x").map(s -> null));
     }
 
     @Override
     protected Optional<Single> createInstanceEmittingANullValueAsynchronously() {
-        return Optional.of(Single.just(null)
+        return Optional.of(Single.just("x")
                 .delay(DELAY, TimeUnit.MILLISECONDS)
+                .map(s -> null)
                 .observeOn(Schedulers.computation()));
     }
 
@@ -82,7 +83,7 @@ public class SingleToCompletionStageTest extends ToCompletionStageTCK<Single> {
 
     @Override
     protected Optional<Single> never() {
-        return Optional.of(Observable.never().toSingle());
+        return Optional.of(Observable.never().singleOrError());
     }
 
     @Override
@@ -97,6 +98,6 @@ public class SingleToCompletionStageTest extends ToCompletionStageTCK<Single> {
 
     @Override
     protected boolean supportNullValues() {
-        return true;
+        return false;
     }
 }

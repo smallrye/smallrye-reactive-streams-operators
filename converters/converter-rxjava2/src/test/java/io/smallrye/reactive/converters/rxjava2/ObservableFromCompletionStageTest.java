@@ -1,10 +1,10 @@
 package io.smallrye.reactive.converters.rxjava2;
 
+import io.reactivex.Observable;
 import io.smallrye.reactive.converters.ReactiveTypeConverter;
 import io.smallrye.reactive.converters.Registry;
 import io.smallrye.reactive.converters.tck.FromCompletionStageTCK;
 import org.junit.Before;
-import io.reactivex.Observable;
 
 import java.util.concurrent.atomic.AtomicReference;
 
