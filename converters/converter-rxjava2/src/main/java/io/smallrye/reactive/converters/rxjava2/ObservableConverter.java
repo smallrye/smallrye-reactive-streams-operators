@@ -57,15 +57,15 @@ public class ObservableConverter implements ReactiveTypeConverter<Observable> {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T> CompletionStage<T> toCompletionStage(Observable instance) {
-        CompletableFuture<Optional> future = new CompletableFuture<>();
+    public <T> CompletionStage<Optional<T>> toCompletionStage(Observable instance) {
+        CompletableFuture<Optional<T>> future = new CompletableFuture<>();
         //noinspection ResultOfMethodCallIgnored
-        ((Observable<?>) instance).firstElement().subscribe(
+        ((Observable<T>) instance).firstElement().subscribe(
                 res -> future.complete(Optional.of(res)),
                 future::completeExceptionally,
                 () -> future.complete(Optional.empty())
         );
-        return (CompletionStage<T>) future;
+        return future;
     }
 
     @Override

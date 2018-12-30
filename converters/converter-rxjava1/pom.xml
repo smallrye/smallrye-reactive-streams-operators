@@ -11,7 +11,7 @@
         <relativePath>../..</relativePath>
     </parent>
 
-    <artifactId>converter-rxjava2</artifactId>
+    <artifactId>converter-rxjava1</artifactId>
 
     <dependencies>
         <dependency>
@@ -31,6 +31,17 @@
             <artifactId>smallrye-reactive-streams-operators</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
+        </dependency>
+        <!-- TODO Extract dependencies -->
+        <dependency>
+            <groupId>io.reactivex</groupId>
+            <artifactId>rxjava</artifactId>
+            <version>1.3.8</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.akarnokd</groupId>
+            <artifactId>rxjava2-interop</artifactId>
+            <version>0.13.4</version>
         </dependency>
     </dependencies>
 
@@ -54,5 +65,5 @@
         </plugins>
     </build>
 
-
+    
 </project>

@@ -40,16 +40,16 @@ import java.util.concurrent.CompletionStage;
  * <p>
  * <h4>toRSPublisher</h4>
  * The {@link #toRSPublisher(Maybe)} method returns a stream emitting a single value (if any) followed by the completion signal. If the passed
- * {@link Maybe} fails, the returns streams also fails. If the passed {@link Maybe} is empty, the returned stream is empty.
+ * {@link Maybe} fails, the returned stream also fails. If the passed {@link Maybe} is empty, the returned stream is empty.
  * </p>
  */
 public class MaybeConverter implements ReactiveTypeConverter<Maybe> {
 
     @SuppressWarnings("unchecked")
     @Override
-    public CompletionStage<Optional> toCompletionStage(Maybe instance) {
-        CompletableFuture<Optional> future = new CompletableFuture<>();
-        Maybe<?> s = Objects.requireNonNull(instance);
+    public <T> CompletionStage<Optional<T>> toCompletionStage(Maybe instance) {
+        CompletableFuture<Optional<T>> future = new CompletableFuture<>();
+        Maybe<T> s = Objects.requireNonNull(instance);
         //noinspection ResultOfMethodCallIgnored
         s.subscribe(
                 x -> future.complete(Optional.of(x)),

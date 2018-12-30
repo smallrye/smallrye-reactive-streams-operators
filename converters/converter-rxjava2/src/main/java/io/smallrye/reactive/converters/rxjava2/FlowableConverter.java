@@ -59,15 +59,15 @@ public class FlowableConverter implements ReactiveTypeConverter<Flowable> {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T> CompletionStage<T> toCompletionStage(Flowable instance) {
-        CompletableFuture<Optional> future = new CompletableFuture<>();
+    public <T> CompletionStage<Optional<T>> toCompletionStage(Flowable instance) {
+        CompletableFuture<Optional<T>> future = new CompletableFuture<>();
         //noinspection ResultOfMethodCallIgnored
-        ((Flowable<?>) instance).firstElement().subscribe(
+        ((Flowable<T>) instance).firstElement().subscribe(
                 res -> future.complete(Optional.of(res)),
                 future::completeExceptionally,
                 () -> future.complete(Optional.empty())
         );
-        return (CompletionStage<T>) future;
+        return future;
     }
 
     @Override

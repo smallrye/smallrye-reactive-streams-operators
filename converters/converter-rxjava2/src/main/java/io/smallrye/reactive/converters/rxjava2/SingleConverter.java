@@ -6,6 +6,7 @@ import io.smallrye.reactive.converters.ReactiveTypeConverter;
 import org.reactivestreams.Publisher;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
@@ -14,8 +15,10 @@ import java.util.concurrent.CompletionStage;
  *
  * <p>
  * <h4>toCompletionStage</h4>
- * The {@link #toCompletionStage(Single)} method returns a {@link CompletionStage} instance completed or failed according to the
- * single emission. Note that if the single emits a {@code null} value, the {@link CompletionStage} fails.
+ * The {@link #toCompletionStage(Single)} method returns a {@link CompletionStage} instance completed or failed
+ * according to the single emission. Note that if the single emits a {@code null} value, the {@link CompletionStage}
+ * fails. Even if there is always a value provided, the {@link CompletionStage} is completed with an {@link Optional}
+ * instance wrapping the result.
  * </p>
  * <p>
  * <h4>fromCompletionStage</h4>
@@ -31,19 +34,19 @@ import java.util.concurrent.CompletionStage;
  * <p>
  * <h4>toRSPublisher</h4>
  * The {@link #toRSPublisher(Single)} method returns a stream emitting a single value followed by the completion signal. If the passed
- * {@link Single} fails, the returns streams also fails.
+ * {@link Single} fails, the returned stream also fails.
  * </p>
  */
 public class SingleConverter implements ReactiveTypeConverter<Single> {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <X> CompletionStage<X> toCompletionStage(Single instance) {
-        CompletableFuture future = new CompletableFuture();
-        Single<?> s = Objects.requireNonNull(instance);
+    public <T> CompletionStage<Optional<T>> toCompletionStage(Single instance) {
+        CompletableFuture<Optional<T>> future = new CompletableFuture<>();
+        Single<T> s = Objects.requireNonNull(instance);
         //noinspection ResultOfMethodCallIgnored
         s.subscribe(
-                future::complete,
+                res -> future.complete(Optional.of(res)),
                 future::completeExceptionally
         );
         return future;

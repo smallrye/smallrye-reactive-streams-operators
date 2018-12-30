@@ -60,6 +60,7 @@
 
         <module>converters/converter-api</module>
         <module>converters/converter-rxjava2</module>
+        <module>converters/converter-rxjava1</module>
     </modules>
 
     <properties>

@@ -6,6 +6,7 @@ import io.smallrye.reactive.converters.ReactiveTypeConverter;
 import org.reactivestreams.Publisher;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
@@ -38,12 +39,12 @@ public class CompletableConverter implements ReactiveTypeConverter<Completable> 
 
     @SuppressWarnings("unchecked")
     @Override
-    public CompletionStage<Void> toCompletionStage(Completable instance) {
-        CompletableFuture<Void> future = new CompletableFuture<>();
+    public <T> CompletionStage<Optional<T>> toCompletionStage(Completable instance) {
+        CompletableFuture<Optional<T>> future = new CompletableFuture<>();
         Completable s = Objects.requireNonNull(instance);
         //noinspection ResultOfMethodCallIgnored
         s.subscribe(
-                () -> future.complete(null),
+                () -> future.complete(Optional.empty()),
                 future::completeExceptionally
         );
         return future;

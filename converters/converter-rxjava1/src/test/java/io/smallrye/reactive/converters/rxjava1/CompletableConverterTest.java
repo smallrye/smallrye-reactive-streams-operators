@@ -1,13 +1,12 @@
-package io.smallrye.reactive.converters.rxjava2;
+package io.smallrye.reactive.converters.rxjava1;
 
-import io.reactivex.Completable;
 import io.reactivex.Flowable;
-import io.reactivex.Single;
-import io.reactivex.schedulers.Schedulers;
 import io.smallrye.reactive.converters.ReactiveTypeConverter;
 import io.smallrye.reactive.converters.Registry;
 import org.junit.Before;
 import org.junit.Test;
+import rx.Completable;
+import rx.Observable;
 
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -26,7 +25,6 @@ public class CompletableConverterTest {
                 .orElseThrow(() -> new AssertionError("Completable converter should be found"));
     }
 
-
     @Test
     public void testToPublisherWithImmediateCompletion() {
         Completable completable = Completable.complete();
@@ -37,7 +35,7 @@ public class CompletableConverterTest {
 
     @Test
     public void testToPublisherWithDelayedCompletion() {
-        Completable completable = Single.just("hello").delay(10, TimeUnit.MILLISECONDS).ignoreElement();
+        Completable completable = Observable.just("hello").delay(10, TimeUnit.MILLISECONDS).toCompletable();
         Flowable<String> flowable = Flowable.fromPublisher(converter.toRSPublisher(completable));
         String res = flowable.blockingFirst("DEFAULT");
         assertThat(res).isEqualTo("DEFAULT");
@@ -58,12 +56,12 @@ public class CompletableConverterTest {
 
     @Test
     public void testToPublisherWithDelayedFailure() {
-        Completable completable = Single.just("hello")
+        Completable completable = Observable.just("hello")
                 .delay(10, TimeUnit.MILLISECONDS)
                 .map(x -> {
                     throw new BoomException("BOOM");
                 })
-                .ignoreElement();
+                .toCompletable();
         Flowable<String> flowable = Flowable.fromPublisher(converter.toRSPublisher(completable));
         try {
             //noinspection ResultOfMethodCallIgnored
@@ -76,7 +74,7 @@ public class CompletableConverterTest {
 
     @Test
     public void testToPublisherWithStreamNotEmitting() throws InterruptedException {
-        Completable completable = Completable.fromPublisher(Flowable.never());
+        Completable completable = Completable.fromObservable(Observable.never());
         Flowable<String> flowable = Flowable.fromPublisher(converter.toRSPublisher(completable));
         CountDownLatch latch = new CountDownLatch(1);
         new Thread(() -> {
@@ -94,8 +92,8 @@ public class CompletableConverterTest {
         Completable completable = converter
                 .fromCompletionStage(CompletableFuture.completedFuture("hello"));
         completable
-                .doOnComplete(() -> reference.set(true))
-                .blockingAwait();
+                .doOnCompleted(() -> reference.set(true))
+                .await();
         assertThat(reference).isTrue();
     }
 
@@ -104,10 +102,11 @@ public class CompletableConverterTest {
         AtomicBoolean reference = new AtomicBoolean();
         @SuppressWarnings("unchecked")
         Completable completable = converter
-                .fromCompletionStage(CompletableFuture.runAsync(() -> {}));
+                .fromCompletionStage(CompletableFuture.runAsync(() -> {
+                }));
         completable
-                .doOnComplete(() -> reference.set(true))
-                .blockingAwait();
+                .doOnCompleted(() -> reference.set(true))
+                .await();
         assertThat(reference).isTrue();
     }
 
@@ -119,21 +118,22 @@ public class CompletableConverterTest {
         Completable completable = converter
                 .fromCompletionStage(future);
         completable
-                .doOnComplete(() -> reference.set(true))
-                .blockingAwait();
+                .doOnCompleted(() -> reference.set(true))
+                .await();
         assertThat(reference).isTrue();
     }
 
     @Test
     public void testFromCompletionStageWithDelayedCompletion() {
         AtomicBoolean reference = new AtomicBoolean();
-        CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {});
+        CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
+        });
         @SuppressWarnings("unchecked")
         Completable completable = converter
                 .fromCompletionStage(future);
         completable
-                .doOnComplete(() -> reference.set(true))
-                .blockingAwait();
+                .doOnCompleted(() -> reference.set(true))
+                .await();
         assertThat(reference).isTrue();
     }
 
@@ -148,7 +148,7 @@ public class CompletableConverterTest {
         try {
             completable
                     .doOnError(reference::set)
-                    .blockingAwait();
+                    .await();
             fail("Exception expected");
         } catch (BoomException e) {
             assertThat(e).hasMessage("BOOM");
@@ -169,7 +169,7 @@ public class CompletableConverterTest {
         try {
             completable
                     .doOnError(reference::set)
-                    .blockingAwait();
+                    .await();
             fail("Exception expected");
         } catch (CompletionException e) {
             assertThat(e.getCause())
@@ -187,8 +187,8 @@ public class CompletableConverterTest {
                 .fromCompletionStage(future);
         AtomicBoolean reference = new AtomicBoolean();
         completable
-                .doOnComplete(() -> reference.set(true))
-                .blockingAwait();
+                .doOnCompleted(() -> reference.set(true))
+                .await();
         assertThat(reference).isTrue();
     }
 
@@ -200,8 +200,8 @@ public class CompletableConverterTest {
                 .fromCompletionStage(future);
         AtomicBoolean reference = new AtomicBoolean();
         completable
-                .doOnComplete(() -> reference.set(true))
-                .blockingAwait();
+                .doOnCompleted(() -> reference.set(true))
+                .await();
         assertThat(reference).isTrue();
     }
 
@@ -213,7 +213,7 @@ public class CompletableConverterTest {
                 .fromCompletionStage(future);
         future.cancel(false);
         try {
-            completable.blockingAwait();
+            completable.await();
             fail("Exception expected");
         } catch (Exception e) {
             assertThat(e)
@@ -227,7 +227,7 @@ public class CompletableConverterTest {
         @SuppressWarnings("unchecked") Completable completable = converter.fromCompletionStage(never);
         CountDownLatch latch = new CountDownLatch(1);
         new Thread(() -> {
-            completable.blockingAwait();
+            completable.await();
             latch.countDown();
         }).start();
         assertThat(latch.await(10, TimeUnit.MILLISECONDS)).isFalse();
@@ -240,8 +240,8 @@ public class CompletableConverterTest {
         AtomicBoolean reference = new AtomicBoolean();
         Completable completable = converter.fromPublisher(Flowable.just("hello"));
         completable
-                .doOnComplete(() -> reference.set(true))
-                .blockingAwait();
+                .doOnCompleted(() -> reference.set(true))
+                .await();
         assertThat(reference).isTrue();
     }
 
@@ -251,8 +251,8 @@ public class CompletableConverterTest {
         AtomicBoolean reference = new AtomicBoolean();
         Completable completable = converter.fromPublisher(Flowable.just("hello").delay(10, TimeUnit.MILLISECONDS));
         completable
-                .doOnComplete(() -> reference.set(true))
-                .blockingAwait();
+                .doOnCompleted(() -> reference.set(true))
+                .await();
         assertThat(reference).isTrue();
     }
 
@@ -260,7 +260,7 @@ public class CompletableConverterTest {
     @Test(expected = BoomException.class)
     public void testFromPublisherEmittingAnImmediateFailure() {
         Completable completable = converter.fromPublisher(Flowable.error(new BoomException("BOOM")));
-        completable.blockingAwait();
+        completable.await();
     }
 
     @SuppressWarnings("unchecked")
@@ -268,10 +268,10 @@ public class CompletableConverterTest {
     public void testFromPublisherEmittingAnDelayedFailure() {
         Completable completable = converter.fromPublisher(Flowable.just("hello")
                 .delay(10, TimeUnit.MILLISECONDS))
-                .doOnComplete(() -> {
+                .doOnCompleted(() -> {
                     throw new BoomException("BOOM");
                 });
-        completable.blockingAwait();
+        completable.await();
     }
 
     @Test
@@ -279,8 +279,8 @@ public class CompletableConverterTest {
         AtomicBoolean reference = new AtomicBoolean();
         Completable completable = converter.fromPublisher(Flowable.empty());
         completable
-                .doOnComplete(() -> reference.set(true))
-                .blockingAwait();
+                .doOnCompleted(() -> reference.set(true))
+                .await();
         assertThat(reference).isTrue();
 
     }
@@ -291,8 +291,8 @@ public class CompletableConverterTest {
         AtomicBoolean reference = new AtomicBoolean();
         Completable completable = converter.fromPublisher(Flowable.just("h", "e", "l", "l", "o"));
         completable
-                .doOnComplete(() -> reference.set(true))
-                .blockingAwait();
+                .doOnCompleted(() -> reference.set(true))
+                .await();
         assertThat(reference).isTrue();
     }
 
@@ -301,10 +301,10 @@ public class CompletableConverterTest {
     public void testFromPublisherEmittingDelayedMultipleValue() {
         AtomicBoolean reference = new AtomicBoolean();
         Completable completable = converter.fromPublisher(Flowable.just("h", "e", "l", "l", "o"))
-                .observeOn(Schedulers.computation());
+                .observeOn(rx.schedulers.Schedulers.computation());
         completable
-                .doOnComplete(() -> reference.set(true))
-                .blockingAwait();
+                .doOnCompleted(() -> reference.set(true))
+                .await();
         assertThat(reference).isTrue();
     }
 
@@ -312,7 +312,7 @@ public class CompletableConverterTest {
     @Test(expected = NullPointerException.class)
     public void testFromPublisherEmittingANullValueImmediately() {
         @SuppressWarnings("ConstantConditions") Completable completable = converter.fromPublisher(Flowable.just(null));
-        completable.blockingAwait();
+        completable.await();
     }
 
     @SuppressWarnings("unchecked")
@@ -321,7 +321,7 @@ public class CompletableConverterTest {
         Completable completable = converter.fromPublisher(Flowable.just("hello").delay(10, TimeUnit.MILLISECONDS)
                 .map(x -> null)
         );
-        completable.blockingAwait();
+        completable.await();
     }
 
     @SuppressWarnings("unchecked")
@@ -331,7 +331,7 @@ public class CompletableConverterTest {
         CountDownLatch latch = new CountDownLatch(1);
         new Thread(() -> {
             //noinspection ResultOfMethodCallIgnored
-            completable.blockingAwait();
+            completable.await();
             latch.countDown();
         }).start();
         assertThat(latch.await(10, TimeUnit.MILLISECONDS)).isFalse();
