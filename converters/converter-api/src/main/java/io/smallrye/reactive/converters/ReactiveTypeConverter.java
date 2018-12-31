@@ -106,8 +106,35 @@ public interface ReactiveTypeConverter<T> {
      */
     <X> T fromCompletionStage(CompletionStage<X> cs);
 
+    /**
+     * Transforms an instance of {@code T} to a {@link Publisher}.
+     * Each converter instances can use specific rules, however the following set of rules are mandatory:
+     *
+     * <ul>
+     *     <li>The returned {@link Publisher} must never be {@code null}.</li>
+     *     <li>If the instance of {@code T} emits a single value, the returned {@link Publisher} emits the same value
+     *     and completes.</li>
+     *     <li>If the instance of {@code T} does not emits value, sends the completion signal, the returned
+     *     {@link Publisher} completes.</li>
+     *     <li>If the instance of {@code T} emits a failure, the returned {@link Publisher} emits a failure.</li>
+     *     <li>If the instance of {@code T} emits a {@code null} value, the returned {@link Publisher} emits an
+     *     {@link NullPointerException} as {@code null} is not a valid value.</li>
+     *     <li>If the instance of {@code T} does neither emits a value nor a signal, the returned {@code Publisher}
+     *     does not emits values or signals.</li>
+     *     <li>This operation is a pass-through for back-pressure and its behavior is determined by the back-pressure
+     *     behavior of the returned instance.</li>
+     * </ul>
+     *
+     * @param publisher the {@link Publisher} to convert. Must not be {@code null}.
+     * @param <X> the type of data emitted by the passed {@link Publisher}.
+     * @return a {@code non-null} instance of {@code T}.
+     */
     <X> T fromPublisher(Publisher<X> publisher);
 
+    /**
+     * @return the conversion type. Must not be {@code null}. Notice that sub-classes of the returned class are also
+     * managed by the same converter.
+     */
     Class<T> type();
 
 }
