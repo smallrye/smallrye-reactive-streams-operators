@@ -44,7 +44,7 @@ public abstract class ToCompletionStageTCK<T> {
     public void testWithImmediateValue() {
         String uuid = UUID.randomUUID().toString();
         Optional<T> instance = createInstanceEmittingASingleValueImmediately(uuid);
-        if (! instance.isPresent()) {
+        if (!instance.isPresent()) {
             // Test ignored.
             return;
         }
@@ -57,7 +57,7 @@ public abstract class ToCompletionStageTCK<T> {
     public void testWithAsynchronousValue() {
         String uuid = UUID.randomUUID().toString();
         Optional<T> instance = createInstanceEmittingASingleValueAsynchronously(uuid);
-        if (! instance.isPresent()) {
+        if (!instance.isPresent()) {
             // Test ignored.
             return;
         }

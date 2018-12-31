@@ -71,7 +71,6 @@ public class CompletableFromCompletionStageTest extends FromCompletionStageTCK<C
     }
 
 
-
     @Test
     public void testWithAsynchronousCompletion() {
         AtomicBoolean reference = new AtomicBoolean();

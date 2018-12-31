@@ -12,26 +12,27 @@ import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
 
 /**
- * Converter handling the RX Java 1 Completable type.
+ * Converter handling the RX Java 1 {@link Completable} type.
  *
  * <p>
  * <h4>toCompletionStage</h4>
- * The {@link #toCompletionStage(Completable)} method returns a {@link CompletionStage} instance completed with
- * an empty {@code Optional} or failed according to the Completable signals.
+ * The {@link #toCompletionStage(Completable)} method returns a {@link CompletionStage} instance completed with an
+ * empty {@link Optional} upon success or failed according to the {@link Completable} signals.
  * </p>
  * <p>
  * <h4>fromCompletionStage</h4>
  * The {@link #fromCompletionStage(CompletionStage)} method returns a {@link Completable} instance completed or failed
- * according to the passed {@link CompletionStage} completion. If the future completes successfully (even with a
- * {@code null} value), the {@link Completable} is completed successfully. If the future completes with an exception,
- * the {@link Completable} emits the failure.
+ * according to the passed {@link CompletionStage} completion. If the future emits a {@code null} value, the
+ * {@link Completable} is completed successfully. If the future redeems a non-null value, the {@link Completable}
+ * completes successfully, but the value is ignored. If the future is completed with an exception, the
+ * {@link Completable} fails.
  * </p>
  * <p>
  * <h4>fromPublisher</h4>
- * The {@link #fromPublisher(Publisher)} method returns a {@link Completable} emitting the completion signal when
- * the passed stream reached its end. If the passed {@link Publisher} is empty, the returned {@link Completable}
- * completes. If the passed stream emits values, they are discarded. If the passed @{link Publisher} emits a failure
- * before its completion, the returned {@link Completable} emits the failure.
+ * The {@link #fromPublisher(Publisher)} method returns a {@link Completable} emitting the completion signal when the
+ * passed stream reached its end. If the passed {@link Publisher} is empty, the returned {@link Completable} completes.
+ * If the passed stream emits values, they are discarded. If the passed @{link Publisher} emits a failure before its
+ * completion, the returned {@link Completable} fails.
  * </p>
  * <p>
  * <h4>toRSPublisher</h4>

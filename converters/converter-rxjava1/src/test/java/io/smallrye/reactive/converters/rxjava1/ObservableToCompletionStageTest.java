@@ -31,7 +31,7 @@ public class ObservableToCompletionStageTest extends ToCompletionStageTCK<Observ
     @Override
     protected Optional<Observable> createInstanceEmittingASingleValueAsynchronously(String value) {
         return Optional.of(
-            Observable.just(value).delay(DELAY, TimeUnit.MILLISECONDS).observeOn(Schedulers.computation())
+                Observable.just(value).delay(DELAY, TimeUnit.MILLISECONDS).observeOn(Schedulers.computation())
         );
     }
 

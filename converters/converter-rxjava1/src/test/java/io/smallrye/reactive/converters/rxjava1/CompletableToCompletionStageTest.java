@@ -4,9 +4,8 @@ import io.smallrye.reactive.converters.ReactiveTypeConverter;
 import io.smallrye.reactive.converters.Registry;
 import io.smallrye.reactive.converters.tck.ToCompletionStageTCK;
 import org.junit.Before;
-import rx.CompletableSubscriber;
-import rx.Observable;
 import rx.Completable;
+import rx.Observable;
 import rx.schedulers.Schedulers;
 
 import java.util.Optional;
@@ -66,7 +65,7 @@ public class CompletableToCompletionStageTest extends ToCompletionStageTCK<Compl
 
     @Override
     protected Optional<Completable> createInstanceEmittingAMultipleValuesAndFailure(String v1, String v2,
-                                                                               RuntimeException e) {
+                                                                                    RuntimeException e) {
         return Optional.empty();
     }
 

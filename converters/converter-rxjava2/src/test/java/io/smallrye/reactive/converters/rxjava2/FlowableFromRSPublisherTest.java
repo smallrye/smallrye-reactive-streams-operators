@@ -3,7 +3,6 @@ package io.smallrye.reactive.converters.rxjava2;
 import io.reactivex.Flowable;
 import io.smallrye.reactive.converters.ReactiveTypeConverter;
 import io.smallrye.reactive.converters.Registry;
-import io.smallrye.reactive.converters.tck.FromCompletionStageTCK;
 import io.smallrye.reactive.converters.tck.FromRSPublisherTCK;
 import org.junit.Before;
 
@@ -69,6 +68,7 @@ public class FlowableFromRSPublisherTest extends FromRSPublisherTCK<Flowable> {
     @Override
     protected void consume(Flowable instance) {
         //noinspection ResultOfMethodCallIgnored
-        instance.forEach(x -> {});
+        instance.forEach(x -> {
+        });
     }
 }

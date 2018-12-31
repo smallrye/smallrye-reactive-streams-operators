@@ -3,19 +3,12 @@ package io.smallrye.reactive.converters.rxjava2;
 import io.reactivex.Maybe;
 import io.smallrye.reactive.converters.ReactiveTypeConverter;
 import io.smallrye.reactive.converters.Registry;
-import io.smallrye.reactive.converters.tck.FromCompletionStageTCK;
 import io.smallrye.reactive.converters.tck.FromRSPublisherTCK;
 import org.junit.Before;
-import org.junit.Test;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class MaybeFromRSPublisherTest extends FromRSPublisherTCK<Maybe> {
 

@@ -5,7 +5,6 @@ import io.smallrye.reactive.converters.Registry;
 import io.smallrye.reactive.converters.tck.FromCompletionStageTCK;
 import org.junit.Before;
 import rx.Observable;
-import rx.Single;
 
 import java.util.concurrent.atomic.AtomicReference;
 

@@ -3,7 +3,6 @@ package io.smallrye.reactive.converters.rxjava2;
 import io.reactivex.Completable;
 import io.smallrye.reactive.converters.ReactiveTypeConverter;
 import io.smallrye.reactive.converters.Registry;
-import io.smallrye.reactive.converters.tck.FromCompletionStageTCK;
 import io.smallrye.reactive.converters.tck.FromRSPublisherTCK;
 import org.junit.Before;
 import org.junit.Test;

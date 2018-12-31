@@ -42,7 +42,7 @@ public abstract class FromRSPublisherTCK<T> {
         T instance = converter()
                 .fromPublisher(publisher);
         String res = getOne(instance);
-        if (emitSingleValue()  || emitMultipleValues()) {
+        if (emitSingleValue() || emitMultipleValues()) {
             assertThat(res).isEqualTo(uuid);
         } else {
             assertThat(res).isNull();
@@ -135,7 +135,7 @@ public abstract class FromRSPublisherTCK<T> {
     public void testWithEmpty() {
         Publisher<String> empty = Flowable.empty();
         T instance = converter().fromPublisher(empty);
-        if (! emitSingleValue()) {
+        if (!emitSingleValue()) {
             int count = getAll(instance).size();
             assertThat(count).isEqualTo(0);
         } else {

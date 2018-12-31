@@ -13,42 +13,56 @@ import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
 
 /**
- * Converter handling the RX Java 1 Observable type.
+ * Converter handling the RX Java  {@link Observable} type.
  *
  * <p>
  * <h4>toCompletionStage</h4>
  * The {@link #toCompletionStage(Observable)} method returns a {@link CompletionStage} instance completed or failed
- * according to the observable emissions.The returned {@link CompletionStage} is redeemed with an instance of
- * {@link Optional}. This {@code Optional} is empty is the {@link Observable} is empty, or emits {@code null} as first
- * value. If the {@link Observable} emits a non-null value, this value is also wrapped into an {@code Optional}
- * instance. If the  {@link Observable} emits multiple values, the first one is used, and the {@link CompletionStage}
- * is completed with an instance of optional wrapping the first emitted item. Other items and potential error are
- * ignored. If the  {@link Observable} fails before emitting a first item, the {@link CompletionStage} is completed
- * with the failure.
+ * according to the stream emissions. The returned {@link CompletionStage} is redeemed with an instance of
+ * {@link Optional} to distinguish stream emitting values from empty streams. If the stream is empty, the returned
+ * {@link CompletionStage} is completed with an empty optional. If the stream emits multiple values, the first one is
+ * used, and the {@link CompletionStage} is completed with an instance of optional wrapping the first emitted item.
+ * Other items and potential error are ignored. If the stream fails before emitting a first item, the
+ * {@link CompletionStage} is completed with the failure.
  * </p>
  * <p>
  * <h4>fromCompletionStage</h4>
- * The {@link #fromCompletionStage(CompletionStage)} method returns an {@link Observable} instance completed or failed
+ * The {@link #fromCompletionStage(CompletionStage)} method returns a {@link Observable} instance completed or failed
  * according to the passed {@link CompletionStage} completion. Note that if the future emits a {@code null} value,
- * the {@link Observable} emits the {@code null} value and completes. If the future completes with a value, the
- * observable emits the value and then completes. If the future completes with a failure, the stream emits the failure.
+ * the {@link Observable} emits {@code null}. If the future completes with a value, the observable emits the value and
+ * then completes. If the future completes with a failure, the stream emits the failure.
  * </p>
  * <p>
  * <h4>fromPublisher</h4>
- * The {@link #fromPublisher(Publisher)} method returns an {@link Observable} emitting the same items, failure and
+ * The {@link #fromPublisher(Publisher)} method returns a {@link Observable} emitting the same items, failure and
  * completion as the passed {@link Publisher}. If the passed {@link Publisher} is empty, the returned {@link Observable}
- * is also empty. The source {@code publisher} is consumed in an unbounded fashion without applying any back-pressure
- * to it.
+ * is also empty. The operation doesn't interfere with back-pressure which is determined by the source
+ * {@code Publisher}'s back-pressure behavior.
  * </p>
  * <p>
  * <h4>toRSPublisher</h4>
  * The {@link #toRSPublisher(Observable)} method returns a {@link Publisher} emitting the same events as the source
- * {@code observable}. It converts the  {@link Observable} into a {@link Publisher} but without back-pressure strategy
- * (using a buffer). If the buffer reaches its capacity, an error is sent ({@code MissingBackPressureException}). If
- * the source {@link Observable} emits {@code null} values, the @{code Publisher} fails.
+ * {@link Observable}. The operation doesn't interfere with back-pressure which is determined by the source
+ * {@code Observable}'s back-pressure behavior. If the passed {@link Observable} emits a {@code null} value, the
+ * returned {@link Publisher} fails.
  * </p>
  */
 public class ObservableConverter implements ReactiveTypeConverter<Observable> {
+
+    private static <X> void toStreamEvents(CompletionStage<X> cs, Emitter<Object> emitter) {
+        cs.whenComplete((X res, Throwable err) -> {
+            if (err != null) {
+                if (err instanceof CompletionException) {
+                    emitter.onError(err.getCause());
+                } else {
+                    emitter.onError(err);
+                }
+            } else {
+                emitter.onNext(res);
+                emitter.onCompleted();
+            }
+        });
+    }
 
     @SuppressWarnings("unchecked")
     @Override
@@ -70,8 +84,8 @@ public class ObservableConverter implements ReactiveTypeConverter<Observable> {
         ((Observable<T>) instance)
                 .firstOrDefault(null)
                 .subscribe(
-                    res -> future.complete(Optional.ofNullable(res)),
-                    future::completeExceptionally
+                        res -> future.complete(Optional.ofNullable(res)),
+                        future::completeExceptionally
                 );
         return future;
     }
@@ -79,21 +93,6 @@ public class ObservableConverter implements ReactiveTypeConverter<Observable> {
     @Override
     public <X> Observable fromCompletionStage(CompletionStage<X> cs) {
         return Observable.create(emitter -> toStreamEvents(cs, emitter), Emitter.BackpressureMode.ERROR);
-    }
-
-    private static <X> void toStreamEvents(CompletionStage<X> cs, Emitter<Object> emitter) {
-        cs.whenComplete((X res, Throwable err) -> {
-            if (err != null) {
-                if (err instanceof CompletionException) {
-                    emitter.onError(err.getCause());
-                } else {
-                    emitter.onError(err);
-                }
-            } else {
-                emitter.onNext(res);
-                emitter.onCompleted();
-            }
-        });
     }
 
     @Override

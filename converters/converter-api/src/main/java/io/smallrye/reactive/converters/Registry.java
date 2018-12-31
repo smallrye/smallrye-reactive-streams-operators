@@ -1,18 +1,10 @@
 package io.smallrye.reactive.converters;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.ServiceLoader;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.StreamSupport;
 
 public class Registry {
-
-    private Registry() {
-        // Avoid direct instantiation.
-    }
 
     private static final List<ReactiveTypeConverter> converters;
 
@@ -21,6 +13,10 @@ public class Registry {
         // Load the converters from the service loader.
         StreamSupport.stream(ServiceLoader.load(ReactiveTypeConverter.class).spliterator(), false)
                 .forEach(converters::add);
+    }
+
+    private Registry() {
+        // Avoid direct instantiation.
     }
 
     public static <T> Optional<ReactiveTypeConverter<T>> lookup(Class<T> input) {

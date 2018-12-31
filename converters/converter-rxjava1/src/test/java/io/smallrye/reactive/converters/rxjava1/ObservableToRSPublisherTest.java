@@ -2,7 +2,6 @@ package io.smallrye.reactive.converters.rxjava1;
 
 import io.smallrye.reactive.converters.ReactiveTypeConverter;
 import io.smallrye.reactive.converters.Registry;
-import io.smallrye.reactive.converters.tck.ToCompletionStageTCK;
 import io.smallrye.reactive.converters.tck.ToRSPublisherTCK;
 import org.junit.Before;
 import rx.Emitter;
@@ -32,7 +31,7 @@ public class ObservableToRSPublisherTest extends ToRSPublisherTCK<Observable> {
     @Override
     protected Optional<Observable> createInstanceEmittingASingleValueAsynchronously(String value) {
         return Optional.of(
-            Observable.just(value).delay(DELAY, TimeUnit.MILLISECONDS).observeOn(Schedulers.computation())
+                Observable.just(value).delay(DELAY, TimeUnit.MILLISECONDS).observeOn(Schedulers.computation())
         );
     }
 

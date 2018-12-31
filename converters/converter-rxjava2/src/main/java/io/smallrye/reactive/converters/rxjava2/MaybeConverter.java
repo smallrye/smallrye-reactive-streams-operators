@@ -3,7 +3,6 @@ package io.smallrye.reactive.converters.rxjava2;
 import io.reactivex.Flowable;
 import io.reactivex.Maybe;
 import io.reactivex.MaybeEmitter;
-import io.reactivex.Single;
 import io.smallrye.reactive.converters.ReactiveTypeConverter;
 import org.reactivestreams.Publisher;
 
@@ -14,34 +13,35 @@ import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
 
 /**
- * Converter handling the RX Java 2 Maybe type.
+ * Converter handling the RX Java 2 {@link Maybe} type.
  *
- *
- * <strong>Important:</strong> this converter uses the {@link Optional} type to denote whether a result has been emitted or not.
  *
  * <p>
  * <h4>toCompletionStage</h4>
- * The {@link #toCompletionStage(Maybe)} method returns a {@link CompletionStage} instance completed or failed according to the
- * maybe emission. Note that if the maybe emits a {@code null} value, the {@link CompletionStage} fails. If the maybe
- * is empty, the completion stage completes with an empty {@code Optional}. If the maybe emits a value, the completion
- * stage completes with the value wrapped into an {@code Optional}.
+ * The {@link #toCompletionStage(Maybe)} method returns a {@link CompletionStage} instance completed or failed according
+ * to the {@link Maybe} emission. If the {@link Maybe} is empty, the completion stage completes with an empty
+ * {@code Optional}. If the maybe emits a value, the completion stage completes with the value wrapped into an
+ * {@code Optional}.
  * </p>
  * <p>
  * <h4>fromCompletionStage</h4>
- * The {@link #fromCompletionStage(CompletionStage)} method returns a {@link Maybe} instance completed or failed according to the
- * passed {@link CompletionStage} completion. Note that if the passed future emits a {@code null} value, the {@link Maybe} completes
- * <em>empty</em>.
+ * The {@link #fromCompletionStage(CompletionStage)} method returns a {@link Maybe} instance completed or failed
+ * according to the passed {@link CompletionStage} completion. Note that if the passed future emits a {@code null} value,
+ * the {@link Maybe} completes <em>empty</em>. If the {@link CompletionStage} is completed with a non-empty
+ * {@link Optional}, the value is unwrapped. If the {@link CompletionStage} is completed with an empty {@link Optional},
+ * the returned {@link Maybe} is completed empty.
  * </p>
  * <p>
  * <h4>fromPublisher</h4>
- * The {@link #fromPublisher(Publisher)} method returns a {@link Maybe} emitting the first value of the stream. If the passed
- * {@link Publisher} is empty, the returned {@link Maybe} is empty. If the passed stream emits more than one value, only the first one is
- * used, the other values are discarded.
+ * The {@link #fromPublisher(Publisher)} method returns a {@link Maybe} emitting the first value of the stream. If the
+ * passed {@link Publisher} is empty, the returned {@link Maybe} is empty. If the passed stream emits more than one
+ * value, only the first one is used, the other values are discarded.
  * </p>
  * <p>
  * <h4>toRSPublisher</h4>
- * The {@link #toRSPublisher(Maybe)} method returns a stream emitting a single value (if any) followed by the completion signal. If the passed
- * {@link Maybe} fails, the returned stream also fails. If the passed {@link Maybe} is empty, the returned stream is empty.
+ * The {@link #toRSPublisher(Maybe)} method returns a stream emitting a single value (if any) followed by the
+ * completion signal. If the passed {@link Maybe} fails, the returned {@link Publisher} also fails. If the passed
+ * {@link Maybe} is empty, the returned stream is empty.
  * </p>
  */
 public class MaybeConverter implements ReactiveTypeConverter<Maybe> {

@@ -2,7 +2,6 @@ package io.smallrye.reactive.converters.rxjava1;
 
 import io.smallrye.reactive.converters.ReactiveTypeConverter;
 import io.smallrye.reactive.converters.Registry;
-import io.smallrye.reactive.converters.tck.ToCompletionStageTCK;
 import io.smallrye.reactive.converters.tck.ToRSPublisherTCK;
 import org.junit.Before;
 import rx.Completable;
@@ -64,7 +63,7 @@ public class CompletableToRSPublisherTest extends ToRSPublisherTCK<Completable> 
 
     @Override
     protected Optional<Completable> createInstanceEmittingAMultipleValuesAndFailure(String v1, String v2,
-                                                                               RuntimeException e) {
+                                                                                    RuntimeException e) {
         return Optional.empty();
     }
 
