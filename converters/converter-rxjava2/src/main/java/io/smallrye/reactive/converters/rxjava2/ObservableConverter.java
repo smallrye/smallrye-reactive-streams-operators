@@ -6,7 +6,6 @@ import io.reactivex.Observable;
 import io.smallrye.reactive.converters.ReactiveTypeConverter;
 import org.reactivestreams.Publisher;
 
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
@@ -17,12 +16,12 @@ import java.util.concurrent.CompletionStage;
  * <p>
  * <h4>toCompletionStage</h4>
  * The {@link #toCompletionStage(Observable)} method returns a {@link CompletionStage} instance completed or failed
- * according to the stream emissions. The returned {@link CompletionStage} is redeemed with an instance of
- * {@link Optional} to distinguish stream emitting values from empty streams. If the stream is empty, the returned
- * {@link CompletionStage} is completed with an empty optional. If the stream emits multiple values, the first one is
- * used, and the {@link CompletionStage} is completed with an instance of optional wrapping the first emitted item.
- * Other items and potential error are ignored. If the stream fails before emitting a first item, the
- * {@link CompletionStage} is completed with the failure.
+ * according to the stream emissions. The returned {@link CompletionStage} is redeemed either the first emitted value or
+ * {@code null} to distinguish stream emitting values from empty streams. If the stream is empty, the returned
+ * {@link CompletionStage} is completed with {@code null}. If the stream emits multiple values, the first one is
+ * used, and the {@link CompletionStage} is completed with an instance of the first emitted item. Other items and
+ * potential error are ignored. If the stream fails before emitting a first item, the {@link CompletionStage} is
+ * completed with the failure.
  * </p>
  * <p>
  * <h4>fromCompletionStage</h4>
@@ -76,13 +75,13 @@ public class ObservableConverter implements ReactiveTypeConverter<Observable> {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T> CompletionStage<Optional<T>> toCompletionStage(Observable instance) {
-        CompletableFuture<Optional<T>> future = new CompletableFuture<>();
+    public <T> CompletionStage<T> toCompletionStage(Observable instance) {
+        CompletableFuture<T> future = new CompletableFuture<>();
         //noinspection ResultOfMethodCallIgnored
         ((Observable<T>) instance).firstElement().subscribe(
-                res -> future.complete(Optional.of(res)),
+                future::complete,
                 future::completeExceptionally,
-                () -> future.complete(Optional.empty())
+                () -> future.complete(null)
         );
         return future;
     }

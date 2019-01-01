@@ -6,7 +6,6 @@ import io.smallrye.reactive.converters.ReactiveTypeConverter;
 import org.reactivestreams.Publisher;
 
 import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
@@ -17,8 +16,7 @@ import java.util.concurrent.CompletionStage;
  * <p>
  * <h4>toCompletionStage</h4>
  * The {@link #toCompletionStage(Single)} method returns a {@link CompletionStage} instance completed or failed
- * according to the single emission. <strong>Important:</strong> even if there is always a value provided, the
- * {@link CompletionStage} is completed with an {@link Optional} instance wrapping the result.
+ * according to the single emission.
  * </p>
  * <p>
  * <h4>fromCompletionStage</h4>
@@ -42,12 +40,12 @@ public class SingleConverter implements ReactiveTypeConverter<Single> {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T> CompletionStage<Optional<T>> toCompletionStage(Single instance) {
-        CompletableFuture<Optional<T>> future = new CompletableFuture<>();
+    public <T> CompletionStage<T> toCompletionStage(Single instance) {
+        CompletableFuture<T> future = new CompletableFuture<>();
         Single<T> s = Objects.requireNonNull(instance);
         //noinspection ResultOfMethodCallIgnored
         s.subscribe(
-                res -> future.complete(Optional.of(res)),
+                future::complete,
                 future::completeExceptionally
         );
         return future;

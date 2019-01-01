@@ -48,8 +48,8 @@ public abstract class ToCompletionStageTCK<T> {
             // Test ignored.
             return;
         }
-        CompletionStage<Optional<String>> stage = converter().toCompletionStage(instance.get());
-        Optional<String> res = stage.toCompletableFuture().join();
+        CompletionStage<String> stage = converter().toCompletionStage(instance.get());
+        String res = stage.toCompletableFuture().join();
         assertThat(res).contains(uuid);
     }
 
@@ -61,15 +61,15 @@ public abstract class ToCompletionStageTCK<T> {
             // Test ignored.
             return;
         }
-        CompletionStage<Optional<String>> stage = converter().toCompletionStage(instance.get());
-        Optional<String> res = stage.toCompletableFuture().join();
+        CompletionStage<String> stage = converter().toCompletionStage(instance.get());
+        String res = stage.toCompletableFuture().join();
         assertThat(res).contains(uuid);
     }
 
     @Test
     public void testWithImmediateFailure() {
         T instance = createInstanceFailingImmediately(new BoomException());
-        CompletionStage<Optional<String>> stage = converter().toCompletionStage(instance);
+        CompletionStage<String> stage = converter().toCompletionStage(instance);
         try {
             stage.toCompletableFuture().join();
             fail("Exception expected");
@@ -81,7 +81,7 @@ public abstract class ToCompletionStageTCK<T> {
     @Test
     public void testWithAsynchronousFailure() {
         T instance = createInstanceFailingAsynchronously(new BoomException());
-        CompletionStage<Optional<String>> stage = converter().toCompletionStage(instance);
+        CompletionStage<String> stage = converter().toCompletionStage(instance);
         try {
             stage.toCompletableFuture().join();
             fail("Exception expected");
@@ -97,7 +97,7 @@ public abstract class ToCompletionStageTCK<T> {
             // Test ignored.
             return;
         }
-        CompletionStage<Optional<String>> stage = converter().toCompletionStage(optional.get());
+        CompletionStage<String> stage = converter().toCompletionStage(optional.get());
         assertNullValue(stage);
     }
 
@@ -108,14 +108,14 @@ public abstract class ToCompletionStageTCK<T> {
             // Test ignored.
             return;
         }
-        CompletionStage<Optional<String>> stage = converter().toCompletionStage(optional.get());
+        CompletionStage<String> stage = converter().toCompletionStage(optional.get());
         assertNullValue(stage);
     }
 
-    private void assertNullValue(CompletionStage<Optional<String>> stage) {
+    private void assertNullValue(CompletionStage<String> stage) {
         if (supportNullValues()) {
-            Optional<String> val = stage.toCompletableFuture().join();
-            assertThat(val).isEmpty();
+            String val = stage.toCompletableFuture().join();
+            assertThat(val).isNull();
         } else {
             try {
                 stage.toCompletableFuture().join();
@@ -136,8 +136,8 @@ public abstract class ToCompletionStageTCK<T> {
             // Test ignored.
             return;
         }
-        CompletionStage<Optional<String>> stage = converter().toCompletionStage(instance.get());
-        Optional<String> res = stage.toCompletableFuture().join();
+        CompletionStage<String> stage = converter().toCompletionStage(instance.get());
+        String res = stage.toCompletableFuture().join();
         assertThat(res).contains(uuid);
     }
 
@@ -150,8 +150,8 @@ public abstract class ToCompletionStageTCK<T> {
             // Test ignored.
             return;
         }
-        CompletionStage<Optional<String>> stage = converter().toCompletionStage(instance.get());
-        Optional<String> res = stage.toCompletableFuture().join();
+        CompletionStage<String> stage = converter().toCompletionStage(instance.get());
+        String res = stage.toCompletableFuture().join();
         assertThat(res).contains(uuid);
     }
 
@@ -163,7 +163,7 @@ public abstract class ToCompletionStageTCK<T> {
             // Test ignored.
             return;
         }
-        CompletableFuture<Optional<String>> stage = converter().<String>toCompletionStage(instance.get()).toCompletableFuture();
+        CompletableFuture<String> stage = converter().<String>toCompletionStage(instance.get()).toCompletableFuture();
         CountDownLatch latch = new CountDownLatch(1);
 
         new Thread(() -> {
@@ -184,9 +184,9 @@ public abstract class ToCompletionStageTCK<T> {
             // Test ignored
             return;
         }
-        CompletionStage<Optional<String>> stage = converter().toCompletionStage(instance.get());
-        Optional<String> optional = stage.toCompletableFuture().join();
-        assertThat(optional).isEmpty();
+        CompletionStage<String> stage = converter().toCompletionStage(instance.get());
+        String val = stage.toCompletableFuture().join();
+        assertThat(val).isNull();
     }
 
     @Test
@@ -196,9 +196,9 @@ public abstract class ToCompletionStageTCK<T> {
             // Test ignored
             return;
         }
-        CompletionStage<Optional<String>> stage = converter().toCompletionStage(instance.get());
-        Optional<String> optional = stage.toCompletableFuture().join();
-        assertThat(optional).isEmpty();
+        CompletionStage<String> stage = converter().toCompletionStage(instance.get());
+        String val = stage.toCompletableFuture().join();
+        assertThat(val).isNull();
     }
 
     @Test
@@ -208,9 +208,9 @@ public abstract class ToCompletionStageTCK<T> {
             // Test ignored
             return;
         }
-        CompletionStage<Optional<String>> stage = converter().toCompletionStage(instance.get());
-        Optional<String> optional = stage.toCompletableFuture().join();
-        assertThat(optional).isEmpty();
+        CompletionStage<String> stage = converter().toCompletionStage(instance.get());
+        String val = stage.toCompletableFuture().join();
+        assertThat(val).isNull();
     }
 
 

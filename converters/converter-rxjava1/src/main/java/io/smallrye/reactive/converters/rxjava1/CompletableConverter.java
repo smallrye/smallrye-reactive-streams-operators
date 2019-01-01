@@ -6,7 +6,6 @@ import org.reactivestreams.Publisher;
 import rx.Completable;
 
 import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
@@ -17,7 +16,7 @@ import java.util.concurrent.CompletionStage;
  * <p>
  * <h4>toCompletionStage</h4>
  * The {@link #toCompletionStage(Completable)} method returns a {@link CompletionStage} instance completed with an
- * empty {@link Optional} upon success or failed according to the {@link Completable} signals.
+ * {@code null} value upon success or failed according to the {@link Completable} signals.
  * </p>
  * <p>
  * <h4>fromCompletionStage</h4>
@@ -44,12 +43,12 @@ public class CompletableConverter implements ReactiveTypeConverter<Completable> 
 
     @SuppressWarnings("unchecked")
     @Override
-    public CompletionStage<Optional<Void>> toCompletionStage(Completable instance) {
-        CompletableFuture<Optional<Void>> future = new CompletableFuture<>();
+    public CompletionStage<Void> toCompletionStage(Completable instance) {
+        CompletableFuture<Void> future = new CompletableFuture<>();
         Completable s = Objects.requireNonNull(instance);
         //noinspection ResultOfMethodCallIgnored
         s.subscribe(
-                () -> future.complete(Optional.empty()),
+                () -> future.complete(null),
                 future::completeExceptionally
         );
         return future;

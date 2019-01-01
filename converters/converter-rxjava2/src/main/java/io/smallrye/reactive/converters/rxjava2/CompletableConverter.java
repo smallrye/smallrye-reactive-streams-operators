@@ -6,7 +6,6 @@ import io.smallrye.reactive.converters.ReactiveTypeConverter;
 import org.reactivestreams.Publisher;
 
 import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
@@ -16,8 +15,8 @@ import java.util.concurrent.CompletionStage;
  *
  * <p>
  * <h4>toCompletionStage</h4>
- * The {@link #toCompletionStage(Completable)} method returns a {@link CompletionStage} instance completed with an
- * empty {@link Optional} upon success or failed according to the {@link Completable} signals.
+ * The {@link #toCompletionStage(Completable)} method returns a {@link CompletionStage} instance completed with
+ * {@code null} upon success or failed according to the {@link Completable} signals.
  * </p>
  * <p>
  * <h4>fromCompletionStage</h4>
@@ -44,12 +43,12 @@ public class CompletableConverter implements ReactiveTypeConverter<Completable> 
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T> CompletionStage<Optional<T>> toCompletionStage(Completable instance) {
-        CompletableFuture<Optional<T>> future = new CompletableFuture<>();
+    public <T> CompletionStage<T> toCompletionStage(Completable instance) {
+        CompletableFuture<T> future = new CompletableFuture<>();
         Completable s = Objects.requireNonNull(instance);
         //noinspection ResultOfMethodCallIgnored
         s.subscribe(
-                () -> future.complete(Optional.empty()),
+                () -> future.complete(null),
                 future::completeExceptionally
         );
         return future;

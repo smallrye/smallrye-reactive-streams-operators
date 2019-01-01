@@ -4,7 +4,6 @@ import io.reactivex.Flowable;
 import io.smallrye.reactive.converters.ReactiveTypeConverter;
 import org.reactivestreams.Publisher;
 
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
@@ -14,12 +13,10 @@ import java.util.concurrent.CompletionStage;
  * <p>
  * <h4>toCompletionStage</h4>
  * The {@link #toCompletionStage(Flowable)} method returns a {@link CompletionStage} instance completed or failed
- * according to the stream emissions. The returned {@link CompletionStage} is redeemed with an instance of
- * {@link Optional} to distinguish stream emitting values from empty streams. If the stream is empty, the returned
- * {@link CompletionStage} is completed with an empty optional. If the stream emits multiple values, the first one is
- * used, and the {@link CompletionStage} is completed with an instance of optional wrapping the first emitted item.
- * Other items and potential error are ignored. If the stream fails before emitting a first item, the
- * {@link CompletionStage} is completed with the failure.
+ * according to the stream emissions. The returned {@link CompletionStage} is redeemed with the first emitted value,
+ * {@code null} if the stream is empty. If the stream emits multiple values, the first one is used, and the
+ * {@link CompletionStage} is completed with the first emitted item. Other items and potential error are ignored. If
+ * the stream fails before emitting a first item, the {@link CompletionStage} is completed with the failure.
  * </p>
  * <p>
  * <h4>fromCompletionStage</h4>
@@ -61,13 +58,13 @@ public class FlowableConverter implements ReactiveTypeConverter<Flowable> {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T> CompletionStage<Optional<T>> toCompletionStage(Flowable instance) {
-        CompletableFuture<Optional<T>> future = new CompletableFuture<>();
+    public <T> CompletionStage<T> toCompletionStage(Flowable instance) {
+        CompletableFuture<T> future = new CompletableFuture<>();
         //noinspection ResultOfMethodCallIgnored
         ((Flowable<T>) instance).firstElement().subscribe(
-                res -> future.complete(Optional.of(res)),
+                future::complete,
                 future::completeExceptionally,
-                () -> future.complete(Optional.empty())
+                () -> future.complete(null)
         );
         return future;
     }

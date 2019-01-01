@@ -19,9 +19,8 @@ import java.util.concurrent.CompletionStage;
  * <p>
  * <h4>toCompletionStage</h4>
  * The {@link #toCompletionStage(Maybe)} method returns a {@link CompletionStage} instance completed or failed according
- * to the {@link Maybe} emission. If the {@link Maybe} is empty, the completion stage completes with an empty
- * {@code Optional}. If the maybe emits a value, the completion stage completes with the value wrapped into an
- * {@code Optional}.
+ * to the {@link Maybe} emission. If the {@link Maybe} is empty, the completion stage completes with {@code null}. If
+ * the maybe emits a value, the completion stage completes with the value.
  * </p>
  * <p>
  * <h4>fromCompletionStage</h4>
@@ -48,14 +47,14 @@ public class MaybeConverter implements ReactiveTypeConverter<Maybe> {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T> CompletionStage<Optional<T>> toCompletionStage(Maybe instance) {
-        CompletableFuture<Optional<T>> future = new CompletableFuture<>();
+    public <T> CompletionStage<T> toCompletionStage(Maybe instance) {
+        CompletableFuture<T> future = new CompletableFuture<>();
         Maybe<T> s = Objects.requireNonNull(instance);
         //noinspection ResultOfMethodCallIgnored
         s.subscribe(
-                x -> future.complete(Optional.of(x)),
+                future::complete,
                 future::completeExceptionally,
-                () -> future.complete(Optional.empty())
+                () -> future.complete(null)
         );
         return future;
     }

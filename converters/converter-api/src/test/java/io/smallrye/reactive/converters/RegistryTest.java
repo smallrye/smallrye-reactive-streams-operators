@@ -20,7 +20,7 @@ public class RegistryTest {
     private static class Myconverter implements ReactiveTypeConverter<CompletionStage> {
 
         @Override
-        public <X> CompletionStage<Optional<X>> toCompletionStage(CompletionStage instance) {
+        public <X> CompletionStage<X> toCompletionStage(CompletionStage instance) {
             return null;
         }
 

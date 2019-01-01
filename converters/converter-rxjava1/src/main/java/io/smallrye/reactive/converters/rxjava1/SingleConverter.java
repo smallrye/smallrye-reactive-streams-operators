@@ -6,7 +6,6 @@ import org.reactivestreams.Publisher;
 import rx.Single;
 
 import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
@@ -17,8 +16,8 @@ import java.util.concurrent.CompletionStage;
  * <p>
  * <h4>toCompletionStage</h4>
  * The {@link #toCompletionStage(Single)} method returns a {@link CompletionStage} instance completed or failed
- * according to the single emission. <strong>Important:</strong> even if there is always a value provided, the
- * {@link CompletionStage} is completed with an {@link Optional} instance wrapping the result.
+ * according to the single emission. If the passed {@code Single} emits {@code null}, the returned
+ * {@link CompletionStage} is redeemed with {@code null}.
  * </p>
  * <p>
  * <h4>fromCompletionStage</h4>
@@ -42,12 +41,12 @@ public class SingleConverter implements ReactiveTypeConverter<Single> {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <X> CompletionStage<Optional<X>> toCompletionStage(Single instance) {
-        CompletableFuture<Optional<X>> future = new CompletableFuture<>();
-        Single<?> s = Objects.requireNonNull(instance);
+    public <X> CompletionStage<X> toCompletionStage(Single instance) {
+        CompletableFuture<X> future = new CompletableFuture<>();
+        Single<X> s = Objects.requireNonNull(instance);
         //noinspection ResultOfMethodCallIgnored
         s.subscribe(
-                v -> future.complete(Optional.ofNullable((X) v)),
+                future::complete,
                 future::completeExceptionally
         );
         return future;
