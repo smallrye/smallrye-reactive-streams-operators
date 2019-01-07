@@ -19,16 +19,6 @@ public class SingleFromCompletionStageTest extends FromCompletionStageTCK<Single
     }
 
     @Override
-    protected boolean supportNullValues() {
-        return false;
-    }
-
-    @Override
-    protected boolean emitValues() {
-        return true;
-    }
-
-    @Override
     protected ReactiveTypeConverter<Single> converter() {
         return converter;
     }
@@ -44,6 +34,7 @@ public class SingleFromCompletionStageTest extends FromCompletionStageTCK<Single
     protected Exception getFailure(Single instance) {
         AtomicReference<Exception> reference = new AtomicReference<>();
         try {
+            //noinspection ResultOfMethodCallIgnored
             instance.blockingGet();
         } catch (Exception e) {
             reference.set(e);

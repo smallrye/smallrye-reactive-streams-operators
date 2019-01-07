@@ -19,16 +19,6 @@ public class SingleFromCompletionStageTest extends FromCompletionStageTCK<Single
     }
 
     @Override
-    protected boolean supportNullValues() {
-        return true;
-    }
-
-    @Override
-    protected boolean emitValues() {
-        return true;
-    }
-
-    @Override
     protected ReactiveTypeConverter<Single> converter() {
         return converter;
     }

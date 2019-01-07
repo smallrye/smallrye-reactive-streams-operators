@@ -21,21 +21,6 @@ public class SingleFromRSPublisherTest extends FromRSPublisherTCK<Single> {
     }
 
     @Override
-    protected boolean supportNullValues() {
-        return true;
-    }
-
-    @Override
-    protected boolean emitSingleValue() {
-        return true;
-    }
-
-    @Override
-    protected boolean emitMultipleValues() {
-        return false;
-    }
-
-    @Override
     protected ReactiveTypeConverter<Single> converter() {
         return converter;
     }

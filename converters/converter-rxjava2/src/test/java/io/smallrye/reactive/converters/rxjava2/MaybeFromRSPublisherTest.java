@@ -21,22 +21,6 @@ public class MaybeFromRSPublisherTest extends FromRSPublisherTCK<Maybe> {
     }
 
     @Override
-    protected boolean supportNullValues() {
-        // The maybe converter handle `null` and complete the stream.
-        return true;
-    }
-
-    @Override
-    protected boolean emitSingleValue() {
-        return true;
-    }
-
-    @Override
-    protected boolean emitMultipleValues() {
-        return false;
-    }
-
-    @Override
     protected ReactiveTypeConverter<Maybe> converter() {
         return converter;
     }
@@ -73,7 +57,7 @@ public class MaybeFromRSPublisherTest extends FromRSPublisherTCK<Maybe> {
     @SuppressWarnings("unchecked")
     @Override
     protected void consume(Maybe instance) {
-        //noinspection ResultOfMethodCallIgnored
+        //noinspection ResultOfMethodCallIgnored,ConstantConditions
         instance.blockingGet(null);
     }
 }

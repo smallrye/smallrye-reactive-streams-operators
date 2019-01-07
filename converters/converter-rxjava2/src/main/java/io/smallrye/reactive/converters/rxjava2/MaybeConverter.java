@@ -108,4 +108,19 @@ public class MaybeConverter implements ReactiveTypeConverter<Maybe> {
     public Class<Maybe> type() {
         return Maybe.class;
     }
+
+    @Override
+    public boolean emitItems() {
+        return true;
+    }
+
+    @Override
+    public boolean emitAtMostOneItem() {
+        return true;
+    }
+
+    @Override
+    public boolean supportNullValue() {
+        return false;
+    }
 }

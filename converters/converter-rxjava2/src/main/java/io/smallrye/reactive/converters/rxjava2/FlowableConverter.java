@@ -80,4 +80,19 @@ public class FlowableConverter implements ReactiveTypeConverter<Flowable> {
     public Class<Flowable> type() {
         return Flowable.class;
     }
+
+    @Override
+    public boolean emitItems() {
+        return true;
+    }
+
+    @Override
+    public boolean emitAtMostOneItem() {
+        return false;
+    }
+
+    @Override
+    public boolean supportNullValue() {
+        return false;
+    }
 }

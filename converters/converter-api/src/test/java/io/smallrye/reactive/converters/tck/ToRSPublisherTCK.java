@@ -44,8 +44,6 @@ public abstract class ToRSPublisherTCK<T> {
 
     protected abstract ReactiveTypeConverter<T> converter();
 
-    protected abstract boolean supportNullValues();
-
     @Test
     public void testWithImmediateValue() {
         String uuid = UUID.randomUUID().toString();
@@ -114,7 +112,7 @@ public abstract class ToRSPublisherTCK<T> {
 
     @Test
     public void testWithImmediateNullValueInAStream() {
-        if (!supportNullValues()) {
+        if (! converter().supportNullValue()) {
             return;
         }
         Optional<T> optional = createInstanceEmittingMultipleValues("a", "b", null, "c");

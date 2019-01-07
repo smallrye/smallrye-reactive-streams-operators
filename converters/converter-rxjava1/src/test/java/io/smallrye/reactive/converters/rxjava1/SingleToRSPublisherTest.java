@@ -94,9 +94,4 @@ public class SingleToRSPublisherTest extends ToRSPublisherTCK<Single> {
     protected ReactiveTypeConverter<Single> converter() {
         return converter;
     }
-
-    @Override
-    protected boolean supportNullValues() {
-        return true;
-    }
 }

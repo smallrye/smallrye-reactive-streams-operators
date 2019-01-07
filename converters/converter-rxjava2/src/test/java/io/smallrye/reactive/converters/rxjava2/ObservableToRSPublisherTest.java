@@ -30,7 +30,7 @@ public class ObservableToRSPublisherTest extends ToRSPublisherTCK<Observable> {
     @Override
     protected Optional<Observable> createInstanceEmittingASingleValueAsynchronously(String value) {
         return Optional.of(
-                Observable.just(value).delay(DELAY, TimeUnit.MILLISECONDS).observeOn(Schedulers.computation())
+                Observable.just(value).delay(DELAY, TimeUnit.MILLISECONDS).observeOn(Schedulers.io())
         );
     }
 
@@ -46,7 +46,7 @@ public class ObservableToRSPublisherTest extends ToRSPublisherTCK<Observable> {
                 .map(x -> {
                     throw e;
                 })
-                .observeOn(Schedulers.computation());
+                .observeOn(Schedulers.io());
     }
 
     @Override
@@ -59,7 +59,7 @@ public class ObservableToRSPublisherTest extends ToRSPublisherTCK<Observable> {
         return Optional.of(
                 Observable.just("X")
                         .delay(DELAY, TimeUnit.MILLISECONDS)
-                        .observeOn(Schedulers.computation())
+                        .observeOn(Schedulers.io())
                         .map(s -> null)
         );
     }
@@ -89,7 +89,7 @@ public class ObservableToRSPublisherTest extends ToRSPublisherTCK<Observable> {
     protected Optional<Observable> createInstanceCompletingAsynchronously() {
         return Optional.of(Observable.just("X")
                 .delay(10, TimeUnit.MILLISECONDS)
-                .observeOn(Schedulers.computation())
+                .observeOn(Schedulers.io())
                 .flatMap(x -> Observable.empty())
         );
     }
@@ -107,10 +107,5 @@ public class ObservableToRSPublisherTest extends ToRSPublisherTCK<Observable> {
     @Override
     protected ReactiveTypeConverter<Observable> converter() {
         return converter;
-    }
-
-    @Override
-    protected boolean supportNullValues() {
-        return false;
     }
 }

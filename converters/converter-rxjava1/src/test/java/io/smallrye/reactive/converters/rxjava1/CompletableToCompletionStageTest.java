@@ -98,9 +98,4 @@ public class CompletableToCompletionStageTest extends ToCompletionStageTCK<Compl
     protected ReactiveTypeConverter<Completable> converter() {
         return converter;
     }
-
-    @Override
-    protected boolean supportNullValues() {
-        return true;
-    }
 }

@@ -28,7 +28,7 @@ public class MaybeToCompletionStageTest extends ToCompletionStageTCK<Maybe> {
 
     @Override
     protected Optional<Maybe> createInstanceEmittingASingleValueAsynchronously(String value) {
-        return Optional.of(Maybe.just(value).delay(DELAY, TimeUnit.MILLISECONDS).observeOn(Schedulers.computation()));
+        return Optional.of(Maybe.just(value).delay(DELAY, TimeUnit.MILLISECONDS).observeOn(Schedulers.io()));
     }
 
     @Override
@@ -43,7 +43,7 @@ public class MaybeToCompletionStageTest extends ToCompletionStageTCK<Maybe> {
                 .map(x -> {
                     throw e;
                 })
-                .observeOn(Schedulers.computation());
+                .observeOn(Schedulers.io());
     }
 
     @Override
@@ -56,7 +56,7 @@ public class MaybeToCompletionStageTest extends ToCompletionStageTCK<Maybe> {
         return Optional.of(Maybe.just("x")
                 .delay(DELAY, TimeUnit.MILLISECONDS)
                 .map(s -> null)
-                .observeOn(Schedulers.computation()));
+                .observeOn(Schedulers.io()));
     }
 
     @Override
@@ -77,7 +77,7 @@ public class MaybeToCompletionStageTest extends ToCompletionStageTCK<Maybe> {
 
     @Override
     protected Optional<Maybe> createInstanceCompletingAsynchronously() {
-        return Optional.of(Maybe.empty().observeOn(Schedulers.computation()));
+        return Optional.of(Maybe.empty().observeOn(Schedulers.io()));
     }
 
     @Override
@@ -93,10 +93,5 @@ public class MaybeToCompletionStageTest extends ToCompletionStageTCK<Maybe> {
     @Override
     protected ReactiveTypeConverter<Maybe> converter() {
         return converter;
-    }
-
-    @Override
-    protected boolean supportNullValues() {
-        return false;
     }
 }

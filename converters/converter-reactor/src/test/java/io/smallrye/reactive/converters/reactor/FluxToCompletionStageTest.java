@@ -92,9 +92,4 @@ public class FluxToCompletionStageTest extends ToCompletionStageTCK<Flux> {
     protected ReactiveTypeConverter<Flux> converter() {
         return converter;
     }
-
-    @Override
-    protected boolean supportNullValues() {
-        return false;
-    }
 }

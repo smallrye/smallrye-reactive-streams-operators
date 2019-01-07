@@ -5,7 +5,6 @@ import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
 import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
 import org.reactivestreams.Publisher;
 
-import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
@@ -47,5 +46,20 @@ public class PublisherBuilderConverter implements ReactiveTypeConverter<Publishe
     @Override
     public Class<PublisherBuilder> type() {
         return PublisherBuilder.class;
+    }
+
+    @Override
+    public boolean emitItems() {
+        return true;
+    }
+
+    @Override
+    public boolean emitAtMostOneItem() {
+        return false;
+    }
+
+    @Override
+    public boolean supportNullValue() {
+        return false;
     }
 }

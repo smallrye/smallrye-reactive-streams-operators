@@ -19,12 +19,6 @@ import static org.assertj.core.api.Assertions.fail;
 
 public abstract class FromRSPublisherTCK<T> {
 
-    protected abstract boolean supportNullValues();
-
-    protected abstract boolean emitSingleValue();
-
-    protected abstract boolean emitMultipleValues();
-
     protected abstract ReactiveTypeConverter<T> converter();
 
     protected abstract String getOne(T instance);
@@ -42,7 +36,7 @@ public abstract class FromRSPublisherTCK<T> {
         T instance = converter()
                 .fromPublisher(publisher);
         String res = getOne(instance);
-        if (emitSingleValue() || emitMultipleValues()) {
+        if (converter().emitItems()) {
             assertThat(res).isEqualTo(uuid);
         } else {
             assertThat(res).isNull();
@@ -58,7 +52,7 @@ public abstract class FromRSPublisherTCK<T> {
         T instance = converter()
                 .fromPublisher(publisher);
         String res = getOne(instance);
-        if (emitSingleValue() || emitMultipleValues()) {
+        if (converter().emitItems()) {
             assertThat(res).isEqualTo(uuid);
         } else {
             assertThat(res).isNull();
@@ -135,7 +129,7 @@ public abstract class FromRSPublisherTCK<T> {
     public void testWithEmpty() {
         Publisher<String> empty = Flowable.empty();
         T instance = converter().fromPublisher(empty);
-        if (!emitSingleValue()) {
+        if (!converter().emitAtMostOneItem()) {
             int count = getAll(instance).size();
             assertThat(count).isEqualTo(0);
         } else {
@@ -151,10 +145,10 @@ public abstract class FromRSPublisherTCK<T> {
     public void testWithMultipleValues() {
         Publisher<String> count = Flowable.range(0, 10).map(i -> Integer.toString(i));
         T instance = converter().fromPublisher(count);
-        if (emitMultipleValues()) {
+        if (converter().emitItems()  && ! converter().emitAtMostOneItem()) {
             List<String> list = getAll(instance);
             assertThat(list).containsExactly("0", "1", "2", "3", "4", "5", "6", "7", "8", "9");
-        } else if (emitSingleValue()) {
+        } else if (converter().emitAtMostOneItem()) {
             String val = getOne(instance);
             assertThat(val).isEqualTo("0");
         } else {
@@ -172,13 +166,13 @@ public abstract class FromRSPublisherTCK<T> {
             return s;
         });
         T instance = converter().fromPublisher(publisher);
-        if (emitMultipleValues()) {
+        if (converter().emitItems()) {
             try {
                 getAll(instance);
             } catch (Exception e) {
                 assertThat(e).isInstanceOf(BoomException.class);
             }
-        } else if (emitSingleValue()) {
+        } else if (converter().emitAtMostOneItem()) {
             try {
                 getOne(instance);
             } catch (Exception e) {

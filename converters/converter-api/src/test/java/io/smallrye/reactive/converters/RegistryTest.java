@@ -43,6 +43,21 @@ public class RegistryTest {
         public Class<CompletionStage> type() {
             return CompletionStage.class;
         }
+
+        @Override
+        public boolean emitItems() {
+            return false;
+        }
+
+        @Override
+        public boolean emitAtMostOneItem() {
+            return false;
+        }
+
+        @Override
+        public boolean supportNullValue() {
+            return false;
+        }
     }
 
 

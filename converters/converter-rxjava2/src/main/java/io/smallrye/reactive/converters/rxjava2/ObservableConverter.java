@@ -96,4 +96,19 @@ public class ObservableConverter implements ReactiveTypeConverter<Observable> {
     public Class<Observable> type() {
         return Observable.class;
     }
+
+    @Override
+    public boolean emitItems() {
+        return true;
+    }
+
+    @Override
+    public boolean emitAtMostOneItem() {
+        return false;
+    }
+
+    @Override
+    public boolean supportNullValue() {
+        return false;
+    }
 }

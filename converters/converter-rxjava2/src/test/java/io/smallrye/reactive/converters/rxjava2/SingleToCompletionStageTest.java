@@ -29,7 +29,7 @@ public class SingleToCompletionStageTest extends ToCompletionStageTCK<Single> {
 
     @Override
     protected Optional<Single> createInstanceEmittingASingleValueAsynchronously(String value) {
-        return Optional.of(Single.just(value).delay(DELAY, TimeUnit.MILLISECONDS).observeOn(Schedulers.computation()));
+        return Optional.of(Single.just(value).delay(DELAY, TimeUnit.MILLISECONDS).observeOn(Schedulers.io()));
     }
 
     @Override
@@ -44,7 +44,7 @@ public class SingleToCompletionStageTest extends ToCompletionStageTCK<Single> {
                 .map(x -> {
                     throw e;
                 })
-                .observeOn(Schedulers.computation());
+                .observeOn(Schedulers.io());
     }
 
     @Override
@@ -57,7 +57,7 @@ public class SingleToCompletionStageTest extends ToCompletionStageTCK<Single> {
         return Optional.of(Single.just("x")
                 .delay(DELAY, TimeUnit.MILLISECONDS)
                 .map(s -> null)
-                .observeOn(Schedulers.computation()));
+                .observeOn(Schedulers.io()));
     }
 
     @Override
@@ -94,10 +94,5 @@ public class SingleToCompletionStageTest extends ToCompletionStageTCK<Single> {
     @Override
     protected ReactiveTypeConverter<Single> converter() {
         return converter;
-    }
-
-    @Override
-    protected boolean supportNullValues() {
-        return false;
     }
 }

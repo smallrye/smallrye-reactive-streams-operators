@@ -93,9 +93,4 @@ public class FluxToRSPublisherTest extends ToRSPublisherTCK<Flux> {
     protected ReactiveTypeConverter<Flux> converter() {
         return converter;
     }
-
-    @Override
-    protected boolean supportNullValues() {
-        return false;
-    }
 }

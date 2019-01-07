@@ -106,9 +106,4 @@ public class ObservableToCompletionStageTest extends ToCompletionStageTCK<Observ
     protected ReactiveTypeConverter<Observable> converter() {
         return converter;
     }
-
-    @Override
-    protected boolean supportNullValues() {
-        return true;
-    }
 }

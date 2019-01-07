@@ -31,7 +31,7 @@ public class FlowableToCompletionStageTest extends ToCompletionStageTCK<Flowable
     @Override
     protected Optional<Flowable> createInstanceEmittingASingleValueAsynchronously(String value) {
         return Optional.of(
-                Flowable.just(value).delay(DELAY, TimeUnit.MILLISECONDS).observeOn(Schedulers.computation())
+                Flowable.just(value).delay(DELAY, TimeUnit.MILLISECONDS).observeOn(Schedulers.io())
         );
     }
 
@@ -47,7 +47,7 @@ public class FlowableToCompletionStageTest extends ToCompletionStageTCK<Flowable
                 .map(x -> {
                     throw e;
                 })
-                .observeOn(Schedulers.computation());
+                .observeOn(Schedulers.io());
     }
 
     @Override
@@ -60,7 +60,7 @@ public class FlowableToCompletionStageTest extends ToCompletionStageTCK<Flowable
         return Optional.of(
                 Flowable.just("X")
                         .delay(DELAY, TimeUnit.MILLISECONDS)
-                        .observeOn(Schedulers.computation())
+                        .observeOn(Schedulers.io())
                         .map(s -> null)
         );
     }
@@ -90,7 +90,7 @@ public class FlowableToCompletionStageTest extends ToCompletionStageTCK<Flowable
     protected Optional<Flowable> createInstanceCompletingAsynchronously() {
         return Optional.of(Flowable.just("X")
                 .delay(10, TimeUnit.MILLISECONDS)
-                .observeOn(Schedulers.computation())
+                .observeOn(Schedulers.io())
                 .flatMap(x -> Flowable.empty())
         );
     }
@@ -108,10 +108,5 @@ public class FlowableToCompletionStageTest extends ToCompletionStageTCK<Flowable
     @Override
     protected ReactiveTypeConverter<Flowable> converter() {
         return converter;
-    }
-
-    @Override
-    protected boolean supportNullValues() {
-        return false;
     }
 }

@@ -19,16 +19,6 @@ public class ObservableFromCompletionStageTest extends FromCompletionStageTCK<Ob
     }
 
     @Override
-    protected boolean supportNullValues() {
-        return true;
-    }
-
-    @Override
-    protected boolean emitValues() {
-        return true;
-    }
-
-    @Override
     protected ReactiveTypeConverter<Observable> converter() {
         return converter;
     }

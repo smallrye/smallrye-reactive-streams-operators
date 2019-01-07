@@ -20,21 +20,6 @@ public class FlowableFromRSPublisherTest extends FromRSPublisherTCK<Flowable> {
     }
 
     @Override
-    protected boolean supportNullValues() {
-        return false;
-    }
-
-    @Override
-    protected boolean emitSingleValue() {
-        return true;
-    }
-
-    @Override
-    protected boolean emitMultipleValues() {
-        return true;
-    }
-
-    @Override
     protected ReactiveTypeConverter<Flowable> converter() {
         return converter;
     }

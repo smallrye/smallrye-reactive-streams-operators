@@ -42,7 +42,7 @@ public class CompletableToCompletionStageTest extends ToCompletionStageTCK<Compl
         return Completable.complete()
                 .delay(DELAY, TimeUnit.MILLISECONDS)
                 .andThen(Completable.error(e))
-                .observeOn(Schedulers.computation());
+                .observeOn(Schedulers.io());
     }
 
     @Override
@@ -76,7 +76,7 @@ public class CompletableToCompletionStageTest extends ToCompletionStageTCK<Compl
         return Optional.of(Completable
                 .complete()
                 .delay(10, TimeUnit.MILLISECONDS)
-                .observeOn(Schedulers.computation())
+                .observeOn(Schedulers.io())
                 .andThen(Completable.complete())
         );
     }
@@ -94,10 +94,5 @@ public class CompletableToCompletionStageTest extends ToCompletionStageTCK<Compl
     @Override
     protected ReactiveTypeConverter<Completable> converter() {
         return converter;
-    }
-
-    @Override
-    protected boolean supportNullValues() {
-        return false;
     }
 }

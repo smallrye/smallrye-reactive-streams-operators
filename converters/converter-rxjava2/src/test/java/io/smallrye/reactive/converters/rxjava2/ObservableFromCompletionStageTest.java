@@ -6,6 +6,7 @@ import io.smallrye.reactive.converters.Registry;
 import io.smallrye.reactive.converters.tck.FromCompletionStageTCK;
 import org.junit.Before;
 
+import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class ObservableFromCompletionStageTest extends FromCompletionStageTCK<Observable> {
@@ -19,16 +20,6 @@ public class ObservableFromCompletionStageTest extends FromCompletionStageTCK<Ob
     }
 
     @Override
-    protected boolean supportNullValues() {
-        return false;
-    }
-
-    @Override
-    protected boolean emitValues() {
-        return true;
-    }
-
-    @Override
     protected ReactiveTypeConverter<Observable> converter() {
         return converter;
     }
@@ -37,13 +28,18 @@ public class ObservableFromCompletionStageTest extends FromCompletionStageTCK<Ob
     @Override
     protected String getOne(Observable instance) {
         Observable<String> single = instance.cast(String.class);
-        return single.blockingLast();
+        try {
+            return single.blockingLast();
+        } catch (NoSuchElementException e) {
+            return null;
+        }
     }
 
     @Override
     protected Exception getFailure(Observable instance) {
         AtomicReference<Exception> reference = new AtomicReference<>();
         try {
+            //noinspection ResultOfMethodCallIgnored
             instance.blockingLast();
         } catch (Exception e) {
             reference.set(e);

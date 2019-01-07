@@ -94,9 +94,4 @@ public class SingleToCompletionStageTest extends ToCompletionStageTCK<Single> {
     protected ReactiveTypeConverter<Single> converter() {
         return converter;
     }
-
-    @Override
-    protected boolean supportNullValues() {
-        return true;
-    }
 }

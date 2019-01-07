@@ -20,21 +20,6 @@ public class ObservableFromRSPublisherTest extends FromRSPublisherTCK<Observable
     }
 
     @Override
-    protected boolean supportNullValues() {
-        return false;
-    }
-
-    @Override
-    protected boolean emitSingleValue() {
-        return true;
-    }
-
-    @Override
-    protected boolean emitMultipleValues() {
-        return true;
-    }
-
-    @Override
     protected ReactiveTypeConverter<Observable> converter() {
         return converter;
     }
@@ -50,6 +35,7 @@ public class ObservableFromRSPublisherTest extends FromRSPublisherTCK<Observable
     protected Exception getFailure(Observable instance) {
         AtomicReference<Exception> reference = new AtomicReference<>();
         try {
+            //noinspection ResultOfMethodCallIgnored
             instance.blockingLast();
         } catch (Exception e) {
             reference.set(e);
@@ -64,6 +50,7 @@ public class ObservableFromRSPublisherTest extends FromRSPublisherTCK<Observable
                 .toList().blockingGet();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     protected void consume(Observable instance) {
         instance.blockingIterable().forEach(x -> {

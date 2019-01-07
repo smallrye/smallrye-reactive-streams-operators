@@ -44,4 +44,19 @@ public class MonoConverter implements ReactiveTypeConverter<Mono> {
     public Class<Mono> type() {
         return Mono.class;
     }
+
+    @Override
+    public boolean emitItems() {
+        return true;
+    }
+
+    @Override
+    public boolean emitAtMostOneItem() {
+        return true;
+    }
+
+    @Override
+    public boolean supportNullValue() {
+        return false;
+    }
 }

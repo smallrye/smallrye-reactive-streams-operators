@@ -20,21 +20,6 @@ public class ObservableFromRSPublisherTest extends FromRSPublisherTCK<Observable
     }
 
     @Override
-    protected boolean supportNullValues() {
-        return true;
-    }
-
-    @Override
-    protected boolean emitSingleValue() {
-        return true;
-    }
-
-    @Override
-    protected boolean emitMultipleValues() {
-        return true;
-    }
-
-    @Override
     protected ReactiveTypeConverter<Observable> converter() {
         return converter;
     }
@@ -43,7 +28,7 @@ public class ObservableFromRSPublisherTest extends FromRSPublisherTCK<Observable
     @Override
     protected String getOne(Observable instance) {
         Observable<String> single = instance.cast(String.class);
-        return single.toBlocking().last();
+        return single.toBlocking().first();
     }
 
     @Override

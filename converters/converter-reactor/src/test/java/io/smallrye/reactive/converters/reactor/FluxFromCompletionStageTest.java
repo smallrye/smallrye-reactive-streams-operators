@@ -39,14 +39,4 @@ public class FluxFromCompletionStageTest extends FromCompletionStageTCK<Flux> {
         }
         return reference.get();
     }
-
-    @Override
-    protected boolean supportNullValues() {
-        return true;
-    }
-
-    @Override
-    protected boolean emitValues() {
-        return true;
-    }
 }

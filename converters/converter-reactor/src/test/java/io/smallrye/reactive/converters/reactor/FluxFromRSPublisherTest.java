@@ -52,19 +52,4 @@ public class FluxFromRSPublisherTest extends FromRSPublisherTCK<Flux> {
     protected void consume(Flux instance) {
         instance.last().block();
     }
-
-    @Override
-    protected boolean supportNullValues() {
-        return true;
-    }
-
-    @Override
-    protected boolean emitSingleValue() {
-        return true;
-    }
-
-    @Override
-    protected boolean emitMultipleValues() {
-        return true;
-    }
 }

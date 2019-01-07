@@ -106,9 +106,4 @@ public class ObservableToRSPublisherTest extends ToRSPublisherTCK<Observable> {
     protected ReactiveTypeConverter<Observable> converter() {
         return converter;
     }
-
-    @Override
-    protected boolean supportNullValues() {
-        return true;
-    }
 }

@@ -24,16 +24,6 @@ public class CompletableFromCompletionStageTest extends FromCompletionStageTCK<C
     }
 
     @Override
-    protected boolean supportNullValues() {
-        return true;
-    }
-
-    @Override
-    protected boolean emitValues() {
-        return false;
-    }
-
-    @Override
     protected ReactiveTypeConverter<Completable> converter() {
         return converter;
     }

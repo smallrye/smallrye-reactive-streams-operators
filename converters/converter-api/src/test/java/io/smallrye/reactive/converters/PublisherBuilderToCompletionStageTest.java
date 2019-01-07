@@ -101,9 +101,4 @@ public class PublisherBuilderToCompletionStageTest extends ToCompletionStageTCK<
     protected ReactiveTypeConverter<PublisherBuilder> converter() {
         return converter;
     }
-
-    @Override
-    protected boolean supportNullValues() {
-        return false;
-    }
 }

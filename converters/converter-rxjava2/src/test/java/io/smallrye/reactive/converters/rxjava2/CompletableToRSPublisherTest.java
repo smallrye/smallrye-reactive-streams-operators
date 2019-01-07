@@ -47,7 +47,7 @@ public class CompletableToRSPublisherTest extends ToRSPublisherTCK<Completable> 
         return Completable.complete()
                 .delay(DELAY, TimeUnit.MILLISECONDS)
                 .andThen(Completable.error(e))
-                .observeOn(Schedulers.computation());
+                .observeOn(Schedulers.io());
     }
 
     @Override
@@ -81,7 +81,7 @@ public class CompletableToRSPublisherTest extends ToRSPublisherTCK<Completable> 
         return Optional.of(Completable
                 .complete()
                 .delay(10, TimeUnit.MILLISECONDS)
-                .observeOn(Schedulers.computation())
+                .observeOn(Schedulers.io())
                 .andThen(Completable.complete())
         );
     }
@@ -99,11 +99,6 @@ public class CompletableToRSPublisherTest extends ToRSPublisherTCK<Completable> 
     @Override
     protected ReactiveTypeConverter<Completable> converter() {
         return converter;
-    }
-
-    @Override
-    protected boolean supportNullValues() {
-        return false;
     }
 
     @Test

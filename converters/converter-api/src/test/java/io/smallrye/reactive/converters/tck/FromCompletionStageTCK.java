@@ -11,10 +11,6 @@ import static org.assertj.core.api.Assertions.fail;
 
 public abstract class FromCompletionStageTCK<T> {
 
-    protected abstract boolean supportNullValues();
-
-    protected abstract boolean emitValues();
-
     protected abstract ReactiveTypeConverter<T> converter();
 
     protected abstract String getOne(T instance);
@@ -27,7 +23,7 @@ public abstract class FromCompletionStageTCK<T> {
         T instance = converter()
                 .fromCompletionStage(CompletableFuture.completedFuture(uuid));
         String res = getOne(instance);
-        if (emitValues()) {
+        if (converter().emitItems()) {
             assertThat(res).isEqualTo(uuid);
         } else {
             assertThat(res).isNull();
@@ -40,7 +36,7 @@ public abstract class FromCompletionStageTCK<T> {
         T instance = converter()
                 .fromCompletionStage(CompletableFuture.supplyAsync(() -> uuid));
         String res = getOne(instance);
-        if (emitValues()) {
+        if (converter().emitItems()) {
             assertThat(res).isEqualTo(uuid);
         } else {
             assertThat(res).isNull();
@@ -74,33 +70,31 @@ public abstract class FromCompletionStageTCK<T> {
     @Test
     public void testWithImmediateNullValue() {
         CompletionStage<Void> future = CompletableFuture.completedFuture(null);
-        if (supportNullValues()) {
-            assertThat(getOne(converter().fromCompletionStage(future))).isNull();
-        } else {
+        if (converter().requireAtLeastOneItem()  && ! converter().supportNullValue()) {
             try {
                 T instance = converter().fromCompletionStage(future);
                 getOne(instance);
                 fail("Exception expected when completing with `null`");
             } catch (Exception e) {
-                // OK.
+                assertThat(e).isInstanceOf(NullPointerException.class);
             }
+        } else {
+            assertThat(getOne(converter().fromCompletionStage(future))).isNull();
         }
     }
 
     @Test
     public void testWithAsynchronousNullValue() {
         CompletionStage<Void> future = CompletableFuture.supplyAsync(() -> null);
-        if (supportNullValues()) {
-            T instance = converter().fromCompletionStage(future);
-            assertThat(getOne(instance)).isNull();
-        } else {
+        if (converter().requireAtLeastOneItem()  && ! converter().supportNullValue()) {
             try {
-                T instance = converter().fromCompletionStage(future);
-                getOne(instance);
+                getOne(converter().fromCompletionStage(future));
                 fail("Exception expected when completing with `null`");
             } catch (Exception e) {
-                // OK.
+                assertThat(e).isInstanceOf(NullPointerException.class);
             }
+        } else {
+            assertThat(getOne(converter().fromCompletionStage(future))).isNull();
         }
     }
 

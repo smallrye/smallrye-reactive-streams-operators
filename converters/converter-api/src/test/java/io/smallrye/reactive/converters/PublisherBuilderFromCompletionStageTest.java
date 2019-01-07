@@ -27,7 +27,11 @@ public class PublisherBuilderFromCompletionStageTest extends FromCompletionStage
     @SuppressWarnings("unchecked")
     @Override
     protected String getOne(PublisherBuilder instance) {
-        return ((Optional<String>) instance.findFirst().run().toCompletableFuture().join()).orElse(null);
+        try {
+            return ((Optional<String>) instance.findFirst().run().toCompletableFuture().join()).orElse(null);
+        } catch (CompletionException e) {
+            return null;
+        }
     }
 
     @Override
@@ -41,15 +45,5 @@ public class PublisherBuilderFromCompletionStageTest extends FromCompletionStage
             reference.set((e instanceof CompletionException ? e.getCause() : e));
         }
         return (Exception) reference.get();
-    }
-
-    @Override
-    protected boolean supportNullValues() {
-        return false;
-    }
-
-    @Override
-    protected boolean emitValues() {
-        return true;
     }
 }

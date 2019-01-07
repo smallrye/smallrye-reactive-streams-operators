@@ -87,9 +87,4 @@ public class MonoToCompletionStageTest extends ToCompletionStageTCK<Mono> {
     protected ReactiveTypeConverter<Mono> converter() {
         return converter;
     }
-
-    @Override
-    protected boolean supportNullValues() {
-        return false;
-    }
 }

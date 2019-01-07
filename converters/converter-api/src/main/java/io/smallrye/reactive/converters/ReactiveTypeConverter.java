@@ -8,10 +8,21 @@ import java.util.concurrent.CompletionStage;
 /**
  * Converts a specific reactive types from and to {@link CompletionStage} and {@code Publisher}.
  *
+ * In addition to conversion operations, this class provides characteristics on the converted type:
+ * <ul>
+ *     <li>whether or not the converted type {@code <T>} may emit at most one item</li>
+ *     <li>whether or not the converted type {@code <T>} may emit multiple items</li>
+ *     <li>whether or not the converted type {@code <T>} may emit {@code null} values</li>
+ *     <li>...</li>
+ * </ul>
+ *
+ * <p>
+ * Implementations must be tested against the TCK by extending the test case from the
+ *  {@code io.smallrye.reactive.converters.tck} packages.
+ * </p>
+ *
  * @param <T> the converted type.
- *            <p>
- *            Implementations must be tested against the TCK by extending the test case from the
- *            {@code io.smallrye.reactive.converters.tck} packages.
+ *
  */
 public interface ReactiveTypeConverter<T> {
 
@@ -137,5 +148,30 @@ public interface ReactiveTypeConverter<T> {
      * managed by the same converter.
      */
     Class<T> type();
+
+    /**
+     * @return {@code true} if the type {@code T} may emit items, {@code false} otherwise.
+     */
+    boolean emitItems();
+
+    /**
+     * @return {@code true} if the type {@code T} may emit items at most one item, {@code false} otherwise. Returning
+     * {@code false} to this method means that the converted type only signals about completion or error. Returning
+     * {@code true} means that {@link #emitItems()} must also return {@code true}.
+     */
+    boolean emitAtMostOneItem();
+
+    /**
+     * @return {@code true} if the type {@code T} can emit or receive {@code null} as item.
+     */
+    boolean supportNullValue();
+
+    /**
+     * @return {@code true} if the type {@code T} require at least one item. Converting from a type not emitting a
+     * value item would fail.
+     */
+    default boolean requireAtLeastOneItem() {
+        return false;
+    }
 
 }

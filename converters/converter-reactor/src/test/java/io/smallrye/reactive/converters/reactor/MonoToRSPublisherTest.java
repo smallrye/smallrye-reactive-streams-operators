@@ -88,9 +88,4 @@ public class MonoToRSPublisherTest extends ToRSPublisherTCK<Mono> {
     protected ReactiveTypeConverter<Mono> converter() {
         return converter;
     }
-
-    @Override
-    protected boolean supportNullValues() {
-        return false;
-    }
 }

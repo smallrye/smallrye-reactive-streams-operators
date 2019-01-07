@@ -38,8 +38,6 @@ public abstract class ToCompletionStageTCK<T> {
 
     protected abstract ReactiveTypeConverter<T> converter();
 
-    protected abstract boolean supportNullValues();
-
     @Test
     public void testWithImmediateValue() {
         String uuid = UUID.randomUUID().toString();
@@ -113,7 +111,7 @@ public abstract class ToCompletionStageTCK<T> {
     }
 
     private void assertNullValue(CompletionStage<String> stage) {
-        if (supportNullValues()) {
+        if (converter().supportNullValue()) {
             String val = stage.toCompletableFuture().join();
             assertThat(val).isNull();
         } else {

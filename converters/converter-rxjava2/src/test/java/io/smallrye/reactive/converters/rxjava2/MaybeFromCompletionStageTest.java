@@ -25,17 +25,6 @@ public class MaybeFromCompletionStageTest extends FromCompletionStageTCK<Maybe> 
     }
 
     @Override
-    protected boolean supportNullValues() {
-        // The maybe converter handle `null` and complete the stream.
-        return true;
-    }
-
-    @Override
-    protected boolean emitValues() {
-        return true;
-    }
-
-    @Override
     protected ReactiveTypeConverter<Maybe> converter() {
         return converter;
     }

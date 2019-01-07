@@ -96,9 +96,4 @@ public class CompletableToRSPublisherTest extends ToRSPublisherTCK<Completable> 
     protected ReactiveTypeConverter<Completable> converter() {
         return converter;
     }
-
-    @Override
-    protected boolean supportNullValues() {
-        return true;
-    }
 }

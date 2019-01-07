@@ -45,4 +45,19 @@ public class FluxConverter implements ReactiveTypeConverter<Flux> {
     public Class<Flux> type() {
         return Flux.class;
     }
+
+    @Override
+    public boolean emitItems() {
+        return true;
+    }
+
+    @Override
+    public boolean emitAtMostOneItem() {
+        return false;
+    }
+
+    @Override
+    public boolean supportNullValue() {
+        return false;
+    }
 }

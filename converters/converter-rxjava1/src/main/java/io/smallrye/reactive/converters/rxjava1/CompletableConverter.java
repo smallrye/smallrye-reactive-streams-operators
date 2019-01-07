@@ -88,4 +88,19 @@ public class CompletableConverter implements ReactiveTypeConverter<Completable> 
     public Class<Completable> type() {
         return Completable.class;
     }
+
+    @Override
+    public boolean emitItems() {
+        return false;
+    }
+
+    @Override
+    public boolean emitAtMostOneItem() {
+        return false;
+    }
+
+    @Override
+    public boolean supportNullValue() {
+        return true;
+    }
 }

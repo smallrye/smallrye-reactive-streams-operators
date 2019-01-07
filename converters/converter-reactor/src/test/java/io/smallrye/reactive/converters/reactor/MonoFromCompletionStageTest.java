@@ -42,14 +42,4 @@ public class MonoFromCompletionStageTest extends FromCompletionStageTCK<Mono> {
         }
         return reference.get();
     }
-
-    @Override
-    protected boolean supportNullValues() {
-        return true;
-    }
-
-    @Override
-    protected boolean emitValues() {
-        return true;
-    }
 }

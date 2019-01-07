@@ -26,21 +26,6 @@ public class CompletableFromRSPublisherTest extends FromRSPublisherTCK<Completab
     }
 
     @Override
-    protected boolean supportNullValues() {
-        return true;
-    }
-
-    @Override
-    protected boolean emitSingleValue() {
-        return false;
-    }
-
-    @Override
-    protected boolean emitMultipleValues() {
-        return false;
-    }
-
-    @Override
     protected ReactiveTypeConverter<Completable> converter() {
         return converter;
     }

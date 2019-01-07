@@ -87,4 +87,24 @@ public class SingleConverter implements ReactiveTypeConverter<Single> {
     public Class<Single> type() {
         return Single.class;
     }
+
+    @Override
+    public boolean emitItems() {
+        return true;
+    }
+
+    @Override
+    public boolean emitAtMostOneItem() {
+        return true;
+    }
+
+    @Override
+    public boolean supportNullValue() {
+        return true;
+    }
+
+    @Override
+    public boolean requireAtLeastOneItem() {
+        return true;
+    }
 }

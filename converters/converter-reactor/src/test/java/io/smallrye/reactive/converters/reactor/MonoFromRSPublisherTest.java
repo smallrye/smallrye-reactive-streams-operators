@@ -55,19 +55,4 @@ public class MonoFromRSPublisherTest extends FromRSPublisherTCK<Mono> {
         instance.block();
     }
 
-    @Override
-    protected boolean supportNullValues() {
-        return true;
-    }
-
-    @Override
-    protected boolean emitSingleValue() {
-        return true;
-    }
-
-    @Override
-    protected boolean emitMultipleValues() {
-        return false;
-    }
-
 }
