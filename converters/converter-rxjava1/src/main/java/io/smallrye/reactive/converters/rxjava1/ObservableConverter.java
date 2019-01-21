@@ -14,8 +14,8 @@ import java.util.concurrent.CompletionStage;
 /**
  * Converter handling the RX Java  {@link Observable} type.
  *
- * <p>
- * <h4>toCompletionStage</h4>
+ *
+ * <strong>toCompletionStage</strong><br>
  * The {@link #toCompletionStage(Observable)} method returns a {@link CompletionStage} instance completed or failed
  * according to the stream emissions. The returned {@link CompletionStage} is redeemed either the first emitted value or
  * {@code null} to distinguish stream emitting values from empty streams. If the stream is empty, the returned
@@ -24,27 +24,27 @@ import java.util.concurrent.CompletionStage;
  * used, and the {@link CompletionStage} is completed with an instance of the first emitted item. Other items and
  * potential error are ignored. If the stream fails before emitting a first item, the {@link CompletionStage} is
  * completed with the failure.
- * <p>
- * <h4>fromCompletionStage</h4>
+ *
+ * <strong>fromCompletionStage</strong><br>
  * The {@link #fromCompletionStage(CompletionStage)} method returns a {@link Observable} instance completed or failed
  * according to the passed {@link CompletionStage} completion. Note that if the future emits a {@code null} value,
  * the {@link Observable} emits {@code null}. If the future completes with a value, the observable emits the value and
  * then completes. If the future completes with a failure, the stream emits the failure.
- * </p>
- * <p>
- * <h4>fromPublisher</h4>
+ *
+ *
+ * <strong>fromPublisher</strong><br>
  * The {@link #fromPublisher(Publisher)} method returns a {@link Observable} emitting the same items, failure and
  * completion as the passed {@link Publisher}. If the passed {@link Publisher} is empty, the returned {@link Observable}
  * is also empty. The operation doesn't interfere with back-pressure which is determined by the source
  * {@code Publisher}'s back-pressure behavior.
- * </p>
- * <p>
- * <h4>toRSPublisher</h4>
+ *
+ *
+ * <strong>toRSPublisher</strong><br>
  * The {@link #toRSPublisher(Observable)} method returns a {@link Publisher} emitting the same events as the source
  * {@link Observable}. The operation doesn't interfere with back-pressure which is determined by the source
  * {@code Observable}'s back-pressure behavior. If the passed {@link Observable} emits a {@code null} value, the
  * returned {@link Publisher} fails.
- * </p>
+ *
  */
 public class ObservableConverter implements ReactiveTypeConverter<Observable> {
 

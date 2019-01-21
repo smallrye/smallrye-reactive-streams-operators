@@ -40,7 +40,7 @@ public interface ReactiveTypeConverter<T> {
      * completes with this failure.</li>
      * <li>If the passed {@code instance} does not emit any value and does not fail or complete, the returned
      * {@code CompletionStage} does not complete.</li>
-     * <li>If the passed {@code instance} completes <strong>before</strong> emitting a value, the
+     * <li>If the passed {@code instance} completes <strong>before</strong><br> emitting a value, the
      * {@link CompletionStage} is completed with a {@code null} value.</li>
      * <li>If the passed {@code instance} emits {@code null} as first value (if supported), the
      * {@link CompletionStage} is completed with {@code null}. As a consequence, there are no
@@ -65,10 +65,10 @@ public interface ReactiveTypeConverter<T> {
      * <li>All values emitted by the {@code instance} are emitted by the returned {@link Publisher}.</li>
      * <li>If the {@code instance} emits a failure, {@link Publisher} propagates the same failure and
      * terminates.</li>
-     * <li>If the {@code instance} completes, {@link Publisher} also completes.</li>*
+     * <li>If the {@code instance} completes, {@link Publisher} also completes.</li>
      * <li>If the passed {@code instance} does not emit any value and does not fail or complete, the returned
      * {@code Publisher} does not send any signals or values.</li>
-     * <li>If the passed {@code instance} completes <strong>before</strong> emitting a value, the {@link Publisher}
+     * <li>If the passed {@code instance} completes <strong>before</strong><br> emitting a value, the {@link Publisher}
      * also completes empty.</li>
      * <li>If the passed {@code instance} emits {@code null}, the {@link Publisher} must send a failure
      * ({@link NullPointerException}.</li>

@@ -16,32 +16,32 @@ import java.util.concurrent.CompletionStage;
  * Converter handling the RX Java 2 {@link Maybe} type.
  *
  *
- * <p>
- * <h4>toCompletionStage</h4>
+ *
+ * <strong>toCompletionStage</strong><br>
  * The {@link #toCompletionStage(Maybe)} method returns a {@link CompletionStage} instance completed or failed according
  * to the {@link Maybe} emission. If the {@link Maybe} is empty, the completion stage completes with {@code null}. If
  * the maybe emits a value, the completion stage completes with the value.
- * </p>
- * <p>
- * <h4>fromCompletionStage</h4>
+ *
+ *
+ * <strong>fromCompletionStage</strong><br>
  * The {@link #fromCompletionStage(CompletionStage)} method returns a {@link Maybe} instance completed or failed
  * according to the passed {@link CompletionStage} completion. Note that if the passed future emits a {@code null} value,
  * the {@link Maybe} completes <em>empty</em>. If the {@link CompletionStage} is completed with a non-empty
  * {@link Optional}, the value is unwrapped. If the {@link CompletionStage} is completed with an empty {@link Optional},
  * the returned {@link Maybe} is completed empty.
- * </p>
- * <p>
- * <h4>fromPublisher</h4>
+ *
+ *
+ * <strong>fromPublisher</strong><br>
  * The {@link #fromPublisher(Publisher)} method returns a {@link Maybe} emitting the first value of the stream. If the
  * passed {@link Publisher} is empty, the returned {@link Maybe} is empty. If the passed stream emits more than one
  * value, only the first one is used, the other values are discarded.
- * </p>
- * <p>
- * <h4>toRSPublisher</h4>
+ *
+ *
+ * <strong>toRSPublisher</strong><br>
  * The {@link #toRSPublisher(Maybe)} method returns a stream emitting a single value (if any) followed by the
  * completion signal. If the passed {@link Maybe} fails, the returned {@link Publisher} also fails. If the passed
  * {@link Maybe} is empty, the returned stream is empty.
- * </p>
+ *
  */
 public class MaybeConverter implements ReactiveTypeConverter<Maybe> {
 

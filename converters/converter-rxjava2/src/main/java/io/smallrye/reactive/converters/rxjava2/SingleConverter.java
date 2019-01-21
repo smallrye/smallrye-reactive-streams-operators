@@ -13,28 +13,28 @@ import java.util.concurrent.CompletionStage;
 /**
  * Converter handling the RX Java 2 {@link Single} type.
  *
- * <p>
- * <h4>toCompletionStage</h4>
+ *
+ * <strong>toCompletionStage</strong><br>
  * The {@link #toCompletionStage(Single)} method returns a {@link CompletionStage} instance completed or failed
  * according to the single emission.
- * </p>
- * <p>
- * <h4>fromCompletionStage</h4>
+ *
+ *
+ * <strong>fromCompletionStage</strong><br>
  * The {@link #fromCompletionStage(CompletionStage)} method returns a {@link Single} instance completed or failed
  * according to the passed {@link CompletionStage} completion. Note that if the future emits a {@code null} value, the
  * {@link Single} emits a failure.
- * </p>
- * <p>
- * <h4>fromPublisher</h4>
+ *
+ *
+ * <strong>fromPublisher</strong><br>
  * The {@link #fromPublisher(Publisher)} method returns a {@link Single} emitting the first value of the stream. If the
  * passed {@link Publisher} is empty, the returned {@link Single} fails. If the passed stream emits more than one value,
  * only the first one is used, the other values are discarded.
- * </p>
- * <p>
- * <h4>toRSPublisher</h4>
+ *
+ *
+ * <strong>toRSPublisher</strong><br>
  * The {@link #toRSPublisher(Single)} method returns a stream emitting a single value followed by the completion signal.
  * If the passed {@link Single} fails, the returned stream also fails.
- * </p>
+ *
  */
 public class SingleConverter implements ReactiveTypeConverter<Single> {
 
