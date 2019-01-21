@@ -1,2 +1,2 @@
-org.eclipse.microprofile.reactive.streams
-org.eclipse.microprofile.reactive.streams.spi
+org.eclipse.microprofile.reactive.streams.operators
+org.eclipse.microprofile.reactive.streams.operators.spi

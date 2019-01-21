@@ -463,7 +463,7 @@ to put <code>smallrye-reactive-streams-operators</code> in your <code>CLASSPATH<
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;io.smallrye.reactive&lt;/groupId&gt;
     &lt;artifactId&gt;smallrye-reactive-streams-operators&lt;/artifactId&gt;
-  &lt;version&gt;0.3.1&lt;/version&gt;
+    &lt;version&gt;0.4.1&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -474,7 +474,7 @@ to put <code>smallrye-reactive-streams-operators</code> in your <code>CLASSPATH<
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">package io.smallrye.reactive.operators.quickstart;
 
-import org.eclipse.microprofile.reactive.streams.ReactiveStreams;
+import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
 
 public class QuickStart {
 
@@ -533,7 +533,7 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.reactivex.core.AbstractVerticle;
 import io.vertx.reactivex.core.eventbus.Message;
 import io.vertx.reactivex.core.eventbus.MessageConsumer;
-import org.eclipse.microprofile.reactive.streams.ReactiveStreams;
+import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
 
 public class DataProcessor extends AbstractVerticle {
 
@@ -598,7 +598,7 @@ import org.apache.camel.CamelContext;
 import org.apache.camel.component.reactive.streams.api.CamelReactiveStreams;
 import org.apache.camel.component.reactive.streams.api.CamelReactiveStreamsService;
 import org.apache.camel.impl.DefaultCamelContext;
-import org.eclipse.microprofile.reactive.streams.ReactiveStreams;
+import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
 import org.reactivestreams.Subscriber;
 
 import java.io.File;
@@ -641,7 +641,7 @@ public class QuickStart {
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2018-12-05 16:16:43 CET
+Last updated 2018-12-11 16:42:58 CET
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
