@@ -1,6 +1,7 @@
-package io.smallrye.reactive.converters;
+package io.smallrye.reactive.converters.microprofile;
 
 import io.reactivex.processors.AsyncProcessor;
+import io.smallrye.reactive.converters.ReactiveTypeConverter;
 import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
 import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
 import org.reactivestreams.Publisher;

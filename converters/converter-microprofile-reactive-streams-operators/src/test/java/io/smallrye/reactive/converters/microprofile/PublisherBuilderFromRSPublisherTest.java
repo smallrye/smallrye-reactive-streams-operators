@@ -1,5 +1,7 @@
-package io.smallrye.reactive.converters;
+package io.smallrye.reactive.converters.microprofile;
 
+import io.smallrye.reactive.converters.ReactiveTypeConverter;
+import io.smallrye.reactive.converters.Registry;
 import io.smallrye.reactive.converters.tck.FromRSPublisherTCK;
 import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
 import org.junit.Before;
