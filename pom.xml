@@ -245,7 +245,7 @@
                                     <artifactItems>
                                         <artifactItem>
                                             <groupId>org.eclipse.microprofile.reactive-streams-operators</groupId>
-                                            <artifactId> microprofile-reactive-streams-operators</artifactId>
+                                            <artifactId>microprofile-reactive-streams-operators-api</artifactId>
                                             <version>${microprofile-reactive-streams.version}</version>
                                             <type>jar</type>
                                             <classifier>javadoc</classifier>
