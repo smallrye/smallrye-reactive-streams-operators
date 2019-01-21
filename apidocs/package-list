@@ -1,3 +1,8 @@
+io.smallrye.reactive.converters
+io.smallrye.reactive.converters.microprofile
+io.smallrye.reactive.converters.reactor
+io.smallrye.reactive.converters.rxjava1
+io.smallrye.reactive.converters.rxjava2
 io.smallrye.reactive.streams
 io.smallrye.reactive.streams.cdi
 io.smallrye.reactive.streams.operators
