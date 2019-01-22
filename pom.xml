@@ -10,10 +10,10 @@
 
     <groupId>io.smallrye.reactive</groupId>
     <artifactId>smallrye-reactive-streams-operators-project</artifactId>
-    <version>0.4.2-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>MicroProfile Reactive Streams Operators (spec version: ${microprofile-reactive-streams.version})</name>
+    <name>SmallRye Reactive Streams Operators (spec version: ${microprofile-reactive-streams.version})</name>
     <description>An implementation of the MicroProfile Reactive Streams Operators specification</description>
 
     <inceptionYear>2018</inceptionYear>
