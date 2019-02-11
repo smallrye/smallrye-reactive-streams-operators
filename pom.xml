@@ -67,7 +67,7 @@
 
     <properties>
         <vertx.version>3.6.2</vertx.version>
-        <log4j2.version>2.11.1</log4j2.version>
+        <log4j2.version>2.11.2</log4j2.version>
         <microprofile-reactive-streams.version>1.0</microprofile-reactive-streams.version>
         <cdi.version>2.0</cdi.version>
         <weld-core.version>3.0.5.Final</weld-core.version>
