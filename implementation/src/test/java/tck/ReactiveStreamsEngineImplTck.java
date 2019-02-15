@@ -10,7 +10,7 @@ import org.reactivestreams.tck.TestEnvironment;
 public class ReactiveStreamsEngineImplTck extends ReactiveStreamsTck<Engine> {
 
     public ReactiveStreamsEngineImplTck() {
-        super(new TestEnvironment(500));
+        super(new TestEnvironment(200));
     }
 
     @Override
