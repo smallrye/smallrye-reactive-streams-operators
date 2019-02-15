@@ -35,8 +35,6 @@
             <version>${weld-core.version}</version>
             <scope>test</scope>
         </dependency>
-
-        <!-- container -->
         <dependency>
             <groupId>org.jboss.arquillian.container</groupId>
             <artifactId>arquillian-weld-embedded</artifactId>
@@ -50,7 +48,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
-                <version>${version.surefire.plugin}</version>
                 <executions>
                     <execution>
                         <id>tck</id>
