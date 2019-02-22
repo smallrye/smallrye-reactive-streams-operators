@@ -9,17 +9,17 @@
         <relativePath>../..</relativePath>
     </parent>
 
-    <artifactId>smallrye-converter-reactor</artifactId>
+    <artifactId>smallrye-reactive-converter-reactor</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>smallrye-converter-api</artifactId>
+            <artifactId>smallrye-reactive-converter-api</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>smallrye-converter-api</artifactId>
+            <artifactId>smallrye-reactive-converter-api</artifactId>
             <version>${project.version}</version>
             <classifier>tests</classifier>
             <scope>test</scope>

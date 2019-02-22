@@ -31,7 +31,7 @@ To use the converter you need:
 ----
 <dependency>
   <groupId>io.smallrye</groupId>
-  <artifactId>smallrye-converter-api</artifactId>
+  <artifactId>smallrye-reactive-converter-api</artifactId>
   <version>{version}</version>
 </dependency>
 ----
@@ -42,22 +42,25 @@ To use the converter you need:
 ----
 <dependency>
     <groupId>io.smallrye</groupId>
-    <artifactId>smallrye-converter-microprofile-reactive-streams-operators</artifactId>
+    <artifactId>smallrye-reactive-converter-reactive-streams-operators</artifactId>
     <version>{version}</version>
 </dependency>
+
 <dependency>
     <groupId>io.smallrye</groupId>
-    <artifactId>smallrye-converter-reactor</artifactId>
+    <artifactId>smallrye-reactive-converter-reactor</artifactId>
     <version>{version}</version>
 </dependency>
+
 <dependency>
     <groupId>io.smallrye</groupId>
-    <artifactId>smallrye-converter-rxjava1</artifactId>
+    <artifactId>smallrye-reactive-converter-rxjava1</artifactId>
     <version>{version}</version>
 </dependency>
+
 <dependency>
     <groupId>io.smallrye</groupId>
-    <artifactId>smallrye-converter-rxjava2</artifactId>
+    <artifactId>smallrye-reactive-converter-rxjava2</artifactId>
     <version>{version}</version>
 </dependency>
 ----

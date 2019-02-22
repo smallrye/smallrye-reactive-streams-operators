@@ -9,7 +9,7 @@
         <relativePath>../..</relativePath>
     </parent>
 
-    <artifactId>smallrye-converter-api</artifactId>
+    <artifactId>smallrye-reactive-converter-api</artifactId>
 
     <build>
         <plugins>
