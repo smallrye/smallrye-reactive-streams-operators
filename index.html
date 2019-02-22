@@ -443,8 +443,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h1>SmallRye Reactive Streams Operators</h1>
 <div class="details">
 <span id="author" class="author">Clement Escoffier</span><br>
-<span id="revnumber">version 1.0.0,</span>
-<span id="revdate">2019-01-22</span>
+<span id="revnumber">version 1.0.2,</span>
+<span id="revdate">2019-02-22</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">SmallRye Reactive Streams Operators</div>
@@ -493,6 +493,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </ul>
 </li>
 <li><a href="#_execution_model">3. Execution Model</a></li>
+<li><a href="#_reactive_type_converters">4. Reactive Type Converters</a></li>
 </ul>
 </div>
 </div>
@@ -580,7 +581,7 @@ to put <code>smallrye-reactive-streams-operators</code> in your <code>CLASSPATH<
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;io.smallrye.reactive&lt;/groupId&gt;
     &lt;artifactId&gt;smallrye-reactive-streams-operators&lt;/artifactId&gt;
-    &lt;version&gt;1.0.0&lt;/version&gt;
+    &lt;version&gt;1.0.2&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -1645,7 +1646,7 @@ model:</p>
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
   &lt;groupId&gt;io.smallrye&lt;/groupId&gt;
     &lt;artifactId&gt;smallrye-reactive-streams-vertx-execution-model&lt;/artifactId&gt;
-  &lt;version&gt;1.0.0&lt;/version&gt;
+  &lt;version&gt;1.0.2&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -1654,11 +1655,113 @@ model:</p>
 different callbacks and pass the result.</p>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_reactive_type_converters">4. Reactive Type Converters</h3>
+<div class="paragraph">
+<p>The reactive type converters are a set of modules not directly related to MicroProfile Reactive Streams Operators. These
+ converters adapts reactive types from different reactive programming libraries. The main interface is:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public interface ReactiveTypeConverter&lt;T&gt; {
+
+    &lt;X&gt; CompletionStage&lt;X&gt; toCompletionStage(T instance);
+
+    &lt;X&gt; Publisher&lt;X&gt; toRSPublisher(T instance);
+
+    &lt;X&gt; T fromCompletionStage(CompletionStage&lt;X&gt; cs);
+
+    &lt;X&gt; T fromPublisher(Publisher&lt;X&gt; publisher);
+
+    // ...</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can use converters to convert types provided by different reactive programming libraries to <code>Publisher</code> and
+<code>CompletionStage</code>, and the opposite:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="assets/images/converters.png" alt="converters">
+</div>
+</div>
+<div class="paragraph">
+<p>To use the converter you need:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Add the converter api dependency:</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
+  &lt;groupId&gt;io.smallrye&lt;/groupId&gt;
+  &lt;artifactId&gt;smallrye-reactive-converter-api&lt;/artifactId&gt;
+  &lt;version&gt;1.0.2&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>For each reactive programming, add the associated dependency:</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;io.smallrye&lt;/groupId&gt;
+    &lt;artifactId&gt;smallrye-reactive-converter-reactive-streams-operators&lt;/artifactId&gt;
+    &lt;version&gt;1.0.2&lt;/version&gt;
+&lt;/dependency&gt;
+
+&lt;dependency&gt;
+    &lt;groupId&gt;io.smallrye&lt;/groupId&gt;
+    &lt;artifactId&gt;smallrye-reactive-converter-reactor&lt;/artifactId&gt;
+    &lt;version&gt;1.0.2&lt;/version&gt;
+&lt;/dependency&gt;
+
+&lt;dependency&gt;
+    &lt;groupId&gt;io.smallrye&lt;/groupId&gt;
+    &lt;artifactId&gt;smallrye-reactive-converter-rxjava1&lt;/artifactId&gt;
+    &lt;version&gt;1.0.2&lt;/version&gt;
+&lt;/dependency&gt;
+
+&lt;dependency&gt;
+    &lt;groupId&gt;io.smallrye&lt;/groupId&gt;
+    &lt;artifactId&gt;smallrye-reactive-converter-rxjava2&lt;/artifactId&gt;
+    &lt;version&gt;1.0.2&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>In your code, lookup for a converter and apply the conversion. For instance:</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">CompletionStage cs = ...
+ReactiveTypeConverter&lt;Completable&gt; converter = Registry.lookup(Completable.class)
+    .orElseThrow(() -&gt; new AssertionError("Completable converter should be found"));
+Completable converted = converter.fromCompletionStage(cs);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The conversion rules are detailed in the javadoc.</p>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 1.0.0<br>
-Last updated 2018-11-06 20:23:39 CET
+Version 1.0.2<br>
+Last updated 2019-02-15 10:33:37 CET
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">

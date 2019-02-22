@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.7.1">
-<title>Getting Started</title>
+<title>Reactive Type Converters</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
@@ -435,213 +435,119 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#_getting_started">Getting Started</a>
-<ul class="sectlevel2">
-<li><a href="#_quickstart">Quickstart</a></li>
-<li><a href="#_using_reactive_streams_operators_in_a_vert_x_application">Using Reactive Streams Operators in a Vert.x application</a></li>
-<li><a href="#_using_reactive_streams_operators_in_a_camel_application">Using Reactive Streams Operators in a Camel application</a></li>
-</ul>
-</li>
+<li><a href="#_reactive_type_converters">Reactive Type Converters</a></li>
 </ul>
 </div>
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="_getting_started">Getting Started</h2>
+<h2 id="_reactive_type_converters">Reactive Type Converters</h2>
 <div class="sectionbody">
-<div class="sect2">
-<h3 id="_quickstart">Quickstart</h3>
 <div class="paragraph">
-<p>The easiest to start using SmallRye Reactive Stream Operators is to start it directly in a <em>main</em> class. You only need
-to put <code>smallrye-reactive-streams-operators</code> in your <code>CLASSPATH</code> to use it.</p>
+<p>The reactive type converters are a set of modules not directly related to MicroProfile Reactive Streams Operators. These
+ converters adapts reactive types from different reactive programming libraries. The main interface is:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public interface ReactiveTypeConverter&lt;T&gt; {
+
+    &lt;X&gt; CompletionStage&lt;X&gt; toCompletionStage(T instance);
+
+    &lt;X&gt; Publisher&lt;X&gt; toRSPublisher(T instance);
+
+    &lt;X&gt; T fromCompletionStage(CompletionStage&lt;X&gt; cs);
+
+    &lt;X&gt; T fromPublisher(Publisher&lt;X&gt; publisher);
+
+    // ...</code></pre>
+</div>
 </div>
 <div class="paragraph">
-<p>Creates a Maven project, and include the following dependency in your pom.xml:</p>
+<p>You can use converters to convert types provided by different reactive programming libraries to <code>Publisher</code> and
+<code>CompletionStage</code>, and the opposite:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="assets/images/converters.png" alt="converters">
+</div>
+</div>
+<div class="paragraph">
+<p>To use the converter you need:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Add the converter api dependency:</p>
+</li>
+</ol>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
-    &lt;groupId&gt;io.smallrye.reactive&lt;/groupId&gt;
-    &lt;artifactId&gt;smallrye-reactive-streams-operators&lt;/artifactId&gt;
+  &lt;groupId&gt;io.smallrye&lt;/groupId&gt;
+  &lt;artifactId&gt;smallrye-reactive-converter-api&lt;/artifactId&gt;
+  &lt;version&gt;1.0.2&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>For each reactive programming, add the associated dependency:</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;io.smallrye&lt;/groupId&gt;
+    &lt;artifactId&gt;smallrye-reactive-converter-reactive-streams-operators&lt;/artifactId&gt;
+    &lt;version&gt;1.0.2&lt;/version&gt;
+&lt;/dependency&gt;
+
+&lt;dependency&gt;
+    &lt;groupId&gt;io.smallrye&lt;/groupId&gt;
+    &lt;artifactId&gt;smallrye-reactive-converter-reactor&lt;/artifactId&gt;
+    &lt;version&gt;1.0.2&lt;/version&gt;
+&lt;/dependency&gt;
+
+&lt;dependency&gt;
+    &lt;groupId&gt;io.smallrye&lt;/groupId&gt;
+    &lt;artifactId&gt;smallrye-reactive-converter-rxjava1&lt;/artifactId&gt;
+    &lt;version&gt;1.0.2&lt;/version&gt;
+&lt;/dependency&gt;
+
+&lt;dependency&gt;
+    &lt;groupId&gt;io.smallrye&lt;/groupId&gt;
+    &lt;artifactId&gt;smallrye-reactive-converter-rxjava2&lt;/artifactId&gt;
     &lt;version&gt;1.0.2&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>Once created, create a class file with a <code>public static void main(String&#8230;&#8203; args)</code> method:</p>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>In your code, lookup for a converter and apply the conversion. For instance:</p>
+</li>
+</ol>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">package io.smallrye.reactive.operators.quickstart;
-
-import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
-
-public class QuickStart {
-
-    public static void main(String[] args) {
-        // Create a stream of words
-        ReactiveStreams.of("hello", "from", "smallrye", "reactive", "stream", "operators")
-                .map(String::toUpperCase) // Transform the words
-                .filter(s -&gt; s.length() &gt; 4) // Filter items
-                .forEach(word -&gt; System.out.println("&gt;&gt; " + word)) // Terminal operation
-                .run(); // Run it (create the streams, subscribe to it...)
-    }
-
-
-}</code></pre>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">CompletionStage cs = ...
+ReactiveTypeConverter&lt;Completable&gt; converter = Registry.lookup(Completable.class)
+    .orElseThrow(() -&gt; new AssertionError("Completable converter should be found"));
+Completable converted = converter.fromCompletionStage(cs);</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Once everything is set up, you should be able to run the application using:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">mvn compile exec:java -Dexec.mainClass=io.smallrye.reactive.operators.quickstart.QuickStart</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Running the previous example should give the following output:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code>&gt;&gt; HELLO
-&gt;&gt; SMALLRYE
-&gt;&gt; REACTIVE
-&gt;&gt; STREAM
-&gt;&gt; OPERATORS</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The Reactive Streams Operator is intended to be used in other software and not as a standalone <em>api</em>. However, to give you a
-better overview the 2 following quickstart explains how to use it in Eclipse Vert.x applications and  Apache Camel
-applications.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_using_reactive_streams_operators_in_a_vert_x_application">Using Reactive Streams Operators in a Vert.x application</h3>
-<div class="paragraph">
-<p><a href="http://vertx.io">Eclipse Vert.x</a> is a toolkit to create reactive and distributed systems. In addition to the <em>bare</em> Vert.x
-API, you can also use Vert.x using RX Java 2. As a consequence, you can wrap Vert.x <em>streams</em> and use Reactive Stream
-Operators to manipulate them:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">package io.smallrye.reactive.operators.quickstart;
-
-import io.vertx.core.Future;
-import io.vertx.core.json.JsonObject;
-import io.vertx.reactivex.core.AbstractVerticle;
-import io.vertx.reactivex.core.eventbus.Message;
-import io.vertx.reactivex.core.eventbus.MessageConsumer;
-import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
-
-public class DataProcessor extends AbstractVerticle {
-
-    private static final int PORT = 8080;
-
-    @Override
-    public void start(Future&lt;Void&gt; done) {
-        vertx.createHttpServer()
-                .requestHandler(request -&gt; {
-                    // Consume messages from the Vert.x event bus
-                    MessageConsumer&lt;JsonObject&gt; consumer = vertx.eventBus().consumer("data");
-                    // Wrap the stream and manipulate the data
-                    ReactiveStreams.fromPublisher(consumer.toFlowable())
-                            .limit(5) // Take only 5 messages
-                            .map(Message::body) // Extract the body
-                            .map(json -&gt; json.getInteger("value")) // Extract the value
-                            .peek(i -&gt; System.out.println("Got value: " + i)) // Print it
-                            .reduce(0, (acc, value) -&gt; acc + value)
-                            .run() // Begin to receive items
-                            .whenComplete((res, err) -&gt; {
-                                // When the 5 items has been consumed, write the result to the
-                                // HTTP response:
-                                if (err != null) {
-                                    request.response().setStatusCode(500).end(err.getMessage());
-                                } else {
-                                    request.response().end("Result is: " + res);
-                                }
-                            });
-                })
-                .listen(PORT, ar -&gt; done.handle(ar.mapEmpty()));
-
-    }
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>This example creates an HTTP server and for each request to collect 5 messages sent by another component on the Vert.x event
-bus. It computes the sum of these 5 elements and writes the result to the HTTP response. It&#8217;s important to notice that
-the messages coming from the event bus are sent asynchronously. So, it would not be possible to write the previous code
-using <em>java.util.streams</em>.</p>
-</div>
-<div class="paragraph">
-<p>When used in a Vert.x application, Reactive Stream Operators can be used to processed data and compute an asynchronous result.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_using_reactive_streams_operators_in_a_camel_application">Using Reactive Streams Operators in a Camel application</h3>
-<div class="paragraph">
-<p><a href="https://camel.apache.org">Apache Camel</a> is a toolkit to define routing and mediation rules, mainly used to integrate
-systems, using enterprise integration patterns. Apache Camel provides more than 200+ components so that it can
-integrate virtually with anything.</p>
-</div>
-<div class="paragraph">
-<p>You can combine Reactive Stream Operators and Apache Camel thanks to the
-<a href="https://github.com/apache/camel/blob/master/components/camel-reactive-streams/src/main/docs/reactive-streams-component.adoc">Camel Reactive Stream Component</a>.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">package io.smallrye.reactive.operators.quickstart;
-
-import org.apache.camel.CamelContext;
-import org.apache.camel.component.reactive.streams.api.CamelReactiveStreams;
-import org.apache.camel.component.reactive.streams.api.CamelReactiveStreamsService;
-import org.apache.camel.impl.DefaultCamelContext;
-import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
-import org.reactivestreams.Subscriber;
-
-import java.io.File;
-import java.nio.file.Files;
-
-public class QuickStart {
-
-    public static void main(String[] args) throws Exception {
-        CamelContext context = new DefaultCamelContext();
-        CamelReactiveStreamsService camel = CamelReactiveStreams.get(context);
-        Subscriber&lt;String&gt; subscriber = camel
-                .subscriber("file:./target?fileName=values.txt&amp;fileExist=append", String.class);
-
-        ReactiveStreams.of("hello", "from", "smallrye", "reactive", "stream", "operators",
-                "using", "Apache", "Camel")
-                .map(String::toUpperCase) // Transform the words
-                .filter(s -&gt; s.length() &gt; 4) // Filter items
-                .peek(System.out::println)
-                .map(s -&gt; s + " ")
-                .to(subscriber)
-                .run();
-        context.start();
-
-        // Just wait until it's done.
-        Thread.sleep(1000);
-
-        Files.readAllLines(new File("target/values.txt").toPath())
-                .forEach(s -&gt; System.out.println("File &gt;&gt; " + s));
-    }
-
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>You can also use Camel to create Reactive Streams <code>Publisher</code> and transform the items using Reactive Streams Operators.</p>
-</div>
+<p>The conversion rules are detailed in the javadoc.</p>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2018-12-11 16:42:58 CET
+Last updated 2019-02-22 14:08:04 CET
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
