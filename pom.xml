@@ -69,7 +69,7 @@
         <vertx.version>3.6.3</vertx.version>
         <microprofile-reactive-streams.version>1.0</microprofile-reactive-streams.version>
         <cdi.version>2.0</cdi.version>
-        <weld-core.version>3.1.0.Final</weld-core.version>
+        <weld-core.version>3.1.1.Final</weld-core.version>
 
         <asciidoctor-maven-plugin.version>1.6.0</asciidoctor-maven-plugin.version>
         <asciidoctorj.version>1.5.8.1</asciidoctorj.version>
