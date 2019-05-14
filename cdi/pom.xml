@@ -19,13 +19,12 @@
         <dependency>
             <groupId>javax.enterprise</groupId>
             <artifactId>cdi-api</artifactId>
-            <version>${cdi.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.jboss.weld.se</groupId>
             <artifactId>weld-se-core</artifactId>
-            <version>${weld-core.version}</version>
+            <version>${version.weld.core}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
