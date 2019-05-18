@@ -238,15 +238,9 @@ These operators allow recovering after a failure. Because you handle asynchronou
 * **Description**: These operators let you react to various events such as when a element is received, an error is
 propagated or when the stream completes.
 
-** peek - called for each element
-** onComplete - called when the stream completes
-** onError - called when an error is propagated in the stream
-** onTerminate - called either when an error is propagated or when the stream completes
-
-image::peek.png[]
-image::onComplete.png[]
-image::onError.png[]
-image::onTerminate.png[]
+image::onErrorResume.png[]
+image::onErrorResumeWith.png[]
+image::onErrorResumeWithRSPublisher.png[]
 
 ==== Terminal operator and computing asynchronous result
 
