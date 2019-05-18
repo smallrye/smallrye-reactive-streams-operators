@@ -45,22 +45,26 @@ public class ConnectableProcessor<T> implements Processor<T, T> {
             return;
         }
 
-        // Set the state, if failed, report the error
-        if (!state.compareAndSet(State.IDLE, State.HAS_SUBSCRIBER)) {
-            // We were not in the idle state, the behavior depends on our current state
-            // For failure and completed, we just creates an empty subscription and immediately
-            // report the error or completion
-            if (state.get() == State.FAILED) {
-                manageSubscribeInFailedState(subscriber);
-            } else if (state.get() == State.COMPLETE) {
-                manageSubscribeInCompleteState(subscriber);
-            } else if (state.get() == State.HAS_SUBSCRIPTION) {
-                manageSubscribeInTheHasSubscriptionState(subscriber);
-            } else {
-                throw new IllegalStateException("Illegal transition - subscribe happened in the "
-                        + state.get().name() + " state");
+        // Attempt to fix https://github.com/smallrye/smallrye-reactive-streams-operators/issues/63
+        // We need to be sure that the transition is only executed by a single thread.
+        // So the other threads are blocked and wait until the final state is computed.
+        synchronized (this) {
+            // Set the state, if failed, report the error
+            if (!state.compareAndSet(State.IDLE, State.HAS_SUBSCRIBER)) {
+                // We were not in the idle state, the behavior depends on our current state
+                // For failure and completed, we just creates an empty subscription and immediately
+                // report the error or completion
+                if (state.get() == State.FAILED) {
+                    manageSubscribeInFailedState(subscriber);
+                } else if (state.get() == State.COMPLETE) {
+                    manageSubscribeInCompleteState(subscriber);
+                } else if (state.get() == State.HAS_SUBSCRIPTION) {
+                    manageSubscribeInTheHasSubscriptionState(subscriber);
+                } else {
+                    throw new IllegalStateException("Illegal transition - subscribe happened in the "
+                            + state.get().name() + " state");
+                }
             }
-
         }
     }
 
