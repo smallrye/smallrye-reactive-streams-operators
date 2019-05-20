@@ -4,7 +4,7 @@
 
     <parent>
         <groupId>io.smallrye.reactive</groupId>
-        <artifactId>smallrye-reactive-streams-operators-project</artifactId>
+        <artifactId>smallrye-reactive-streams-operators-project-1.0</artifactId>
         <version>1.0.5-SNAPSHOT</version>
     </parent>
 
@@ -14,12 +14,12 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>smallrye-reactive-streams-operators-cdi</artifactId>
+            <artifactId>smallrye-reactive-streams-operators-cdi-1.0</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>smallrye-reactive-streams-vertx-execution-model</artifactId>
+            <artifactId>smallrye-reactive-streams-vertx-execution-model-1.0</artifactId>
             <version>${project.version}</version>
         </dependency>
 
@@ -60,6 +60,21 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <configuration>
+                    <skipNexusStagingDeployMojo>true</skipNexusStagingDeployMojo>
+                </configuration>
             </plugin>
         </plugins>
     </build>
