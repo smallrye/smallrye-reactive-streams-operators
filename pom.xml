@@ -10,7 +10,7 @@
 
     <groupId>io.smallrye.reactive</groupId>
     <artifactId>smallrye-reactive-streams-operators-project</artifactId>
-    <version>1.0.5-SNAPSHOT</version>
+    <version>1.0.5</version>
     <packaging>pom</packaging>
 
     <name>SmallRye Reactive Streams Operators (spec version: ${microprofile-reactive-streams.version})</name>
@@ -44,7 +44,7 @@
         <connection>scm:git:git@github.com:smallrye/smallrye-reactive-streams-operators.git</connection>
         <developerConnection>scm:git:git@github.com:smallrye/smallrye-reactive-streams-operators.git</developerConnection>
         <url>https://github.com/smallrye/smallrye-reactive-streams-operators</url>
-        <tag>HEAD</tag>
+        <tag>smallrye-reactive-streams-operators-project-1.0.5</tag>
     </scm>
 
     <modules>
