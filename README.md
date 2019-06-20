@@ -4,6 +4,7 @@
 **Documentation:** https://www.smallrye.io/smallrye-reactive-streams-operators/
 
 [![Build Status](https://semaphoreci.com/api/v1/smallrye/smallrye-reactive-streams-operators/branches/master/badge.svg)](https://semaphoreci.com/smallrye/smallrye-reactive-streams-operators)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=smallrye_smallrye-reactive-streams-operators&metric=alert_status)](https://sonarcloud.io/dashboard?id=smallrye_smallrye-reactive-streams-operators)
 
 ![Sonar Report](https://sonarcloud.io/api/project_badges/quality_gate?project=io.smallrye.reactive%3Asmallrye-reactive-streams-operators-project)
 
