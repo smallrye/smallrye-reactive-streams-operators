@@ -43,7 +43,7 @@ public class FailedUniOperatorTest {
 
     @Test(expected = NullPointerException.class)
     public void testCreationWithNull() {
-        Uni.failed(null);
+        Uni.failed((Exception)null);
     }
 
 }
