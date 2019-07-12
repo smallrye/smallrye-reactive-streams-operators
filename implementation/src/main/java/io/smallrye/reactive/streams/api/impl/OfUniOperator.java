@@ -1,6 +1,5 @@
 package io.smallrye.reactive.streams.api.impl;
 
-import io.smallrye.reactive.streams.api.UniSubscriber;
 import io.smallrye.reactive.streams.api.UniSubscription;
 
 import java.util.Objects;
@@ -22,7 +21,7 @@ public class OfUniOperator<O> extends UniOperator<Void, O> {
     }
 
     @Override
-    public void subscribe(UniSubscriber<? super O> subscriber) {
+    public void subscribing(WrapperUniSubscriber<? super O> subscriber) {
         AtomicBoolean cancelled = new AtomicBoolean();
         UniSubscription subscription = () -> cancelled.set(true);
         subscriber.onSubscribe(subscription);

@@ -17,7 +17,7 @@ public class MapUniOperator<I, O> extends UniOperator<I, O> {
     }
 
     @Override
-    public void subscribe(UniSubscriber<? super O> subscriber) {
+    public void subscribing(WrapperUniSubscriber<? super O> subscriber) {
         source().subscribe(new UniSubscriber<I>() {
             @Override
             public void onSubscribe(UniSubscription subscription) {
@@ -36,8 +36,8 @@ public class MapUniOperator<I, O> extends UniOperator<I, O> {
             }
 
             @Override
-            public void onFailure(Throwable t) {
-                subscriber.onFailure(t);
+            public void onFailure(Throwable failure) {
+                subscriber.onFailure(failure);
             }
         });
     }

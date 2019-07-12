@@ -118,7 +118,7 @@ public class UniCreateTest {
                     }
 
                     @Override
-                    public void onFailure(Throwable t) {
+                    public void onFailure(Throwable failure) {
                         called.set(true);
                     }
                 });
@@ -151,7 +151,7 @@ public class UniCreateTest {
                     }
 
                     @Override
-                    public void onFailure(Throwable t) {
+                    public void onFailure(Throwable failure) {
                         throw new NullPointerException("boom");
                     }
                 });

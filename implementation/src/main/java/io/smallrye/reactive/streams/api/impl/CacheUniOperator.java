@@ -29,7 +29,7 @@ public class CacheUniOperator<I> extends UniOperator<I, I> implements UniSubscri
     }
 
     @Override
-    public void subscribe(UniSubscriber<? super I> subscriber) {
+    public void subscribing(WrapperUniSubscriber<? super I> subscriber) {
         Runnable action = null;
         synchronized (this) {
             switch (state) {
@@ -118,20 +118,20 @@ public class CacheUniOperator<I> extends UniOperator<I, I> implements UniSubscri
     }
 
     @Override
-    public void onFailure(Throwable t) {
+    public void onFailure(Throwable failure) {
         List<UniSubscriber<? super I>> list;
         synchronized (this) {
             if (state != SUBSCRIBED) {
                 throw new IllegalStateException("Invalid state - received result while we where not in the SUBSCRIBED state, current state is: " + state);
             }
             state = COMPLETED;
-            this.failure = t;
+            this.failure = failure;
             list = new ArrayList<>(subscribers);
             // Clear the list
             this.subscribers.clear();
         }
         // Here we may notify a subscriber that would have cancelled its subscription just after the synchronized block
         // we consider it as pending cancellation.
-        list.forEach(s -> s.onFailure(t));
+        list.forEach(s -> s.onFailure(failure));
     }
 }

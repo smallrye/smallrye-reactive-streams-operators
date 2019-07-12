@@ -38,8 +38,8 @@ public interface UniSubscriber<T> {
     /**
      * Called if the computation of the result by the subscriber {@link Uni} failed.
      *
-     * @param t the failure, cannot be {@code null}.
+     * @param failure the failure, cannot be {@code null}.
      */
-    void onFailure(Throwable t);
+    void onFailure(Throwable failure);
 
 }

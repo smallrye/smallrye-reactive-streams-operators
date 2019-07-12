@@ -14,9 +14,12 @@ import java.util.function.*;
 
 public abstract class UniImpl<T> implements Uni<T> {
 
-
     @Override
-    public abstract void subscribe(UniSubscriber<? super T> subscriber);
+    public void subscribe(UniSubscriber<? super T> subscriber) {
+        WrapperUniSubscriber.subscribing(this, subscriber);
+    }
+
+    public abstract void subscribing(WrapperUniSubscriber<? super T> subscriber);
 
     @Override
     public CompletableFuture<T> subscribeToCompletionStage() {
@@ -52,9 +55,9 @@ public abstract class UniImpl<T> implements Uni<T> {
             }
 
             @Override
-            public void onFailure(Throwable t) {
+            public void onFailure(Throwable failure) {
                 if (ref.getAndSet(null) != null) {
-                    future.completeExceptionally(t);
+                    future.completeExceptionally(failure);
                 }
             }
         });
@@ -65,7 +68,7 @@ public abstract class UniImpl<T> implements Uni<T> {
     public T block() {
         CountDownLatch latch = new CountDownLatch(1);
         AtomicReference<T> reference = new AtomicReference<>();
-        AtomicReference<Throwable> failure = new AtomicReference<>();
+        AtomicReference<Throwable> referenceToFailure = new AtomicReference<>();
         subscribe(new UniSubscriber<T>() {
             @Override
             public void onSubscribe(UniSubscription subscription) {
@@ -74,13 +77,13 @@ public abstract class UniImpl<T> implements Uni<T> {
 
             @Override
             public void onResult(T result) {
-                reference.set(result);
+                reference.compareAndSet(null, result);
                 latch.countDown();
             }
 
             @Override
-            public void onFailure(Throwable t) {
-                failure.set(t);
+            public void onFailure(Throwable failure) {
+                referenceToFailure.compareAndSet(null, failure);
                 latch.countDown();
             }
         });
@@ -88,11 +91,11 @@ public abstract class UniImpl<T> implements Uni<T> {
         try {
             latch.await();
         } catch (InterruptedException e) {
-            failure.compareAndSet(null, e);
+            referenceToFailure.compareAndSet(null, e);
             Thread.currentThread().interrupt();
         }
 
-        Throwable throwable = failure.get();
+        Throwable throwable = referenceToFailure.get();
         if (throwable != null) {
             if (throwable instanceof RuntimeException) {
                 throw (RuntimeException) throwable;
@@ -174,9 +177,9 @@ public abstract class UniImpl<T> implements Uni<T> {
                         }
 
                         @Override
-                        public void onFailure(Throwable t) {
+                        public void onFailure(Throwable failure) {
                             if (!cancelled.get()) {
-                                subscriber.onError(t);
+                                subscriber.onError(failure);
                             }
                         }
                     });

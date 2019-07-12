@@ -1,7 +1,6 @@
 package io.smallrye.reactive.streams.api.impl;
 
 import io.smallrye.reactive.streams.api.UniEmitter;
-import io.smallrye.reactive.streams.api.UniSubscriber;
 
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -14,7 +13,7 @@ public class UniCreate<T> extends UniImpl<T> {
     }
 
     @Override
-    public void subscribe(UniSubscriber<? super T> subscriber) {
+    public void subscribing(WrapperUniSubscriber<? super T> subscriber) {
         UniEmitterImpl<? super T> emitter = new UniEmitterImpl<>(subscriber);
         subscriber.onSubscribe(emitter);
 

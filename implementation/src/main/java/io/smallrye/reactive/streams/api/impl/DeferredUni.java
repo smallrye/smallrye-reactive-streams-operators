@@ -1,7 +1,6 @@
 package io.smallrye.reactive.streams.api.impl;
 
 import io.smallrye.reactive.streams.api.Uni;
-import io.smallrye.reactive.streams.api.UniSubscriber;
 
 import java.util.Objects;
 import java.util.function.Supplier;
@@ -15,7 +14,7 @@ public class DeferredUni<T> extends UniOperator<Void, T> {
     }
 
     @Override
-    public void subscribe(UniSubscriber<? super T> subscriber) {
+    public void subscribing(WrapperUniSubscriber<? super T> subscriber) {
         Objects.requireNonNull(subscriber, "`subscriber` cannot be `null`");
         Uni<? extends T> uni;
         try {

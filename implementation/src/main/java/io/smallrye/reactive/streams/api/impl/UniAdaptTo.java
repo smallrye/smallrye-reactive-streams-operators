@@ -12,7 +12,6 @@ import java.lang.reflect.Modifier;
 import java.util.Objects;
 import java.util.ServiceLoader;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
 
 public class UniAdaptTo<O> {
 

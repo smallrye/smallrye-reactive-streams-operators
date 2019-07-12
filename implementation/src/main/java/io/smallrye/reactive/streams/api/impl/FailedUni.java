@@ -1,7 +1,5 @@
 package io.smallrye.reactive.streams.api.impl;
 
-import io.smallrye.reactive.streams.api.UniSubscriber;
-
 import java.util.Objects;
 import java.util.function.Supplier;
 
@@ -21,7 +19,7 @@ public class FailedUni<O> extends UniOperator<Void, O> {
     }
 
     @Override
-    public void subscribe(UniSubscriber<? super O> subscriber) {
+    public void subscribing(WrapperUniSubscriber<? super O> subscriber) {
 
         Throwable failure;
 

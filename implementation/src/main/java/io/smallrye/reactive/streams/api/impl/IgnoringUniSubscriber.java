@@ -17,7 +17,7 @@ public class IgnoringUniSubscriber<T> implements UniSubscriber<T> {
     }
 
     @Override
-    public void onFailure(Throwable t) {
+    public void onFailure(Throwable failure) {
         // Ignored.
     }
 }

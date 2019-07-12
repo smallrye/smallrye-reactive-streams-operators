@@ -16,7 +16,7 @@ public class OnPublishUniOperator<I> extends UniOperator<I, I> {
     }
 
     @Override
-    public void subscribe(UniSubscriber<? super I> subscriber) {
+    public void subscribing(WrapperUniSubscriber<? super I> subscriber) {
         source().subscribe(new UniSubscriber<I>() {
             @Override
             public void onSubscribe(UniSubscription subscription) {
@@ -29,8 +29,8 @@ public class OnPublishUniOperator<I> extends UniOperator<I, I> {
             }
 
             @Override
-            public void onFailure(Throwable t) {
-                executor.execute(() -> subscriber.onFailure(t));
+            public void onFailure(Throwable failure) {
+                executor.execute(() -> subscriber.onFailure(failure));
             }
         });
     }

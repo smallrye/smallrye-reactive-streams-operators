@@ -32,13 +32,13 @@ public class AssertSubscriber<T> implements UniSubscriber<T> {
     }
 
     @Override
-    public synchronized void onFailure(Throwable t) {
+    public synchronized void onFailure(Throwable failure) {
         if (this.future == null) {
             throw new IllegalStateException("No subscription");
         }
-        this.failure = t;
+        this.failure = failure;
         this.onErrorThreadName = Thread.currentThread().getName();
-        this.future.completeExceptionally(t);
+        this.future.completeExceptionally(failure);
     }
 
     public AssertSubscriber<T> await() {
