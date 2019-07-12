@@ -1,18 +1,17 @@
 package io.smallrye.reactive.streams.api.impl;
 
+import io.smallrye.reactive.streams.api.AssertSubscriber;
 import io.smallrye.reactive.streams.api.Uni;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class FromCompletionStageUniOperatorTest {
+public class FromCompletionStageUniTest {
 
     @Test
     public void testThatNullValueAreAccepted() {

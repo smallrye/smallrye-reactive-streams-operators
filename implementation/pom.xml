@@ -12,6 +12,14 @@
 
     <packaging>jar</packaging>
 
+    <dependencies>
+        <dependency>
+            <groupId>io.projectreactor</groupId>
+            <artifactId>reactor-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
     <build>
         <defaultGoal>clean install</defaultGoal>
 

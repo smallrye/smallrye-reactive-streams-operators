@@ -5,6 +5,7 @@ import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscription;
 
 import java.time.Duration;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -212,6 +213,11 @@ public abstract class UniImpl<T> implements Uni<T> {
     @Override
     public <O> O to(Function<? super Uni<T>, O> transformer) {
         throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public <O> O to(Class<O> clazz) {
+        return new UniAdaptTo<>(this, Objects.requireNonNull(clazz, "`clazz` must be set")).adapt();
     }
 
     @Override

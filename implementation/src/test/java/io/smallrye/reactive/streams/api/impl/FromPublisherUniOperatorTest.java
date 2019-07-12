@@ -2,6 +2,7 @@ package io.smallrye.reactive.streams.api.impl;
 
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
+import io.smallrye.reactive.streams.api.AssertSubscriber;
 import io.smallrye.reactive.streams.api.Uni;
 import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
 import org.junit.Test;

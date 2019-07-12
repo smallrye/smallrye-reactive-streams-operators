@@ -6,10 +6,10 @@ import java.util.Objects;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class FromCompletionStageUniOperator<O> extends UniOperator<Void, O> {
+public class FromCompletionStageUni<O> extends UniOperator<Void, O> {
     private final CompletionStage<O> stage;
 
-    public FromCompletionStageUniOperator(CompletionStage<O> stage) {
+    public FromCompletionStageUni(CompletionStage<O> stage) {
         super(null);
         this.stage = Objects.requireNonNull(stage, "`stage` must not be `null`");
     }

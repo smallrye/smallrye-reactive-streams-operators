@@ -1,5 +1,6 @@
 package io.smallrye.reactive.streams.api.impl;
 
+import io.smallrye.reactive.streams.api.AssertSubscriber;
 import io.smallrye.reactive.streams.api.Uni;
 import org.junit.Test;
 

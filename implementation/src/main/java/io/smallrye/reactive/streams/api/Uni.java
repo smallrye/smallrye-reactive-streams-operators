@@ -17,10 +17,9 @@ import java.util.function.*;
  * <p>
  * The {@link Uni} type proposes a set of operators to chain operations.
  *
- * @param <T>
+ * @param <T> the type of item produced by the {@link Uni}
  */
 public interface Uni<T> {
-
 
     /**
      * Creates a new {@link Uni} that completes immediately after being subscribed to with the specified (potentially
@@ -54,7 +53,7 @@ public interface Uni<T> {
      * @return the new {@link Uni}
      */
     static <T> Uni<T> failed(Throwable failure) {
-        return new FailedUniOperator<>(Objects.requireNonNull(failure, "The passed exception must not be `null`"));
+        return new FailedUni<>(Objects.requireNonNull(failure, "The passed exception must not be `null`"));
     }
 
     /**
@@ -66,14 +65,14 @@ public interface Uni<T> {
      *                 {@code Uni.<String>failed(() -> exception);}
      * @return the new {@link Uni}
      */
-    static <T> Uni<T> failed(Supplier<Throwable> supplier) {
+    static <T> Uni<T> failed(Supplier<? extends Throwable> supplier) {
         Objects.requireNonNull(supplier, "The supplier must not be `null`");
-        return defer(() -> Uni.failed(supplier.get()));
+        return new FailedUni<>(supplier);
     }
 
     // TODO Javadoc
     static <T> Uni<T> fromCompletionStage(CompletionStage<T> stage) {
-        return new FromCompletionStageUniOperator<>(Objects.requireNonNull(stage, "The passed completion stage must not be `null`"));
+        return new FromCompletionStageUni<>(Objects.requireNonNull(stage, "The passed completion stage must not be `null`"));
     }
 
     // TODO Javadoc
@@ -86,7 +85,7 @@ public interface Uni<T> {
     }
 
     static <T> Uni<T> defer(Supplier<? extends Uni<? extends T>> supplier) {
-        return new DeferredUniOperator<>(Objects.requireNonNull(supplier, "The passed supplier must not be `null`"));
+        return new DeferredUni<>(Objects.requireNonNull(supplier, "The passed supplier must not be `null`"));
     }
 
     /**
@@ -96,8 +95,8 @@ public interface Uni<T> {
      * @param <T>
      * @return
      */
-    static <T> Uni<T> create(Consumer<UniSink<T>> consumer) {
-        throw new UnsupportedOperationException("To be implemented");
+    static <T> Uni<T> create(Consumer<UniEmitter<T>> consumer) {
+       return new UniCreate(consumer);
     }
 
     static Uni<Void> empty() {
@@ -105,7 +104,7 @@ public interface Uni<T> {
     }
 
     static <T> Uni<T> never() {
-        return new FromCompletionStageUniOperator<>(new CompletableFuture<>());
+        return new FromCompletionStageUni<>(new CompletableFuture<>());
     }
 
     /**
@@ -229,6 +228,30 @@ public interface Uni<T> {
      * @param <O>
      */
     <O> O to(Function<? super Uni<T>, O> transformer);
+
+    /**
+     * Transforms this {@link Uni} into an instance of the given class. The transformations acts as follows:
+     * <ol>
+     * <li>If this is an instance of O - return this</li>
+     * <li>If there is on the classpath, an implementation of {@link io.smallrye.reactive.streams.api.adapter.UniAdapter}
+     * for the type O, the adapter is used</li>
+     * <li>If O has a {@code fromPublisher} method, this method is called with a {@link Publisher} produced
+     * using {@link #toPublisher()}</li>
+     * <li>If O has a {@code from} method, this method is called with a {@link Publisher} produced
+     *  using {@link #toPublisher()}</li>
+     * </ol>
+     *
+     * @param clazz the output class
+     * @param <O>   the produced type
+     * @return an instance of O
+     * @throws RuntimeException if the transformation fails.
+     */
+    <O> O to(Class<O> clazz);
+
+
+    static <T, I> Uni<T> from(I instance) {
+        return UniAdaptFrom.adaptFrom(instance);
+    }
 
     /**
      * Casts the item produced by this {@link Uni} to the given type.

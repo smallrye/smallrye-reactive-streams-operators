@@ -1,7 +1,13 @@
 package io.smallrye.reactive.streams.api;
 
 
-public interface UniSink<T> {
+/**
+ * An object allowing to send signals to the downstream {@link Uni}.
+ * {@link Uni} propagates a single signals, once the first is propagated, the others signals have no effect.
+ *
+ * @param <T> the expected type of item.
+ */
+public interface UniEmitter<T> {
 
     /**
      * Completes with the given (potentially {@code null}) value.
@@ -31,9 +37,16 @@ public interface UniSink<T> {
      *
      * @param e the exception
      */
-    void error(Throwable e);
+    void fail(Throwable e);
 
-    // TODO Should we add onCancellation()
+    /**
+     * Attaches a cancellation action invoked when the downstream uni subscription is cancelled.
+     * This method allow propagating the cancellation to the source and potentially cleanup resources.
+     *
+     * @param onCancel the action to run on cancellation, must not be {@code null}
+     * @return this emitter
+     */
+    UniEmitter<T> onCancellation(Runnable onCancel);
 
 
 }

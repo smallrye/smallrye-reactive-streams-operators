@@ -1,13 +1,25 @@
 package io.smallrye.reactive.streams.api.impl;
 
+import io.smallrye.reactive.streams.api.AssertSubscriber;
 import io.smallrye.reactive.streams.api.Uni;
 import org.junit.Test;
+
+import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
 
-public class FailedUniOperatorTest {
-
+public class FailedUniTest {
+    @Test
+    public void testWithASupplier() {
+        Uni<Object> failed = Uni.failed(() -> new IOException("boom"));
+        try {
+            failed.block();
+            fail("Exception expected");
+        } catch (Exception e) {
+            assertThat(e).hasCauseInstanceOf(IOException.class);
+        }
+    }
 
     @Test
     public void testCreationWithCheckedException() {
@@ -43,7 +55,7 @@ public class FailedUniOperatorTest {
 
     @Test(expected = NullPointerException.class)
     public void testCreationWithNull() {
-        Uni.failed((Exception)null);
+        Uni.failed((Exception) null);
     }
 
 }
