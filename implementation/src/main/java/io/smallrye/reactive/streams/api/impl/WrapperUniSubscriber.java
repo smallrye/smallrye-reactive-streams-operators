@@ -1,6 +1,5 @@
 package io.smallrye.reactive.streams.api.impl;
 
-import io.smallrye.reactive.streams.api.Uni;
 import io.smallrye.reactive.streams.api.UniSubscriber;
 import io.smallrye.reactive.streams.api.UniSubscription;
 
@@ -58,7 +57,7 @@ public class WrapperUniSubscriber<T> implements UniSubscriber<T>, UniSubscriptio
     public void onResult(T result) {
         if (state.compareAndSet(HAS_SUBSCRIPTION, DONE)) {
             downstream.onResult(result);
-            cleanup();
+            dispose();
         } else if(state.get() != DONE) { // Are we already done? In this case, drop the signal
             downstream.onSubscribe(EmptySubscription.INSTANCE);
             downstream.onFailure(new IllegalStateException("Invalid transition, expected to be in the HAS_SUBSCRIPTION state but was in " + state.get()));
@@ -75,7 +74,7 @@ public class WrapperUniSubscriber<T> implements UniSubscriber<T>, UniSubscriptio
         }
     }
 
-    private void cleanup() {
+    private void dispose() {
         upstream = null;
     }
 
@@ -83,7 +82,7 @@ public class WrapperUniSubscriber<T> implements UniSubscriber<T>, UniSubscriptio
     public void cancel() {
         if (state.compareAndSet(HAS_SUBSCRIPTION, DONE)) {
             upstream.cancel();
-            cleanup();
+            dispose();
         }
     }
 }

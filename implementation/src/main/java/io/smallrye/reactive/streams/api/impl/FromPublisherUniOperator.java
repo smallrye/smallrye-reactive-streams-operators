@@ -16,19 +16,14 @@ public class FromPublisherUniOperator<O> extends UniOperator<Void, O> {
 
     @Override
     public void subscribing(WrapperUniSubscriber<? super O> subscriber) {
-        // cancellation should be better handled here.
         CompletableFuture<Optional<O>> stage = publisher.findFirst().run().toCompletableFuture();
         subscriber.onSubscribe(() -> stage.cancel(false));
         stage.whenComplete((res, fail) -> {
-            // It's a bit racey here as the cancellation may happen after the check and the subscriber will still
-            // be notified
-            if (!stage.isCancelled()) {
-                if (fail != null) {
-                    subscriber.onFailure(fail);
-                } else {
-                    // If we get the end of stream signal, inject `null`.
-                    subscriber.onResult(res.orElse(null));
-                }
+            if (fail != null) {
+                subscriber.onFailure(fail);
+            } else {
+                // If we get the end of stream signal, inject `null`.
+                subscriber.onResult(res.orElse(null));
             }
         });
     }
