@@ -5,7 +5,7 @@ import io.smallrye.reactive.streams.api.UniEmitter;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-public class UniCreate<T> extends UniImpl<T> {
+public class UniCreate<T> extends DefaultUni<T> {
     private final Consumer<UniEmitter<? super T>> consumer;
 
     public UniCreate(Consumer<UniEmitter<? super T>> consumer) {
@@ -14,7 +14,7 @@ public class UniCreate<T> extends UniImpl<T> {
 
     @Override
     public void subscribing(WrapperUniSubscriber<? super T> subscriber) {
-        UniEmitterImpl<? super T> emitter = new UniEmitterImpl<>(subscriber);
+        DefaultUniEmitter<? super T> emitter = new DefaultUniEmitter<>(subscriber);
         subscriber.onSubscribe(emitter);
 
         try {

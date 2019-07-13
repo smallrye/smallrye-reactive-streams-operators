@@ -13,19 +13,18 @@ import java.util.function.Function;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class MapUniOperatorTest {
+public class UniMapTest {
 
 
     @Test(expected = NullPointerException.class)
     public void testThatMapperMustNotBeNull() {
-        new MapUniOperator<>(Uni.of(1), null);
+        Uni.of(1).map(null);
     }
 
     @Test(expected = NullPointerException.class)
     public void testThatSourceMustNotBeNull() {
-        new MapUniOperator<>(null, Function.identity());
+        new UniMap<>(null, Function.identity());
     }
-
 
     private Uni<Integer> one = Uni.of(1);
 
@@ -119,6 +118,4 @@ public class MapUniOperatorTest {
         ts.assertFailed(Exception.class, "boom");
         assertThat(called).isFalse();
     }
-
-
 }

@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class DeferredUniTest {
+public class UniDeferTest {
 
     @Test
     public void test() {

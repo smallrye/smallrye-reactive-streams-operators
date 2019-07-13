@@ -21,11 +21,11 @@ import java.util.concurrent.atomic.AtomicReference;
  *
  * @param <T>
  */
-public class UniEmitterImpl<T> extends AtomicReference<Disposable> implements UniEmitter<T>, Disposable, UniSubscription {
+public class DefaultUniEmitter<T> extends AtomicReference<Disposable> implements UniEmitter<T>, Disposable, UniSubscription {
 
     private final UniSubscriber<T> downstream;
 
-    UniEmitterImpl(UniSubscriber<T> subscriber) {
+    DefaultUniEmitter(UniSubscriber<T> subscriber) {
         this.downstream = Objects.requireNonNull(subscriber);
     }
 

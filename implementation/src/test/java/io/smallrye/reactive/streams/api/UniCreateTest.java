@@ -1,6 +1,6 @@
 package io.smallrye.reactive.streams.api;
 
-import io.smallrye.reactive.streams.api.impl.UniEmitterImpl;
+import io.smallrye.reactive.streams.api.impl.DefaultUniEmitter;
 import org.junit.Test;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -32,7 +32,7 @@ public class UniCreateTest {
 
         subscriber.assertCompletedSuccessfully().assertResult(1);
         // Other signals are dropped
-        assertThat(((UniEmitterImpl) reference.get()).isDisposed()).isTrue();
+        assertThat(((DefaultUniEmitter) reference.get()).isDisposed()).isTrue();
     }
 
     @Test
@@ -81,7 +81,7 @@ public class UniCreateTest {
         }).subscribe(subscriber);
 
         subscriber.assertCompletedSuccessfully();
-        assertThat(reference.get()).isInstanceOf(UniEmitterImpl.class).satisfies(e -> ((UniEmitterImpl) e).isDisposed());
+        assertThat(reference.get()).isInstanceOf(DefaultUniEmitter.class).satisfies(e -> ((DefaultUniEmitter) e).isDisposed());
     }
 
     @Test

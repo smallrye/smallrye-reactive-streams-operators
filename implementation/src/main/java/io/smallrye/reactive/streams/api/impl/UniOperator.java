@@ -6,7 +6,7 @@ import org.reactivestreams.Subscription;
 
 import java.util.Objects;
 
-public abstract class UniOperator<I, O> extends UniImpl<O> {
+public abstract class UniOperator<I, O> extends DefaultUni<O> {
 
     private final Uni<? extends I> source;
 

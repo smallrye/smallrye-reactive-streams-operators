@@ -5,10 +5,10 @@ import io.smallrye.reactive.streams.api.Uni;
 import java.util.Objects;
 import java.util.function.Supplier;
 
-public class DeferredUni<T> extends UniOperator<Void, T> {
+public class UniDefer<T> extends UniOperator<Void, T> {
     private final Supplier<? extends Uni<? extends T>> supplier;
 
-    public DeferredUni(Supplier<? extends Uni<? extends T>> supplier) {
+    public UniDefer(Supplier<? extends Uni<? extends T>> supplier) {
         super(null);
         this.supplier = Objects.requireNonNull(supplier, "`supplier` cannot be `null`");
     }

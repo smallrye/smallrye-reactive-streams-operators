@@ -6,10 +6,10 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
-public class FromPublisherUniOperator<O> extends UniOperator<Void, O> {
+public class UniFromPublisher<O> extends UniOperator<Void, O> {
     private final PublisherBuilder<O> publisher;
 
-    public FromPublisherUniOperator(PublisherBuilder<O> publisher) {
+    public UniFromPublisher(PublisherBuilder<O> publisher) {
         super(null);
         this.publisher = Objects.requireNonNull(publisher, "`stage` must not be `null`");
     }

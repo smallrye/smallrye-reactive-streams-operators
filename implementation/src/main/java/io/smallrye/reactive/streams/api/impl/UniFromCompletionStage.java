@@ -3,10 +3,10 @@ package io.smallrye.reactive.streams.api.impl;
 import java.util.Objects;
 import java.util.concurrent.CompletionStage;
 
-public class FromCompletionStageUni<O> extends UniOperator<Void, O> {
+public class UniFromCompletionStage<O> extends UniOperator<Void, O> {
     private final CompletionStage<O> stage;
 
-    public FromCompletionStageUni(CompletionStage<O> stage) {
+    public UniFromCompletionStage(CompletionStage<O> stage) {
         super(null);
         this.stage = Objects.requireNonNull(stage, "`stage` must not be `null`");
     }

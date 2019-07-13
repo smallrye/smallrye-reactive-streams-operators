@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.*;
 
-public abstract class UniImpl<T> implements Uni<T> {
+public abstract class DefaultUni<T> implements Uni<T> {
 
     @Override
     public void subscribe(UniSubscriber<? super T> subscriber) {
@@ -115,7 +115,7 @@ public abstract class UniImpl<T> implements Uni<T> {
     // Operator
     @Override
     public <O> Uni<O> map(Function<T, O> mapper) {
-        return new MapUniOperator<>(this, mapper);
+        return new UniMap<>(this, mapper);
     }
 
     @Override
@@ -125,7 +125,7 @@ public abstract class UniImpl<T> implements Uni<T> {
 
     @Override
     public Uni<T> cache() {
-        return new CacheUniOperator<>(this);
+        return new UniCache<>(this);
     }
 
     // Export
@@ -156,7 +156,7 @@ public abstract class UniImpl<T> implements Uni<T> {
                     }
 
                     // We received a request, we subscribe to the uni
-                    UniImpl.this.subscribe(new UniSubscriber<T>() {
+                    DefaultUni.this.subscribe(new UniSubscriber<T>() {
                         @Override
                         public void onSubscribe(UniSubscription subscription) {
                             if (!upstreamSubscription.compareAndSet(null, subscription)) {

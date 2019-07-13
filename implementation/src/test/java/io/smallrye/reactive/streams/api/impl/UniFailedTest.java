@@ -9,7 +9,7 @@ import java.io.IOException;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
 
-public class FailedUniTest {
+public class UniFailedTest {
     @Test
     public void testWithASupplier() {
         Uni<Object> failed = Uni.failed(() -> new IOException("boom"));

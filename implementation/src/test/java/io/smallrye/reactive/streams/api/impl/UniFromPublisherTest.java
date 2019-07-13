@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class FromPublisherUniOperatorTest {
+public class UniFromPublisherTest {
 
     @Test
     public void testWithPublisher() {

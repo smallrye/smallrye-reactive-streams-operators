@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class CacheUniOperator<I> extends UniOperator<I, I> implements UniSubscriber<I> {
+public class UniCache<I> extends UniOperator<I, I> implements UniSubscriber<I> {
 
     private static final int NOT_INITIALIZED = 0;
     private static final int SUBSCRIBING = 1;
@@ -24,7 +24,7 @@ public class CacheUniOperator<I> extends UniOperator<I, I> implements UniSubscri
     private I result;
     private Throwable failure;
 
-    CacheUniOperator(Uni<? extends I> source) {
+    UniCache(Uni<? extends I> source) {
         super(Objects.requireNonNull(source, "`source` must not be `null`"));
     }
 

@@ -11,7 +11,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class FromCompletionStageUniTest {
+public class UniFromCompletionStageTest {
 
     @Test
     public void testThatNullValueAreAccepted() {

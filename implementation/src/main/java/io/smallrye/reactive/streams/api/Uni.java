@@ -53,7 +53,7 @@ public interface Uni<T> {
      * @return the new {@link Uni}
      */
     static <T> Uni<T> failed(Throwable failure) {
-        return new FailedUni<>(Objects.requireNonNull(failure, "The passed exception must not be `null`"));
+        return new UniFailed<>(Objects.requireNonNull(failure, "The passed exception must not be `null`"));
     }
 
     /**
@@ -67,12 +67,12 @@ public interface Uni<T> {
      */
     static <T> Uni<T> failed(Supplier<? extends Throwable> supplier) {
         Objects.requireNonNull(supplier, "The supplier must not be `null`");
-        return new FailedUni<>(supplier);
+        return new UniFailed<>(supplier);
     }
 
     // TODO Javadoc
     static <T> Uni<T> fromCompletionStage(CompletionStage<T> stage) {
-        return new FromCompletionStageUni<>(Objects.requireNonNull(stage, "The passed completion stage must not be `null`"));
+        return new UniFromCompletionStage<>(Objects.requireNonNull(stage, "The passed completion stage must not be `null`"));
     }
 
     // TODO Javadoc
@@ -81,11 +81,11 @@ public interface Uni<T> {
     }
 
     static <T> Uni<T> fromPublisher(PublisherBuilder<T> publisher) {
-        return new FromPublisherUniOperator<>(Objects.requireNonNull(publisher, "The passed publisher stage must not be `null`"));
+        return new UniFromPublisher<>(Objects.requireNonNull(publisher, "The passed publisher stage must not be `null`"));
     }
 
     static <T> Uni<T> defer(Supplier<? extends Uni<? extends T>> supplier) {
-        return new DeferredUni<>(Objects.requireNonNull(supplier, "The passed supplier must not be `null`"));
+        return new UniDefer<>(Objects.requireNonNull(supplier, "The passed supplier must not be `null`"));
     }
 
     /**
@@ -104,7 +104,7 @@ public interface Uni<T> {
     }
 
     static <T> Uni<T> never() {
-        return new FromCompletionStageUni<>(new CompletableFuture<>());
+        return new UniFromCompletionStage<>(new CompletableFuture<>());
     }
 
     /**

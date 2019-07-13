@@ -17,17 +17,17 @@ public class WrapperUniSubscriber<T> implements UniSubscriber<T>, UniSubscriptio
     private static final int DONE = 3; // Terminal state
 
     private final AtomicInteger state = new AtomicInteger(INIT);
-    private final UniImpl<T> source;
+    private final DefaultUni<T> source;
     private final UniSubscriber<? super T> downstream;
     private UniSubscription upstream;
 
-    public static <T> void subscribing(UniImpl<T> source, UniSubscriber<? super  T> subscriber) {
+    public static <T> void subscribing(DefaultUni<T> source, UniSubscriber<? super  T> subscriber) {
         WrapperUniSubscriber<T> wrapped = new WrapperUniSubscriber<>(source, subscriber);
         wrapped.subscribe();
 
     }
 
-    private WrapperUniSubscriber(UniImpl<T> source, UniSubscriber<? super T> subscriber) {
+    private WrapperUniSubscriber(DefaultUni<T> source, UniSubscriber<? super T> subscriber) {
         this.source = Objects.requireNonNull(source, "`source` must not be `null`");
         this.downstream = Objects.requireNonNull(subscriber, "`subscriber` must not be `null`");
     }

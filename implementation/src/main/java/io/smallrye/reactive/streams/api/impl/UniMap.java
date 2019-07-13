@@ -7,11 +7,11 @@ import io.smallrye.reactive.streams.api.UniSubscription;
 import java.util.Objects;
 import java.util.function.Function;
 
-public class MapUniOperator<I, O> extends UniOperator<I, O> {
+public class UniMap<I, O> extends UniOperator<I, O> {
 
     private final Function<? super I, ? extends O> mapper;
 
-    MapUniOperator(Uni<I> source, Function<I, O> mapper) {
+    UniMap(Uni<I> source, Function<I, O> mapper) {
         super(Objects.requireNonNull(source, "`source` must not be `null`"));
         this.mapper = Objects.requireNonNull(mapper, "`mapper` must not be `null`");
     }
@@ -26,13 +26,17 @@ public class MapUniOperator<I, O> extends UniOperator<I, O> {
 
             @Override
             public void onResult(I result) {
+                O outcome;
                 try {
-                    O outcome = mapper.apply(result);
-                    subscriber.onResult(outcome);
+                    outcome = mapper.apply(result);
+                    // We cannot call onResult here, as if onResult would throw an exception
+                    // it would be caught and onFailure would be called. This would be illegal.
                 } catch (Exception e) {
                     subscriber.onFailure(e);
+                    return;
                 }
 
+                subscriber.onResult(outcome);
             }
 
             @Override

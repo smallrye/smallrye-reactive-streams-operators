@@ -3,16 +3,16 @@ package io.smallrye.reactive.streams.api.impl;
 import java.util.Objects;
 import java.util.function.Supplier;
 
-public class FailedUni<O> extends UniOperator<Void, O> {
+public class UniFailed<O> extends UniOperator<Void, O> {
     private final Supplier<? extends Throwable> supplier;
 
-    public FailedUni(Throwable throwable) {
+    public UniFailed(Throwable throwable) {
         super(null);
         Objects.requireNonNull(throwable, "`throwable` cannot be `null`");
         this.supplier = () -> throwable;
     }
 
-    public FailedUni(Supplier<? extends Throwable> supplier) {
+    public UniFailed(Supplier<? extends Throwable> supplier) {
         super(null);
         Objects.requireNonNull(supplier, "`supplier` cannot be `null`");
         this.supplier = supplier;
