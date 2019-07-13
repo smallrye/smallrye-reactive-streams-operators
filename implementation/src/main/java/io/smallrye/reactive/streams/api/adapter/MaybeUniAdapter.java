@@ -6,10 +6,13 @@ import io.smallrye.reactive.streams.api.Uni;
 
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * {@link UniAdapter} implementation for the {@link Maybe} type.
+ */
 public class MaybeUniAdapter implements UniAdapter<Maybe<?>> {
     @Override
     public boolean accept(Class<Maybe<?>> clazz) {
-        return Maybe.class.equals(clazz);
+        return Maybe.class.isAssignableFrom(clazz);
     }
 
     @Override
