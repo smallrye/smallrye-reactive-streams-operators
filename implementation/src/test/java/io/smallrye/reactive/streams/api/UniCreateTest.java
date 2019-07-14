@@ -53,6 +53,17 @@ public class UniCreateTest {
     }
 
     @Test
+    public void testWithCancellation() {
+        AssertSubscriber<Integer> subscriber = AssertSubscriber.create();
+        AtomicInteger onCancellationCalled = new AtomicInteger();
+        Uni.<Integer>create(emitter -> emitter.onCancellation(onCancellationCalled::incrementAndGet)).subscribe(subscriber);
+
+        assertThat(onCancellationCalled).hasValue(0);
+        subscriber.cancel();
+        assertThat(onCancellationCalled).hasValue(1);
+    }
+
+    @Test
     public void testWithFailure() {
         AssertSubscriber<Integer> subscriber = AssertSubscriber.create();
         Uni.<Integer>create(emitter -> emitter.fail(new Exception("boom"))).subscribe(subscriber);
