@@ -93,6 +93,29 @@ public interface Uni<T> {
     }
 
     /**
+     * Creates a {@link Uni} from the given {@link CompletionStage} or {@link CompletableFuture}. The future is
+     * created by invoking the passed {@link Supplier} at subscription time.
+     * <p>
+     * The produced {@code Uni} emits the result of the passed  {@link CompletionStage}. If the {@link CompletionStage}
+     * never completes (or failed), the produced {@link Uni} would not emit a value or a failure.
+     * <p>
+     * Cancelling the subscription on the produced {@link Uni} cancels the passed {@link CompletionStage}
+     * (calling {@link CompletableFuture#cancel(boolean)} on the future retrieved using
+     * {@link CompletionStage#toCompletableFuture()}.
+     * <p>
+     * If the produced stage has already been completed (or failed), the produced {@link Uni} sends the result or failure
+     * immediately after subscription. If it's not the case the subscriber's callbacks are called on the thread used
+     * by the passed {@link CompletionStage}.
+     *
+     * @param supplier the supplier, must not be {@code null}, must not produce {@code null}
+     * @param <T>   the type of result
+     * @return the produced {@link Uni}
+     */
+    static <T> Uni<T> fromCompletionStage(Supplier<CompletionStage<T>> supplier) {
+        return new UniFromCompletionStageSupplier<>(Objects.requireNonNull(supplier, "The passed supplier must not be `null`"));
+    }
+
+    /**
      * Creates a {@link Uni} from the passed {@link Publisher}.
      * <p>
      * The produced {@link Uni} emits the first value emitted by the passed {@link Publisher}.
