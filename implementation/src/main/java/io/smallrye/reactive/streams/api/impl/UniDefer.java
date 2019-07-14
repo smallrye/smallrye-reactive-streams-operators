@@ -19,12 +19,17 @@ public class UniDefer<T> extends UniOperator<Void, T> {
         Uni<? extends T> uni;
         try {
             uni = supplier.get();
-            Objects.requireNonNull(uni, "The supplier must not return `null`");
         } catch (Exception e) {
             subscriber.onSubscribe(EmptySubscription.INSTANCE);
             subscriber.onFailure(e);
             return;
         }
-        uni.subscribe(subscriber);
+
+        if (uni == null) {
+            subscriber.onSubscribe(EmptySubscription.INSTANCE);
+            subscriber.onFailure(new NullPointerException("The supplier produced `null`"));
+        } else {
+            uni.subscribe(subscriber);
+        }
     }
 }
