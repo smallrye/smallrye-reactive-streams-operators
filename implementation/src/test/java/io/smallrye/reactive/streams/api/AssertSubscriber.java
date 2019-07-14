@@ -176,4 +176,10 @@ public class AssertSubscriber<T> implements UniSubscriber<T> {
     }
 
 
+    public AssertSubscriber<T> hasSubscription() {
+        if (subscription == null) {
+            throw new AssertionError(("Expected to have a subscription"));
+        }
+        return this;
+    }
 }
