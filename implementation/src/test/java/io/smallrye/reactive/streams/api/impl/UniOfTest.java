@@ -81,4 +81,18 @@ public class UniOfTest {
         subscriber2.assertCompletedSuccessfully().assertResult("foo");
     }
 
+    @Test
+    public void testEmpty() {
+        AssertSubscriber<Void> subscriber = AssertSubscriber.create();
+        Uni.empty().subscribe(subscriber);
+        subscriber.assertCompletedSuccessfully().assertResult(null);
+    }
+
+    @Test
+    public void testEmptyWithImmediateCancellation() {
+        AssertSubscriber<Void> subscriber = new AssertSubscriber<>(true);
+        Uni.empty().subscribe(subscriber);
+        subscriber.hasNoFailure().hasNoValue();
+    }
+
 }
