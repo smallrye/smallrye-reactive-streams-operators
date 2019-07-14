@@ -23,45 +23,7 @@ public abstract class DefaultUni<T> implements Uni<T> {
 
     @Override
     public CompletableFuture<T> subscribeToCompletionStage() {
-        final AtomicReference<Subscription> ref = new AtomicReference<>();
-
-        CompletableFuture<T> future = new CompletableFuture<T>() {
-            @Override
-            public boolean cancel(boolean mayInterruptIfRunning) {
-                boolean cancelled = super.cancel(mayInterruptIfRunning);
-                if (cancelled) {
-                    Subscription s = ref.getAndSet(null);
-                    if (s != null) {
-                        s.cancel();
-                    }
-                }
-                return cancelled;
-            }
-        };
-
-        subscribe(new UniSubscriber<T>() {
-            @Override
-            public void onSubscribe(UniSubscription subscription) {
-                if (! ref.compareAndSet(null, subscription)) {
-                    future.completeExceptionally(new IllegalStateException("Invalid subscription state - Already having an upstream subscription"));
-                }
-            }
-
-            @Override
-            public void onResult(T result) {
-                if (ref.getAndSet(null) != null) {
-                    future.complete(result);
-                }
-            }
-
-            @Override
-            public void onFailure(Throwable failure) {
-                if (ref.getAndSet(null) != null) {
-                    future.completeExceptionally(failure);
-                }
-            }
-        });
-        return future;
+        return UniToCompletionStage.susbscribe(this);
     }
 
     @Override
