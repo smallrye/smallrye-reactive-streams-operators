@@ -33,8 +33,13 @@ public class UniFailed<O> extends UniOperator<Void, O> {
         }
 
         subscriber.onSubscribe(EmptySubscription.INSTANCE);
-        // Propagate the exception produced by the supplier
-        subscriber.onFailure(failure);
+        if (failure != null) {
+            // Propagate the exception produced by the supplier
+            subscriber.onFailure(failure);
+        } else {
+            // the supplier has produced null, this is not legal
+            subscriber.onFailure(new NullPointerException("The failure supplier produced `null`"));
+        }
 
     }
 }
