@@ -74,7 +74,7 @@ public class UniCreateTest {
     @Test
     public void testThatEmitterIsDisposed() {
         AssertSubscriber<Void> subscriber = AssertSubscriber.create();
-        AtomicReference<UniEmitter<Void>> reference = new AtomicReference<>();
+        AtomicReference<UniEmitter<? super Void>> reference = new AtomicReference<>();
         Uni.<Void>create(emitter -> {
             reference.set(emitter);
             emitter.success();
