@@ -30,7 +30,7 @@ public interface Uni<T> {
      * @return the new {@link Uni}
      */
     static <T> Uni<T> of(T value) {
-        return new OfUniOperator<>(value);
+        return new UniOf<>(value);
     }
 
     /**
@@ -41,8 +41,9 @@ public interface Uni<T> {
      * @param <T>   the type of the produced item
      * @return the new {@link Uni}
      */
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     static <T> Uni<T> fromOptional(Optional<T> value) {
-        return new OfUniOperator<>(value);
+        return new UniOf<>(value);
     }
 
     /**
@@ -70,49 +71,121 @@ public interface Uni<T> {
         return new UniFailed<>(supplier);
     }
 
-    // TODO Javadoc
+    /**
+     * Creates a {@link Uni} from the given {@link CompletionStage} or {@link CompletableFuture}.
+     * The produced {@code Uni} emits the result of the passed  {@link CompletionStage}. If the {@link CompletionStage}
+     * never completes (or failed), the produced {@link Uni} would not emit a value or a failure.
+     * <p>
+     * Cancelling the subscription on the produced {@link Uni} cancels the passed {@link CompletionStage}
+     * (calling {@link CompletableFuture#cancel(boolean)} on the future retrieved using
+     * {@link CompletionStage#toCompletableFuture()}.
+     * <p>
+     * If the stage has already been completed (or failed), the produced {@link Uni} sends the result or failure
+     * immediately after subscription. If it's not the case the subscriber's callbacks are called on the thread used
+     * by the passed {@link CompletionStage}.
+     *
+     * @param stage the stage, must not be {@code null}
+     * @param <T>   the type of result
+     * @return the produced {@link Uni}
+     */
     static <T> Uni<T> fromCompletionStage(CompletionStage<T> stage) {
         return new UniFromCompletionStage<>(Objects.requireNonNull(stage, "The passed completion stage must not be `null`"));
     }
 
-    // TODO Javadoc
+    /**
+     * Creates a {@link Uni} from the passed {@link Publisher}.
+     * <p>
+     * The produced {@link Uni} emits the first value emitted by the passed {@link Publisher}.
+     * If the publisher emits multiple values, others are dropped. If the publisher emits a failure after a value, the
+     * failure is dropped. If the publisher emits the end of stream signal before a value, the produced {@link Uni} is
+     * resolved with {@code null}.
+     * <p>
+     * When a subscriber subscribes to the produced {@link Uni}, it subscribes to the {@link Publisher} and requests
+     * {@code 1} item. When the first signal is received, the subscription is cancelled. Note that each Uni's subscriber
+     * would produce a new subscription.
+     * <p>
+     * If the Uni's observer cancels its subscription, the subscription to the {@link Publisher} is also cancelled.
+     *
+     * @param publisher the publisher, must not be {@code null}
+     * @param <T>       the type of item
+     * @return the produced {@link Uni}
+     */
     static <T> Uni<T> fromPublisher(Publisher<T> publisher) {
-        return fromPublisher(ReactiveStreams.fromPublisher(publisher));
+        return fromPublisher(ReactiveStreams.fromPublisher(
+                Objects.requireNonNull(publisher, "`publisher` must not be `null`"))
+        );
     }
 
+    /**
+     * Same as {@link #fromPublisher(Publisher)} but with a {@link PublisherBuilder} as parameter.
+     *
+     * @param publisher the publisher, must not be {@code null}
+     * @param <T>       the type of item
+     * @return the produced {@link Uni}
+     */
     static <T> Uni<T> fromPublisher(PublisherBuilder<T> publisher) {
-        return new UniFromPublisher<>(Objects.requireNonNull(publisher, "The passed publisher stage must not be `null`"));
+        return new UniFromPublisher<>(
+                Objects.requireNonNull(publisher, "The passed publisher stage must not be `null`")
+        );
     }
 
+    /**
+     * Creates a {@link Uni} that will {@link Supplier#get supply} a target {@link Uni} to subscribe to for
+     * each {@link UniSubscriber} downstream. The supplier is called for each subscriber at subscription time.
+     *
+     * @param supplier the supplier, must not be {@code null}, must not produce {@code null}
+     * @param <T>      the type of item
+     * @return the produced {@link Uni}
+     */
     static <T> Uni<T> defer(Supplier<? extends Uni<? extends T>> supplier) {
         return new UniDefer<>(Objects.requireNonNull(supplier, "The passed supplier must not be `null`"));
     }
 
     /**
-     * Create a {@link Uni} deferring the logic to the given consumer. The consumer is called at subscription time.
+     * Creates a {@link Uni} deferring the logic to the given consumer. The consumer can be used with callback-based
+     * APIs to signal at most one value (potentially {@code null}), or an failure signal.
+     * <p>
+     * Using this method, you can produce a {@link Uni} listener or callbacks APIs. You register the listener in
+     * the consumer and emits the value / failure on events. Don't forget to unregister the listener on cancellation.
+     * Note that the emitter only forwards the first signal, subsequent signals are dropped.
      *
-     * @param consumer
-     * @param <T>
-     * @return
+     * @param consumer callback receiving the {@link UniEmitter} and producing signals downstream. The callback is
+     *                 called for each subscriber (at subscription time)
+     * @param <T>      the type of item
+     * @return the produced {@link Uni}
      */
-    static <T> Uni<T> create(Consumer<UniEmitter<T>> consumer) {
-       return new UniCreate(consumer);
+    static <T> Uni<T> create(Consumer<UniEmitter<? super T>> consumer) {
+        return new UniCreate<>(consumer);
     }
 
+    /**
+     * Equivalent to {@link #of(Object)} called with {@code null}.
+     *
+     * @return a {@link Uni} immediately calling {@link UniSubscriber#onResult(Object)} with {@code null} just
+     * after subscription.
+     */
     static Uni<Void> empty() {
         return of(null);
     }
 
+    /**
+     * Creates a {@link Uni} that will never signal any data, error or completion signal, essentially running
+     * indefinitely.
+     *
+     * @param <T> the type of item
+     * @return a never completing {@link Uni}
+     */
     static <T> Uni<T> never() {
         return new UniFromCompletionStage<>(new CompletableFuture<>());
     }
 
     /**
-     * Returns a new {@link Uni} with the first result or failure emitted by the set of <em>competing</em> {@link Uni}.
+     *  Creates a {@link Uni} forwarding the first signal (value, {@code null} or failure). It behaves like the fastest
+     *  of these competing unis.
      *
-     * @param iterable
-     * @param <T>
-     * @return
+     * @param iterable a set of {@link Uni}, must not be {@code null} or empty.
+     * @param <T> the type of item
+     * @return the produced {@link Uni}
      */
     static <T> Uni<T> any(Iterable<? extends Uni<? super T>> iterable) {
         throw new UnsupportedOperationException("To be implemented");
@@ -238,7 +311,7 @@ public interface Uni<T> {
      * <li>If O has a {@code fromPublisher} method, this method is called with a {@link Publisher} produced
      * using {@link #toPublisher()}</li>
      * <li>If O has a {@code from} method, this method is called with a {@link Publisher} produced
-     *  using {@link #toPublisher()}</li>
+     * using {@link #toPublisher()}</li>
      * </ol>
      *
      * @param clazz the output class
