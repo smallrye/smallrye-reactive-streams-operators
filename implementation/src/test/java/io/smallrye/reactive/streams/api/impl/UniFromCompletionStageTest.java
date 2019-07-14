@@ -40,7 +40,7 @@ public class UniFromCompletionStageTest {
         CompletionStage<String> cs = new CompletableFuture<>();
         Uni.fromCompletionStage(cs).subscribe(ts);
         cs.toCompletableFuture().completeExceptionally(new IOException("boom"));
-        ts.assertFailed(IOException.class, "boom");
+        ts.assertFailure(IOException.class, "boom");
     }
 
     @Test
@@ -67,7 +67,7 @@ public class UniFromCompletionStageTest {
         CompletionStage<String> cs = new CompletableFuture<>();
         Uni.fromCompletionStage(() -> cs).subscribe(ts);
         cs.toCompletableFuture().completeExceptionally(new IOException("boom"));
-        ts.assertFailed(IOException.class, "boom");
+        ts.assertFailure(IOException.class, "boom");
     }
 
     @Test
@@ -126,7 +126,7 @@ public class UniFromCompletionStageTest {
 
         uni.subscribe(ts);
         assertThat(called).isFalse();
-        ts.assertHasNotBeenCompleted();
+        ts.assertNotCompleted();
     }
 
     @Test
@@ -144,7 +144,7 @@ public class UniFromCompletionStageTest {
 
         uni.subscribe(ts);
         assertThat(called).isFalse();
-        ts.assertHasNotBeenCompleted();
+        ts.assertNotCompleted();
     }
 
     @Test
@@ -158,7 +158,7 @@ public class UniFromCompletionStageTest {
 
         cs.complete(1);
 
-        ts.assertHasNotBeenCompleted();
+        ts.assertNotCompleted();
     }
 
     @Test
@@ -172,7 +172,7 @@ public class UniFromCompletionStageTest {
 
         cs.complete(1);
 
-        ts.assertHasNotBeenCompleted();
+        ts.assertNotCompleted();
     }
 
     @Test
@@ -217,7 +217,7 @@ public class UniFromCompletionStageTest {
         Uni<Integer> uni = Uni.fromCompletionStage(() -> null);
 
         uni.subscribe(ts);
-        ts.assertFailed(NullPointerException.class, "");
+        ts.assertFailure(NullPointerException.class, "");
     }
 
 

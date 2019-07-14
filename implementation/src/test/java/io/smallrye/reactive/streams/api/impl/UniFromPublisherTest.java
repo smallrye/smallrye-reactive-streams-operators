@@ -42,7 +42,7 @@ public class UniFromPublisherTest {
     public void testWithException() {
         AssertSubscriber<Object> ts = AssertSubscriber.create();
         Uni.fromPublisher(ReactiveStreams.failed(new IOException("boom"))).subscribe(ts);
-        ts.assertFailed(IOException.class, "boom");
+        ts.assertFailure(IOException.class, "boom");
     }
 
     @Test
@@ -82,7 +82,7 @@ public class UniFromPublisherTest {
 
         uni.subscribe(ts);
         assertThat(called).isFalse();
-        ts.assertHasNotBeenCompleted();
+        ts.assertNotCompleted();
     }
 
     @Test
@@ -102,7 +102,7 @@ public class UniFromPublisherTest {
         uni.subscribe(ts);
         ts.cancel();
 
-        ts.assertHasNotBeenCompleted();
+        ts.assertNotCompleted();
     }
 
 

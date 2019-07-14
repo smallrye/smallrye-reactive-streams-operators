@@ -68,7 +68,7 @@ public class UniCreateTest {
         AssertSubscriber<Integer> subscriber = AssertSubscriber.create();
         Uni.<Integer>create(emitter -> emitter.fail(new Exception("boom"))).subscribe(subscriber);
 
-        subscriber.assertFailed(Exception.class, "boom");
+        subscriber.assertFailure(Exception.class, "boom");
     }
 
     @Test
@@ -78,7 +78,7 @@ public class UniCreateTest {
             throw new NullPointerException("boom");
         }).subscribe(subscriber);
 
-        subscriber.assertFailed(NullPointerException.class, "boom");
+        subscriber.assertFailure(NullPointerException.class, "boom");
 
     }
 
@@ -100,7 +100,7 @@ public class UniCreateTest {
         AssertSubscriber<Integer> subscriber = AssertSubscriber.create();
         Uni.<Integer>create(emitter -> emitter.fail(null)).subscribe(subscriber);
 
-        subscriber.assertFailed(NullPointerException.class, "");
+        subscriber.assertFailure(NullPointerException.class, "");
     }
 
     @Test

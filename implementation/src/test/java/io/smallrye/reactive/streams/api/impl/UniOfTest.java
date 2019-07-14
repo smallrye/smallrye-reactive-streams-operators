@@ -77,7 +77,7 @@ public class UniOfTest {
         Uni<String> foo = Uni.of("foo");
         foo.subscribe(subscriber1);
         foo.subscribe(subscriber2);
-        subscriber1.hasNoValue().hasNoFailure();
+        subscriber1.assertNoResult().assertNoFailure();
         subscriber2.assertCompletedSuccessfully().assertResult("foo");
     }
 
@@ -92,7 +92,7 @@ public class UniOfTest {
     public void testEmptyWithImmediateCancellation() {
         AssertSubscriber<Void> subscriber = new AssertSubscriber<>(true);
         Uni.empty().subscribe(subscriber);
-        subscriber.hasNoFailure().hasNoValue();
+        subscriber.assertNoFailure().assertNoResult();
     }
 
 }

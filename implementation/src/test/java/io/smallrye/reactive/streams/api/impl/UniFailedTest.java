@@ -28,7 +28,7 @@ public class UniFailedTest {
     public void testCreationWithCheckedException() {
         AssertSubscriber<Object> ts = AssertSubscriber.create();
         Uni.failed(new Exception("boom")).subscribe(ts);
-        ts.assertFailed(Exception.class, "boom");
+        ts.assertFailure(Exception.class, "boom");
 
         try {
             Uni.failed(new Exception("boom")).block();
@@ -44,7 +44,7 @@ public class UniFailedTest {
     public void testCreationWithRuntimeException() {
         AssertSubscriber<Object> ts = AssertSubscriber.create();
         Uni.failed(new RuntimeException("boom")).subscribe(ts);
-        ts.assertFailed(RuntimeException.class, "boom");
+        ts.assertFailure(RuntimeException.class, "boom");
 
         try {
             Uni.failed(new RuntimeException("boom")).block();

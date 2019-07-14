@@ -64,7 +64,7 @@ public class UniMapTest {
             throw new RuntimeException("failure");
         }).subscribe(ts);
 
-        ts.assertFailed(RuntimeException.class, "failure");
+        ts.assertFailure(RuntimeException.class, "failure");
     }
 
     @Test
@@ -115,7 +115,7 @@ public class UniMapTest {
                     return x + 1;
                 }).subscribe(ts);
 
-        ts.assertFailed(Exception.class, "boom");
+        ts.assertFailure(Exception.class, "boom");
         assertThat(called).isFalse();
     }
 }

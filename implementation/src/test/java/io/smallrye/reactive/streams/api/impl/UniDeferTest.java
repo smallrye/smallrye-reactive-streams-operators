@@ -30,7 +30,7 @@ public class UniDeferTest {
         Uni<Integer> s = Uni.defer(() -> null);
         AssertSubscriber<Integer> subscriber = AssertSubscriber.create();
         s.subscribe(subscriber);
-        subscriber.assertFailed(NullPointerException.class, "");
+        subscriber.assertFailure(NullPointerException.class, "");
     }
 
     @Test
@@ -40,6 +40,6 @@ public class UniDeferTest {
         });
         AssertSubscriber<Integer> subscriber = AssertSubscriber.create();
         s.subscribe(subscriber);
-        subscriber.assertFailed(IllegalStateException.class, "boom");
+        subscriber.assertFailure(IllegalStateException.class, "boom");
     }
 }
