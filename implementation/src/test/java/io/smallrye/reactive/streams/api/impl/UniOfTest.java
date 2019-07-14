@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class OfUniOperatorTest {
+public class UniOfTest {
 
     @Test
     public void testThatNullValueAreAccepted() {
@@ -68,6 +68,17 @@ public class OfUniOperatorTest {
     @Test
     public void testThatValueIsRetrievedUsingBlock() {
         assertThat(Uni.of("foo").block()).isEqualToIgnoringCase("foo");
+    }
+
+    @Test
+    public void testWithImmediateCancellation() {
+        AssertSubscriber<String> subscriber1 = new AssertSubscriber<>(true);
+        AssertSubscriber<String> subscriber2 = new AssertSubscriber<>(false);
+        Uni<String> foo = Uni.of("foo");
+        foo.subscribe(subscriber1);
+        foo.subscribe(subscriber2);
+        subscriber1.hasNoValue().hasNoFailure();
+        subscriber2.assertCompletedSuccessfully().assertResult("foo");
     }
 
 }
