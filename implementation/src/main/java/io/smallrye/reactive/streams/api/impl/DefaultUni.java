@@ -212,7 +212,7 @@ public abstract class DefaultUni<T> implements Uni<T> {
 
     @Override
     public <O> Uni<O> flatMap(Function<? super T, ? extends Uni<? extends O>> transformer) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        return new UniFlatMap<>(this, transformer);
     }
 
     @Override

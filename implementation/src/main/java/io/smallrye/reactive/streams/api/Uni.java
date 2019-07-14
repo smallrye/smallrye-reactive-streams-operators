@@ -108,7 +108,7 @@ public interface Uni<T> {
      * by the passed {@link CompletionStage}.
      *
      * @param supplier the supplier, must not be {@code null}, must not produce {@code null}
-     * @param <T>   the type of result
+     * @param <T>      the type of result
      * @return the produced {@link Uni}
      */
     static <T> Uni<T> fromCompletionStage(Supplier<CompletionStage<T>> supplier) {
