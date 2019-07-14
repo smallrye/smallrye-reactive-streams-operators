@@ -2,7 +2,6 @@ package io.smallrye.reactive.streams.api.impl;
 
 import io.smallrye.reactive.streams.api.*;
 import org.reactivestreams.Publisher;
-import org.reactivestreams.Subscription;
 
 import java.time.Duration;
 import java.util.Objects;
@@ -17,6 +16,39 @@ public abstract class DefaultUni<T> implements Uni<T> {
     @Override
     public void subscribe(UniSubscriber<? super T> subscriber) {
         WrapperUniSubscriber.subscribing(this, subscriber);
+    }
+
+    @Override
+    public UniSubscription subscribe(Consumer<? super T> onResult, Consumer<? super Throwable> onFailure) {
+        Objects.requireNonNull(onResult, "`onResult` must not be `null`");
+        Objects.requireNonNull(onFailure, "`onFailure` must not be `null`");
+        AtomicReference<UniSubscription> holder = new AtomicReference<>();
+        CountDownLatch latch = new CountDownLatch(1);
+        subscribe(new UniSubscriber<T>() {
+            @Override
+            public void onSubscribe(UniSubscription subscription) {
+                if (holder.compareAndSet(null, subscription)) {
+                    latch.countDown();
+                }
+            }
+
+            @Override
+            public void onResult(T result) {
+                onResult.accept(result);
+            }
+
+            @Override
+            public void onFailure(Throwable failure) {
+                onFailure.accept(failure);
+            }
+        });
+
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+        return holder.get();
     }
 
     public abstract void subscribing(WrapperUniSubscriber<? super T> subscriber);
@@ -202,7 +234,7 @@ public abstract class DefaultUni<T> implements Uni<T> {
 
     @Override
     public Uni<T> delay(Duration duration, ScheduledExecutorService scheduler) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        return new UnyDelay<>(this, duration, scheduler);
     }
 
     @Override

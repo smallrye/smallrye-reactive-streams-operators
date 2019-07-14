@@ -24,8 +24,9 @@ public class WrapperUniSubscriber<T> implements UniSubscriber<T>, UniSubscriptio
     public static <T> void subscribing(DefaultUni<T> source, UniSubscriber<? super  T> subscriber) {
         WrapperUniSubscriber<T> wrapped = new WrapperUniSubscriber<>(source, subscriber);
         wrapped.subscribe();
-
     }
+
+    // TODO Caught RuntimeException thrown by the onResult and onFailure and log them accordingly
 
     private WrapperUniSubscriber(DefaultUni<T> source, UniSubscriber<? super T> subscriber) {
         this.source = Objects.requireNonNull(source, "`source` must not be `null`");

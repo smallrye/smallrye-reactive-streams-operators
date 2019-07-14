@@ -160,7 +160,7 @@ public class AssertSubscriber<T> implements UniSubscriber<T> {
         return onResultThreadName;
     }
 
-    public String getOnErrorThreadName() {
+    public String getOnFailureThreadName() {
         return onErrorThreadName;
     }
 

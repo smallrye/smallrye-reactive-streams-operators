@@ -203,15 +203,35 @@ public interface Uni<T> {
     }
 
     /**
-     *  Creates a {@link Uni} forwarding the first signal (value, {@code null} or failure). It behaves like the fastest
-     *  of these competing unis.
+     * Creates a {@link Uni} forwarding the first signal (value, {@code null} or failure). It behaves like the fastest
+     * of these competing unis. If the passed iterable is empty, the resulting {@link Uni} gets a {@code null} result
+     * just after subscription.
+     * <p>
+     * This method subscribes to the set of {@link Uni}. When one of the {@link Uni} resolves successfully or with
+     * a failure, the signals is propagated to the returned {@link Uni}. Also the other subscriptions are cancelled.
+     * Note that the callback from the subscriber are called on the thread used to resolve the winning {@link Uni}.
+     * Use {@link #publishOn(Executor)} to change the thread.
+     * <p>
+     * If the subscription to the returned {@link Uni} is cancelled, the subscription to the {@link Uni unis} from the
+     * {@code iterable} are also cancelled.
      *
-     * @param iterable a set of {@link Uni}, must not be {@code null} or empty.
-     * @param <T> the type of item
+     * @param iterable a set of {@link Uni}, must not be {@code null}.
+     * @param <T>      the type of item
      * @return the produced {@link Uni}
      */
     static <T> Uni<T> any(Iterable<? extends Uni<? super T>> iterable) {
-        throw new UnsupportedOperationException("To be implemented");
+        return new UniAny<>(iterable);
+    }
+
+    /**
+     * Like {@link #any(Iterable)} but with an array of {@link Uni} as parameter
+     * @param unis the array, must not be {@code null}, must not contain @{code null}
+     * @param <T> the type of result
+     * @return the produced {@link Uni}
+     */
+    @SafeVarargs
+    static <T> Uni<T> any(Uni<? super T>... unis) {
+        return new UniAny<>(unis);
     }
 
 
@@ -228,6 +248,18 @@ public interface Uni<T> {
      * @param subscriber the subscriber, must not be {@code null}
      */
     void subscribe(UniSubscriber<? super T> subscriber);
+
+    /**
+     * Like {@link #subscribe(UniSubscriber)} with creating an artificial {@link UniSubscriber} calling the
+     * {@code onResult} and {@code onFailure} callbacks.
+     * Unlike {@link #subscribe(UniSubscriber)}, this method returns the subscription, and so may block until the
+     * subscription is received.
+     *
+     * @param onResult callback invoked when the result, potentially {@code null} is received, must not be {@code null}
+     * @param onFailure callback invoked when a failure is propagated, must not be {@code null}
+     * @return the subscription
+     */
+    UniSubscription subscribe(Consumer<? super  T> onResult, Consumer<? super Throwable> onFailure);
 
     /**
      * Like {@link #subscribe(UniSubscriber)} but provides a {@link CompletableFuture} to retrieve the completed result
