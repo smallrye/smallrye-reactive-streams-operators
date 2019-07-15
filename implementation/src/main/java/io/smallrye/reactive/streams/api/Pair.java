@@ -1,6 +1,6 @@
 package io.smallrye.reactive.streams.api;
 
-import java.util.Map;
+import java.util.Objects;
 
 /**
  * Represents a of, which is a tuple of 2 items. Note that, unlike {@link Tuple}, pairs can contain items from
@@ -8,14 +8,12 @@ import java.util.Map;
  * <p>
  * Values contained in a pair can be {@code null}.
  */
-public class Pair<L, R> extends Tuple
-        implements Map.Entry<L, R> {
+public class Pair<L, R> {
 
     private final L left;
     private final R right;
 
     private Pair(L left, R right) {
-        super(left, right);
         this.left = left;
         this.right = right;
     }
@@ -33,40 +31,26 @@ public class Pair<L, R> extends Tuple
     }
 
     @Override
-    public L getKey() {
-        return left;
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Pair)) {
+            return false;
+        }
+
+        Pair<?, ?> pair = (Pair<?, ?>) o;
+
+        if (!Objects.equals(left, pair.left)) {
+            return false;
+        }
+        return Objects.equals(right, pair.right);
     }
 
-    @Override
-    public R getValue() {
-        return right;
-    }
-
-    @Override
-    public R setValue(R value) {
-        throw new UnsupportedOperationException("Pairs are immutable");
-    }
-
-    /**
-     * Returns a suitable hash code for Pair.
-     *
-     * @return the hash code
-     */
     @Override
     public int hashCode() {
-        return super.hashCode();
+        int result = left != null ? left.hashCode() : 0;
+        result = 31 * result + (right != null ? right.hashCode() : 0);
+        return result;
     }
-
-    /**
-     * Compares this of to another based on the two elements.
-     *
-     * @param obj the object to compare to, null returns false
-     * @return true if the elements of the of are equal
-     */
-    @Override
-    public boolean equals(final Object obj) {
-        return super.equals(obj);
-    }
-
-
 }
