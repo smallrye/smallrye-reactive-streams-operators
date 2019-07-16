@@ -14,7 +14,7 @@ public class UniOfTest {
     @Test
     public void testThatNullValueAreAccepted() {
         AssertSubscriber<Object> ts = AssertSubscriber.create();
-        Uni.of(null).subscribe(ts);
+        Uni.of(null).subscribe().withSubscriber(ts);
         ts.assertCompletedSuccessfully().assertResult(null);
     }
 
@@ -22,7 +22,7 @@ public class UniOfTest {
     @Test
     public void testWithNonNullValue() {
         AssertSubscriber<Integer> ts = AssertSubscriber.create();
-        Uni.of(1).subscribe(ts);
+        Uni.of(1).subscribe().withSubscriber(ts);
         ts.assertCompletedSuccessfully().assertResult(1);
     }
 
@@ -30,7 +30,7 @@ public class UniOfTest {
     @Test
     public void testThatEmptyIsAcceptedWithFromOptional() {
         AssertSubscriber<Object> ts = AssertSubscriber.create();
-        Uni.fromOptional(Optional.empty()).subscribe(ts);
+        Uni.fromOptional(Optional.empty()).subscribe().withSubscriber(ts);
         ts.assertCompletedSuccessfully().assertResult(null);
     }
 
@@ -44,7 +44,7 @@ public class UniOfTest {
     @Test
     public void testThatFulfilledOptionalIsAcceptedWithFromOptional() {
         AssertSubscriber<Integer> ts = AssertSubscriber.create();
-        Uni.fromOptional(Optional.of(1)).subscribe(ts);
+        Uni.fromOptional(Optional.of(1)).subscribe().withSubscriber(ts);
         ts.assertCompletedSuccessfully().assertResult(1);
     }
 
@@ -60,7 +60,7 @@ public class UniOfTest {
 
         assertThat(called).isFalse();
 
-        uni.subscribe(ts);
+        uni.subscribe().withSubscriber(ts);
         ts.assertCompletedSuccessfully().assertResult(2);
         assertThat(called).isTrue();
     }
@@ -75,8 +75,8 @@ public class UniOfTest {
         AssertSubscriber<String> subscriber1 = new AssertSubscriber<>(true);
         AssertSubscriber<String> subscriber2 = new AssertSubscriber<>(false);
         Uni<String> foo = Uni.of("foo");
-        foo.subscribe(subscriber1);
-        foo.subscribe(subscriber2);
+        foo.subscribe().withSubscriber(subscriber1);
+        foo.subscribe().withSubscriber(subscriber2);
         subscriber1.assertNoResult().assertNoFailure();
         subscriber2.assertCompletedSuccessfully().assertResult("foo");
     }
@@ -84,14 +84,14 @@ public class UniOfTest {
     @Test
     public void testEmpty() {
         AssertSubscriber<Void> subscriber = AssertSubscriber.create();
-        Uni.empty().subscribe(subscriber);
+        Uni.empty().subscribe().withSubscriber(subscriber);
         subscriber.assertCompletedSuccessfully().assertResult(null);
     }
 
     @Test
     public void testEmptyWithImmediateCancellation() {
         AssertSubscriber<Void> subscriber = new AssertSubscriber<>(true);
-        Uni.empty().subscribe(subscriber);
+        Uni.empty().subscribe().withSubscriber(subscriber);
         subscriber.assertNoFailure().assertNoResult();
     }
 

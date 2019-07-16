@@ -28,7 +28,7 @@ public class UniCreateTest {
             emitter.success();
         });
         AssertSubscriber<Integer> subscriber = AssertSubscriber.create();
-        uni.subscribe(subscriber);
+        uni.subscribe().withSubscriber(subscriber);
 
         subscriber.assertCompletedSuccessfully().assertResult(1);
         // Other signals are dropped
@@ -44,7 +44,7 @@ public class UniCreateTest {
             emitter.fail(new Exception());
             emitter.success(2);
             emitter.success();
-        }).subscribe(subscriber);
+        }).subscribe().withSubscriber(subscriber);
 
         subscriber.assertResult(1);
         assertThat(onCancellationCalled).hasValue(1);
@@ -56,7 +56,7 @@ public class UniCreateTest {
     public void testWithCancellation() {
         AssertSubscriber<Integer> subscriber = AssertSubscriber.create();
         AtomicInteger onCancellationCalled = new AtomicInteger();
-        Uni.<Integer>create(emitter -> emitter.onCancellation(onCancellationCalled::incrementAndGet)).subscribe(subscriber);
+        Uni.<Integer>create(emitter -> emitter.onCancellation(onCancellationCalled::incrementAndGet)).subscribe().withSubscriber(subscriber);
 
         assertThat(onCancellationCalled).hasValue(0);
         subscriber.cancel();
@@ -66,7 +66,7 @@ public class UniCreateTest {
     @Test
     public void testWithFailure() {
         AssertSubscriber<Integer> subscriber = AssertSubscriber.create();
-        Uni.<Integer>create(emitter -> emitter.fail(new Exception("boom"))).subscribe(subscriber);
+        Uni.<Integer>create(emitter -> emitter.fail(new Exception("boom"))).subscribe().withSubscriber(subscriber);
 
         subscriber.assertFailure(Exception.class, "boom");
     }
@@ -76,7 +76,7 @@ public class UniCreateTest {
         AssertSubscriber<Integer> subscriber = AssertSubscriber.create();
         Uni.<Integer>create(emitter -> {
             throw new NullPointerException("boom");
-        }).subscribe(subscriber);
+        }).subscribe().withSubscriber(subscriber);
 
         subscriber.assertFailure(NullPointerException.class, "boom");
 
@@ -89,7 +89,7 @@ public class UniCreateTest {
         Uni.<Void>create(emitter -> {
             reference.set(emitter);
             emitter.success();
-        }).subscribe(subscriber);
+        }).subscribe().withSubscriber(subscriber);
 
         subscriber.assertCompletedSuccessfully();
         assertThat(reference.get()).isInstanceOf(DefaultUniEmitter.class).satisfies(e -> ((DefaultUniEmitter) e).isDisposed());
@@ -98,7 +98,7 @@ public class UniCreateTest {
     @Test
     public void testThatFailuresCannotBeNull() {
         AssertSubscriber<Integer> subscriber = AssertSubscriber.create();
-        Uni.<Integer>create(emitter -> emitter.fail(null)).subscribe(subscriber);
+        Uni.<Integer>create(emitter -> emitter.fail(null)).subscribe().withSubscriber(subscriber);
 
         subscriber.assertFailure(NullPointerException.class, "");
     }
@@ -116,7 +116,7 @@ public class UniCreateTest {
                 // expected
             }
         })
-                .subscribe(new UniSubscriber<Integer>() {
+                .subscribe().withSubscriber(new UniSubscriber<Integer>() {
 
                     @Override
                     public void onSubscribe(UniSubscription subscription) {
@@ -150,7 +150,7 @@ public class UniCreateTest {
                 // expected
             }
         })
-                .subscribe(new UniSubscriber<Integer>() {
+                .subscribe().withSubscriber(new UniSubscriber<Integer>() {
 
                     @Override
                     public void onSubscribe(UniSubscription subscription) {

@@ -29,7 +29,7 @@ public class UniDeferTest {
     public void testWithASupplierProducingNull() {
         Uni<Integer> s = Uni.defer(() -> null);
         AssertSubscriber<Integer> subscriber = AssertSubscriber.create();
-        s.subscribe(subscriber);
+        s.subscribe().withSubscriber(subscriber);
         subscriber.assertFailure(NullPointerException.class, "");
     }
 
@@ -39,7 +39,7 @@ public class UniDeferTest {
             throw new IllegalStateException("boom");
         });
         AssertSubscriber<Integer> subscriber = AssertSubscriber.create();
-        s.subscribe(subscriber);
+        s.subscribe().withSubscriber(subscriber);
         subscriber.assertFailure(IllegalStateException.class, "boom");
     }
 }

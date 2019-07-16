@@ -23,7 +23,7 @@ public class UniFlatMap<I, O> extends UniOperator<I, O> {
     public void subscribing(WrapperUniSubscriber<? super O> subscriber) {
         FlatMapSubscription flatMapSubscription = new FlatMapSubscription();
         // Subscribe to the source.
-        source().subscribe(new UniSubscriber<I>() {
+        source().subscribe().withSubscriber(new UniSubscriber<I>() {
             @Override
             public void onSubscribe(UniSubscription subscription) {
                 flatMapSubscription.setInitialUpstream(subscription);
@@ -53,7 +53,7 @@ public class UniFlatMap<I, O> extends UniOperator<I, O> {
                         }
                     };
 
-                    outcome.subscribe(delegate);
+                    outcome.subscribe().withSubscriber(delegate);
                 }
             }
 

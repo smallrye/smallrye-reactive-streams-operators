@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class UniToCompletionStage {
 
-    public static <T> CompletableFuture<T> susbscribe(Uni<T> uni) {
+    public static <T> CompletableFuture<T> subscribe(Uni<T> uni) {
         final AtomicReference<Subscription> ref = new AtomicReference<>();
 
         CompletableFuture<T> future = new CompletableFuture<T>() {
@@ -27,7 +27,7 @@ public class UniToCompletionStage {
             }
         };
 
-       uni.subscribe(new UniSubscriber<T>() {
+       uni.subscribe().withSubscriber(new UniSubscriber<T>() {
             @Override
             public void onSubscribe(UniSubscription subscription) {
                 if (! ref.compareAndSet(null, subscription)) {

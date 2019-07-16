@@ -8,7 +8,10 @@ import org.reactivestreams.Publisher;
 import java.time.Duration;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.*;
 
 /**
@@ -235,58 +238,32 @@ public interface Uni<T> {
         return new UniAny<>(unis);
     }
 
-
     /**
-     * Requests the {@link Uni} to start resolving the result.
-     * <p>
-     * This is a "factory method" and can be called multiple times, each time starting a new {@link UniSubscription}.
-     * Each {@link UniSubscription} will work for only a single {@link UniSubscriber}. A {@link UniSubscriber} should
-     * only subscribe once to a single {@link Uni}.
-     * <p>
-     * If the {@link Uni} rejects the subscription attempt or otherwise fails it will signal the failure using
-     * {@link UniSubscriber#onFailure(Throwable)}.
+     * Requests the {@link Uni} to start resolving the result and allows configuring how the signals are propagated
+     * (using a {@link UniSubscriber}, callbacks, or a {@link CompletionStage}. Unlike {@link #await()}, this method
+     * configures non-blocking retrieval of the result and failure.
      *
-     * @param subscriber the subscriber, must not be {@code null}
+     * @return the object to configure the subscription.
      */
-    void subscribe(UniSubscriber<? super T> subscriber);
-
-    /**
-     * Like {@link #subscribe(UniSubscriber)} with creating an artificial {@link UniSubscriber} calling the
-     * {@code onResult} and {@code onFailure} callbacks.
-     * Unlike {@link #subscribe(UniSubscriber)}, this method returns the subscription, and so may await until the
-     * subscription is received.
-     *
-     * @param onResult  callback invoked when the result, potentially {@code null} is received, must not be {@code null}
-     * @param onFailure callback invoked when a failure is propagated, must not be {@code null}
-     * @return the subscription
-     */
-    UniSubscription subscribe(Consumer<? super T> onResult, Consumer<? super Throwable> onFailure);
-
-    /**
-     * Like {@link #subscribe(UniSubscriber)} but provides a {@link CompletableFuture} to retrieve the completed result
-     * (potentially {@code null}) and allow chaining operations.
-     *
-     * @return a {@link CompletableFuture} to retrieve the result and chain operations on the resolved result or
-     * failure. The returned {@link CompletableFuture} can also be used to cancel the computation.
-     */
-    CompletableFuture<T> subscribeToCompletionStage();
-
+    UniSubscribe<T> subscribe();
 
     /**
      * Awaits (blocking the caller thread) until the result of this {@link Uni} is emitted.
-     *
+     * <p>
      * For example, you can retrieve the result using:
      * <code>
-     *     T res = uni.await().indefinitely();
+     * T res = uni.await().indefinitely();
      * </code>
      * Or configure a timeout with:
      * <code>
-     *     T res = uni.await().atMost(Duration.ofMillis(1000));
+     * T res = uni.await().atMost(Duration.ofMillis(1000));
      * </code>
      * You can also retrieve an {@link Optional} (empty on {@code null}) with:
      * <code>
-     *     Optional<T> res = uni.await().asOptional().indefinitely();
+     * Optional<T> res = uni.await().asOptional().indefinitely();
      * </code>
+     *
+     * @return the object to configure the retrieval.
      */
     UniAwait<T> await();
 
@@ -374,6 +351,7 @@ public interface Uni<T> {
 
     /**
      * Creates a new instance of {@link Uni} from the given instance.
+     *
      * @param instance
      * @param <T>
      * @param <I>
@@ -689,7 +667,6 @@ public interface Uni<T> {
      * @return a {@link Publisher} containing at most one item.
      */
     Publisher<T> toPublisher();
-
 
 
 }

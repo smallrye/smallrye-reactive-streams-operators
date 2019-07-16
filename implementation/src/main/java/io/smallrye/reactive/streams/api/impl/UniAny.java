@@ -27,7 +27,6 @@ public class UniAny<T> extends UniOperator<Void, T> {
         for (Uni<? super T> u : array) {
             challengers.add(Objects.requireNonNull(u, "`array` must not contain a `null` value"));
         }
-        ;
     }
 
 
@@ -44,7 +43,7 @@ public class UniAny<T> extends UniOperator<Void, T> {
         if (challengers.size() == 1) {
             // Just subscribe to the first and unique uni.
             Uni<? super T> uni = challengers.get(0);
-            uni.subscribe((UniSubscriber) subscriber);
+            uni.subscribe().withSubscriber((UniSubscriber) subscriber);
             return;
         }
 
@@ -53,7 +52,7 @@ public class UniAny<T> extends UniOperator<Void, T> {
 
         List<CompletableFuture<? super T>> futures = new ArrayList<>();
         challengers.forEach(uni -> {
-            CompletableFuture<? super T> future = uni.subscribeToCompletionStage();
+            CompletableFuture<? super T> future = uni.subscribe().asCompletionStage();
             futures.add(future);
         });
 

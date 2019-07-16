@@ -50,7 +50,7 @@ public class UnyDelayTest {
     public void testDelayOnResult() {
         long begin = System.currentTimeMillis();
         AssertSubscriber<Void> subscriber = AssertSubscriber.create();
-        delayed.subscribe(subscriber);
+        delayed.subscribe().withSubscriber(subscriber);
         subscriber.await();
         long end = System.currentTimeMillis();
         assertThat(end - begin).isGreaterThan(100);
@@ -62,7 +62,7 @@ public class UnyDelayTest {
     public void testDelayOnFailure() {
         long begin = System.currentTimeMillis();
         AssertSubscriber<Void> subscriber = AssertSubscriber.create();
-        Uni.<Void>failed(new Exception("boom")).delay(Duration.ofMillis(100), executor).subscribe(subscriber);
+        Uni.<Void>failed(new Exception("boom")).delay(Duration.ofMillis(100), executor).subscribe().withSubscriber(subscriber);
         subscriber.await();
         long end = System.currentTimeMillis();
         assertThat(end - begin).isGreaterThan(100);
@@ -83,7 +83,7 @@ public class UnyDelayTest {
         };
 
         AssertSubscriber<Integer> subscriber = new AssertSubscriber<>(true);
-        Uni.of(1).delay(Duration.ofMillis(100), executor).subscribe(subscriber);
+        Uni.of(1).delay(Duration.ofMillis(100), executor).subscribe().withSubscriber(subscriber);
         subscriber.assertNotCompleted();
         assertThat(called).isFalse();
     }
@@ -92,7 +92,7 @@ public class UnyDelayTest {
     public void testRejectedScheduling() {
         executor.shutdown();
         AssertSubscriber<Integer> subscriber = new AssertSubscriber<>();
-        Uni.of(1).delay(Duration.ofMillis(100), executor).subscribe(subscriber);
+        Uni.of(1).delay(Duration.ofMillis(100), executor).subscribe().withSubscriber(subscriber);
         subscriber.assertCompletedWithFailure().assertFailure(RejectedExecutionException.class, "");
     }
 
@@ -120,7 +120,7 @@ public class UnyDelayTest {
         };
 
         AssertSubscriber<Integer> subscriber = new AssertSubscriber<>();
-        Uni.of(1).delay(Duration.ofMillis(100), executor).subscribe(subscriber);
+        Uni.of(1).delay(Duration.ofMillis(100), executor).subscribe().withSubscriber(subscriber);
         subscriber.cancel();
         latch.countDown();
 
@@ -132,10 +132,10 @@ public class UnyDelayTest {
     public void testWithMultipleDelays() throws InterruptedException {
         AtomicLong counter = new AtomicLong();
         AtomicReference<Throwable> failure = new AtomicReference<>();
-        Uni.empty().delay(Duration.ofMillis(50), executor).subscribe(v -> counter.incrementAndGet(), failure::set);
-        Uni.empty().delay(Duration.ofMillis(200), executor).subscribe(v -> counter.incrementAndGet(), failure::set);
-        Uni.empty().delay(Duration.ofMillis(400), executor).subscribe(v -> counter.incrementAndGet(), failure::set);
-        Uni.empty().delay(Duration.ofMillis(800), executor).subscribe(v -> counter.incrementAndGet(), failure::set);
+        Uni.empty().delay(Duration.ofMillis(50), executor).subscribe().with(v -> counter.incrementAndGet(), failure::set);
+        Uni.empty().delay(Duration.ofMillis(200), executor).subscribe().with(v -> counter.incrementAndGet(), failure::set);
+        Uni.empty().delay(Duration.ofMillis(400), executor).subscribe().with(v -> counter.incrementAndGet(), failure::set);
+        Uni.empty().delay(Duration.ofMillis(800), executor).subscribe().with(v -> counter.incrementAndGet(), failure::set);
 
         assertThat(counter.intValue()).isEqualTo(0);
         assertThat(failure.get()).isNull();

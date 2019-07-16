@@ -26,7 +26,7 @@ public class UniAwaitImpl<T> implements UniAwait<T> {
         CountDownLatch latch = new CountDownLatch(1);
         AtomicReference<T> reference = new AtomicReference<>();
         AtomicReference<Throwable> referenceToFailure = new AtomicReference<>();
-        source.subscribe(new UniSubscriber<T>() {
+        source.subscribe().withSubscriber(new UniSubscriber<T>() {
             @Override
             public void onSubscribe(UniSubscription subscription) {
                 // Do nothing.

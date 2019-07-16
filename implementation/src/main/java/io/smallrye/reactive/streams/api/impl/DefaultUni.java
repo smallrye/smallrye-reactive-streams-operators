@@ -5,8 +5,6 @@ import org.reactivestreams.Publisher;
 
 import java.time.Duration;
 import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -15,54 +13,18 @@ import java.util.function.*;
 
 public abstract class DefaultUni<T> implements Uni<T> {
 
-    @Override
-    public void subscribe(UniSubscriber<? super T> subscriber) {
-        WrapperUniSubscriber.subscribing(this, subscriber);
-    }
-
-    @Override
-    public UniSubscription subscribe(Consumer<? super T> onResult, Consumer<? super Throwable> onFailure) {
-        Objects.requireNonNull(onResult, "`onResult` must not be `null`");
-        Objects.requireNonNull(onFailure, "`onFailure` must not be `null`");
-        AtomicReference<UniSubscription> holder = new AtomicReference<>();
-        CountDownLatch latch = new CountDownLatch(1);
-        subscribe(new UniSubscriber<T>() {
-            @Override
-            public void onSubscribe(UniSubscription subscription) {
-                if (holder.compareAndSet(null, subscription)) {
-                    latch.countDown();
-                }
-            }
-
-            @Override
-            public void onResult(T result) {
-                onResult.accept(result);
-            }
-
-            @Override
-            public void onFailure(Throwable failure) {
-                onFailure.accept(failure);
-            }
-        });
-
-        try {
-            latch.await();
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
-        return holder.get();
-    }
 
     public abstract void subscribing(WrapperUniSubscriber<? super T> subscriber);
 
-    @Override
-    public CompletableFuture<T> subscribeToCompletionStage() {
-        return UniToCompletionStage.susbscribe(this);
-    }
 
     @Override
     public UniAwait<T> await() {
         return new UniAwaitImpl<>(this);
+    }
+
+    @Override
+    public UniSubscribe<T> subscribe() {
+        return new UniSubscribeImpl<>(this);
     }
 
     // Operator
@@ -109,7 +71,7 @@ public abstract class DefaultUni<T> implements Uni<T> {
                     }
 
                     // We received a request, we subscribe to the uni
-                    DefaultUni.this.subscribe(new UniSubscriber<T>() {
+                    DefaultUni.this.subscribe().withSubscriber(new UniSubscriber<T>() {
                         @Override
                         public void onSubscribe(UniSubscription subscription) {
                             if (!upstreamSubscription.compareAndSet(null, subscription)) {

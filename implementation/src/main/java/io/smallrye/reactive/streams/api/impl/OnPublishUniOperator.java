@@ -17,7 +17,7 @@ public class OnPublishUniOperator<I> extends UniOperator<I, I> {
 
     @Override
     public void subscribing(WrapperUniSubscriber<? super I> subscriber) {
-        source().subscribe(new UniSubscriber<I>() {
+        source().subscribe().withSubscriber(new UniSubscriber<I>() {
             @Override
             public void onSubscribe(UniSubscription subscription) {
                 subscriber.onSubscribe(new DelegatingUniSubscription(subscription));

@@ -18,7 +18,7 @@ public class MaybeUniAdapter implements UniAdapter<Maybe<?>> {
     @Override
     public Maybe<?> adaptTo(Uni<?> uni) {
         return Maybe.create(emitter -> {
-            CompletableFuture<?> future = uni.subscribeToCompletionStage();
+            CompletableFuture<?> future = uni.subscribe().asCompletionStage();
             emitter.setCancellable(() -> future.cancel(false));
             future.whenComplete((res, fail) -> {
                 if (future.isCancelled()) {

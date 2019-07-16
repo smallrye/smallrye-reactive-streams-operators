@@ -27,7 +27,7 @@ public class UniToCompletionStageTest {
 
     @Test
     public void testWithImmediateValue() {
-        CompletableFuture<Integer> future = Uni.of(1).subscribeToCompletionStage();
+        CompletableFuture<Integer> future = Uni.of(1).subscribe().asCompletionStage();
         assertThat(future).isNotNull();
         assertThat(future).isCompletedWithValue(1);
     }
@@ -35,15 +35,14 @@ public class UniToCompletionStageTest {
     @Test
     public void testWithImmediateNullValue() {
         // TODO Should we have an empty or null method?
-        CompletableFuture<Void> future = Uni.<Void>of(null).subscribeToCompletionStage();
+        CompletableFuture<Void> future = Uni.<Void>of(null).subscribe().asCompletionStage();
         assertThat(future).isNotNull();
         assertThat(future).isCompletedWithValue(null);
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testWithImmediateFailure() {
-        CompletableFuture<Integer> future = Uni.<Integer>failed(new IOException("boom")).subscribeToCompletionStage();
+        CompletableFuture<Integer> future = Uni.<Integer>failed(new IOException("boom")).subscribe().asCompletionStage();
         assertThat(future).isNotNull();
         try {
             future.join();
@@ -59,8 +58,8 @@ public class UniToCompletionStageTest {
     public void testThatSubscriptionsAreNotShared() {
         AtomicInteger count = new AtomicInteger(1);
         Uni<Integer> deferred = Uni.defer(() -> Uni.of(count.getAndIncrement()));
-        CompletionStage<Integer> cs1 = deferred.subscribeToCompletionStage();
-        CompletionStage<Integer> cs2 = deferred.subscribeToCompletionStage();
+        CompletionStage<Integer> cs1 = deferred.subscribe().asCompletionStage();
+        CompletionStage<Integer> cs2 = deferred.subscribe().asCompletionStage();
         assertThat(cs1).isNotNull();
         assertThat(cs2).isNotNull();
 
@@ -72,8 +71,8 @@ public class UniToCompletionStageTest {
     public void testThatTwoSubscribersWithCache() {
         AtomicInteger count = new AtomicInteger(1);
         Uni<Integer> cached = Uni.defer(() -> Uni.of(count.getAndIncrement())).cache();
-        CompletionStage<Integer> cs1 = cached.subscribeToCompletionStage();
-        CompletionStage<Integer> cs2 = cached.subscribeToCompletionStage();
+        CompletionStage<Integer> cs1 = cached.subscribe().asCompletionStage();
+        CompletionStage<Integer> cs2 = cached.subscribe().asCompletionStage();
         assertThat(cs1).isNotNull();
         assertThat(cs2).isNotNull();
         assertThat(cs1).isCompletedWithValue(1);
@@ -83,7 +82,7 @@ public class UniToCompletionStageTest {
     @Test
     public void testCancellationWithImmediateValue() {
         AtomicInteger value = new AtomicInteger(-1);
-        CompletableFuture<Integer> future = Uni.of(1).subscribeToCompletionStage()
+        CompletableFuture<Integer> future = Uni.of(1).subscribe().asCompletionStage()
                 .whenComplete((res, fail) -> value.set(res));
         future.cancel(false);
         assertThat(future).isNotCancelled(); // Too late.
@@ -102,7 +101,7 @@ public class UniToCompletionStageTest {
                 Thread.currentThread().interrupt();
             }
             return x;
-        }).subscribeToCompletionStage()
+        }).subscribe().asCompletionStage()
                 .whenComplete((res, fail) -> value.set(res));
 
         future.cancel(false);
@@ -113,7 +112,7 @@ public class UniToCompletionStageTest {
     @Test
     public void testWithAsyncValue() {
         executor = Executors.newSingleThreadScheduledExecutor();
-        CompletableFuture<Integer> future = Uni.of(1).publishOn(executor).subscribeToCompletionStage();
+        CompletableFuture<Integer> future = Uni.of(1).publishOn(executor).subscribe().asCompletionStage();
         await().until(future::isDone);
         assertThat(future).isCompletedWithValue(1);
     }
@@ -121,16 +120,15 @@ public class UniToCompletionStageTest {
     @Test
     public void testWithAsyncNullValue() {
         executor = Executors.newSingleThreadScheduledExecutor();
-        CompletableFuture<Void> future = Uni.<Void>of(null).publishOn(executor).subscribeToCompletionStage();
+        CompletableFuture<Void> future = Uni.<Void>of(null).publishOn(executor).subscribe().asCompletionStage();
         await().until(future::isDone);
         assertThat(future).isCompletedWithValue(null);
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testWithAsyncFailure() {
         executor = Executors.newSingleThreadScheduledExecutor();
-        CompletableFuture<Integer> future = Uni.<Integer>failed(new IOException("boom")).publishOn(executor).subscribeToCompletionStage();
+        CompletableFuture<Integer> future = Uni.<Integer>failed(new IOException("boom")).publishOn(executor).subscribe().asCompletionStage();
         await().until(future::isDone);
         assertThat(future).isCompletedExceptionally();
     }

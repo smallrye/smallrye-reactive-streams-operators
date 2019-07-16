@@ -33,7 +33,7 @@ public class UniMapTest {
         AssertSubscriber<Integer> ts = AssertSubscriber.create();
 
 
-        one.map(v -> v + 1).subscribe(ts);
+        one.map(v -> v + 1).subscribe().withSubscriber(ts);
 
         ts.assertCompletedSuccessfully()
                 .assertResult(2);
@@ -47,8 +47,8 @@ public class UniMapTest {
 
         AtomicInteger count = new AtomicInteger();
         Uni<Integer> uni = one.map(v -> v + count.incrementAndGet());
-        uni.subscribe(ts1);
-        uni.subscribe(ts2);
+        uni.subscribe().withSubscriber(ts1);
+        uni.subscribe().withSubscriber(ts2);
 
         ts1.assertCompletedSuccessfully()
                 .assertResult(2);
@@ -62,7 +62,7 @@ public class UniMapTest {
 
         one.map(v -> {
             throw new RuntimeException("failure");
-        }).subscribe(ts);
+        }).subscribe().withSubscriber(ts);
 
         ts.assertFailure(RuntimeException.class, "failure");
     }
@@ -71,7 +71,7 @@ public class UniMapTest {
     public void testThatMapperCanReturnNull() {
         AssertSubscriber<Object> ts = AssertSubscriber.create();
 
-        one.map(v -> null).subscribe(ts);
+        one.map(v -> null).subscribe().withSubscriber(ts);
 
         ts.assertCompletedSuccessfully().assertResult(null);
     }
@@ -79,7 +79,7 @@ public class UniMapTest {
     @Test
     public void testThatMapperIsCalledWithNull() {
         AssertSubscriber<String> ts = AssertSubscriber.create();
-        Uni.of(null).map(x -> "foo").subscribe(ts);
+        Uni.of(null).map(x -> "foo").subscribe().withSubscriber(ts);
         ts.assertCompletedSuccessfully().assertResult("foo");
     }
 
@@ -95,7 +95,7 @@ public class UniMapTest {
                         threadName.set(Thread.currentThread().getName());
                         return i + 1;
                     })
-                    .subscribe(ts);
+                    .subscribe().withSubscriber(ts);
 
             ts.await().assertCompletedSuccessfully().assertResult(2);
             assertThat(threadName).isNotNull().doesNotHaveValue("main");
@@ -113,7 +113,7 @@ public class UniMapTest {
                 .map(x -> {
                     called.set(true);
                     return x + 1;
-                }).subscribe(ts);
+                }).subscribe().withSubscriber(ts);
 
         ts.assertFailure(Exception.class, "boom");
         assertThat(called).isFalse();

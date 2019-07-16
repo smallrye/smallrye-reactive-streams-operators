@@ -30,7 +30,7 @@ public class UnyDelay<T> extends UniOperator<T, T> {
     public void subscribing(WrapperUniSubscriber<? super T> subscriber) {
         AtomicReference<ScheduledFuture<?>> holder = new AtomicReference<>();
         AtomicBoolean done = new AtomicBoolean();
-        source().subscribe(new UniSubscriber<T>() {
+        source().subscribe().withSubscriber(new UniSubscriber<T>() {
             @Override
             public void onSubscribe(UniSubscription subscription) {
                 subscriber.onSubscribe(() -> {

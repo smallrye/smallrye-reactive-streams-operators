@@ -33,9 +33,9 @@ public class UniCacheTest {
         AssertSubscriber<Integer> sub2 = AssertSubscriber.create();
         AssertSubscriber<Integer> sub3 = AssertSubscriber.create();
 
-        cache.subscribe(sub1);
-        cache.subscribe(sub2);
-        cache.subscribe(sub3);
+        cache.subscribe().withSubscriber(sub1);
+        cache.subscribe().withSubscriber(sub2);
+        cache.subscribe().withSubscriber(sub3);
 
         sub1.assertCompletedSuccessfully().assertResult(1);
         sub2.assertCompletedSuccessfully().assertResult(1);
@@ -51,9 +51,9 @@ public class UniCacheTest {
         AssertSubscriber<Object> sub2 = AssertSubscriber.create();
         AssertSubscriber<Object> sub3 = AssertSubscriber.create();
 
-        cache.subscribe(sub1);
-        cache.subscribe(sub2);
-        cache.subscribe(sub3);
+        cache.subscribe().withSubscriber(sub1);
+        cache.subscribe().withSubscriber(sub2);
+        cache.subscribe().withSubscriber(sub3);
 
         sub1.assertFailure(Exception.class, "0");
         sub2.assertFailure(Exception.class, "0");
@@ -69,12 +69,12 @@ public class UniCacheTest {
         AssertSubscriber<Integer> sub2 = AssertSubscriber.create();
         AssertSubscriber<Integer> sub3 = AssertSubscriber.create();
 
-        cache.subscribe(sub1);
-        cache.subscribe(sub2);
+        cache.subscribe().withSubscriber(sub1);
+        cache.subscribe().withSubscriber(sub2);
 
         cs.complete(1);
 
-        cache.subscribe(sub3);
+        cache.subscribe().withSubscriber(sub3);
 
         sub1.assertCompletedSuccessfully().assertResult(1);
         sub2.assertCompletedSuccessfully().assertResult(1);
@@ -90,14 +90,14 @@ public class UniCacheTest {
         AssertSubscriber<Integer> sub2 = AssertSubscriber.create();
         AssertSubscriber<Integer> sub3 = AssertSubscriber.create();
 
-        cache.subscribe(sub1);
-        cache.subscribe(sub2);
+        cache.subscribe().withSubscriber(sub1);
+        cache.subscribe().withSubscriber(sub2);
 
         sub2.cancel();
 
         cs.complete(1);
 
-        cache.subscribe(sub3);
+        cache.subscribe().withSubscriber(sub3);
 
         sub1.assertCompletedSuccessfully().assertResult(1);
         sub2.assertNotCompleted();
@@ -113,14 +113,14 @@ public class UniCacheTest {
         AssertSubscriber<Integer> sub2 = AssertSubscriber.create();
         AssertSubscriber<Integer> sub3 = AssertSubscriber.create();
 
-        cache.subscribe(sub1);
-        cache.subscribe(sub2);
+        cache.subscribe().withSubscriber(sub1);
+        cache.subscribe().withSubscriber(sub2);
 
         cs.complete(1);
         sub2.cancel();
 
 
-        cache.subscribe(sub3);
+        cache.subscribe().withSubscriber(sub3);
 
         sub1.assertCompletedSuccessfully().assertResult(1);
         sub2.assertCompletedSuccessfully().assertResult(1);
@@ -136,8 +136,8 @@ public class UniCacheTest {
         AssertSubscriber<Integer> sub1 = new AssertSubscriber<>();
         AssertSubscriber<Integer> sub2 = new AssertSubscriber<>();
 
-        cached.subscribe(sub1);
-        cached.subscribe(sub2);
+        cached.subscribe().withSubscriber(sub1);
+        cached.subscribe().withSubscriber(sub2);
 
         sub1.assertNotCompleted();
         sub2.assertNotCompleted();
@@ -158,8 +158,8 @@ public class UniCacheTest {
         AssertSubscriber<Integer> sub1 = new AssertSubscriber<>(true);
         AssertSubscriber<Integer> sub2 = new AssertSubscriber<>(true);
 
-        cached.subscribe(sub1);
-        cached.subscribe(sub2);
+        cached.subscribe().withSubscriber(sub1);
+        cached.subscribe().withSubscriber(sub2);
 
         sub1.assertNoResult().assertNoFailure();
         sub2.assertNoResult().assertNoFailure();
@@ -181,13 +181,11 @@ public class UniCacheTest {
             AssertSubscriber<Integer> subscriber = new AssertSubscriber<>(false);
 
             Runnable r1 = () -> {
-                cached.subscribe(subscriber);
+                cached.subscribe().withSubscriber(subscriber);
                 subscriber.cancel();
             };
 
-            Runnable r2 = () -> {
-                cached.subscribe(new AssertSubscriber<>());
-            };
+            Runnable r2 = () -> cached.subscribe().withSubscriber(new AssertSubscriber<>());
 
             ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
             try {
@@ -267,13 +265,13 @@ public class UniCacheTest {
 
             }
         };
-        uni.subscribe(subscriber);
+        uni.subscribe().withSubscriber(subscriber);
 
         AssertSubscriber<Integer> test = AssertSubscriber.create();
-        uni.subscribe(test);
+        uni.subscribe().withSubscriber(test);
         test.assertCompletedSuccessfully().assertResult(23);
 
-        uni.subscribe(subscriber);
+        uni.subscribe().withSubscriber(subscriber);
     }
 
 }

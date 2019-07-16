@@ -18,7 +18,7 @@ public class UniMap<I, O> extends UniOperator<I, O> {
 
     @Override
     public void subscribing(WrapperUniSubscriber<? super O> subscriber) {
-        source().subscribe(new UniSubscriber<I>() {
+        source().subscribe().withSubscriber(new UniSubscriber<I>() {
             @Override
             public void onSubscribe(UniSubscription subscription) {
                 subscriber.onSubscribe(new DelegatingUniSubscription(subscription));

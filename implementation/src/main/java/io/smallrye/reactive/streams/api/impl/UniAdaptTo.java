@@ -37,7 +37,7 @@ public class UniAdaptTo<O> {
         }
 
         if (output.isAssignableFrom(CompletableFuture.class)) {
-            return (O) source.subscribeToCompletionStage();
+            return (O) source.subscribe().asCompletionStage();
         }
 
         for (UniAdapter adapter : this.adapters) {

@@ -9,7 +9,7 @@ public class UniCreate<T> extends DefaultUni<T> {
     private final Consumer<UniEmitter<? super T>> consumer;
 
     public UniCreate(Consumer<UniEmitter<? super T>> consumer) {
-        this.consumer = Objects.requireNonNull(consumer, "`consumer` cannot be `null`");
+        this.consumer = Objects.requireNonNull(consumer, "`onResultCallback` cannot be `null`");
     }
 
     @Override

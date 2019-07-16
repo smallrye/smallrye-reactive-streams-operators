@@ -36,7 +36,7 @@ public class UniCache<I> extends UniOperator<I, I> implements UniSubscriber<I> {
                 case NOT_INITIALIZED:
                     // First subscriber,
                     state = SUBSCRIBING;
-                    action = () -> source().subscribe(this);
+                    action = () -> source().subscribe().withSubscriber(this);
                     subscribers.add(subscriber);
                     break;
                 case SUBSCRIBING:

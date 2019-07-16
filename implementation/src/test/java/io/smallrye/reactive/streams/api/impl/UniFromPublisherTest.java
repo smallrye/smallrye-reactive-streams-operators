@@ -17,14 +17,14 @@ public class UniFromPublisherTest {
     @Test
     public void testWithPublisher() {
         AssertSubscriber<Integer> ts = AssertSubscriber.create();
-        Uni.fromPublisher(Flowable.just(1)).subscribe(ts);
+        Uni.fromPublisher(Flowable.just(1)).subscribe().withSubscriber(ts);
         ts.assertCompletedSuccessfully().assertResult(1);
     }
 
     @Test
     public void testWithPublisherBuilder() {
         AssertSubscriber<Integer> ts = AssertSubscriber.create();
-        Uni.fromPublisher(ReactiveStreams.of(1)).subscribe(ts);
+        Uni.fromPublisher(ReactiveStreams.of(1)).subscribe().withSubscriber(ts);
         ts.assertCompletedSuccessfully().assertResult(1);
     }
 
@@ -32,7 +32,7 @@ public class UniFromPublisherTest {
     public void testWithMultiValuedPublisher() {
         AssertSubscriber<Integer> ts = AssertSubscriber.create();
         AtomicBoolean cancelled = new AtomicBoolean();
-        Uni.fromPublisher(Flowable.just(1, 2, 3).doOnCancel(() -> cancelled.set(true))).subscribe(ts);
+        Uni.fromPublisher(Flowable.just(1, 2, 3).doOnCancel(() -> cancelled.set(true))).subscribe().withSubscriber(ts);
         ts.assertCompletedSuccessfully().assertResult(1);
         assertThat(cancelled).isTrue();
     }
@@ -41,14 +41,14 @@ public class UniFromPublisherTest {
     @Test
     public void testWithException() {
         AssertSubscriber<Object> ts = AssertSubscriber.create();
-        Uni.fromPublisher(ReactiveStreams.failed(new IOException("boom"))).subscribe(ts);
+        Uni.fromPublisher(ReactiveStreams.failed(new IOException("boom"))).subscribe().withSubscriber(ts);
         ts.assertFailure(IOException.class, "boom");
     }
 
     @Test
     public void testWithEmptyStream() {
         AssertSubscriber<Object> ts = AssertSubscriber.create();
-        Uni.fromPublisher(ReactiveStreams.empty()).subscribe(ts);
+        Uni.fromPublisher(ReactiveStreams.empty()).subscribe().withSubscriber(ts);
         ts.assertCompletedSuccessfully().assertResult(null);
     }
 
@@ -64,7 +64,7 @@ public class UniFromPublisherTest {
 
 
         assertThat(called).isFalse();
-        uni.subscribe(ts);
+        uni.subscribe().withSubscriber(ts);
         ts.assertCompletedSuccessfully().assertResult(1);
         assertThat(called).isTrue();
     }
@@ -80,7 +80,7 @@ public class UniFromPublisherTest {
 
         assertThat(called).isFalse();
 
-        uni.subscribe(ts);
+        uni.subscribe().withSubscriber(ts);
         assertThat(called).isFalse();
         ts.assertNotCompleted();
     }
@@ -99,7 +99,7 @@ public class UniFromPublisherTest {
             }).start();
         }, BackpressureStrategy.DROP)).map(i -> i + 1);
 
-        uni.subscribe(ts);
+        uni.subscribe().withSubscriber(ts);
         ts.cancel();
 
         ts.assertNotCompleted();

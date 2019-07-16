@@ -16,7 +16,7 @@ public class UniFlatMapTest {
     @Test
     public void testFlatMapWithImmediateValue() {
         AssertSubscriber<Integer> test = AssertSubscriber.create();
-        Uni.of(1).flatMap(v -> Uni.of(2)).subscribe(test);
+        Uni.of(1).flatMap(v -> Uni.of(2)).subscribe().withSubscriber(test);
         test.assertCompletedSuccessfully().assertResult(2).assertNoFailure();
     }
 
@@ -27,7 +27,7 @@ public class UniFlatMapTest {
         Uni.of(1).flatMap(v -> {
             called.set(true);
             return Uni.of(2);
-        }).subscribe(test);
+        }).subscribe().withSubscriber(test);
         test.assertNotCompleted();
         assertThat(called).isFalse();
     }
@@ -38,8 +38,8 @@ public class UniFlatMapTest {
         AssertSubscriber<Integer> test2 = AssertSubscriber.create();
         AtomicInteger count = new AtomicInteger(2);
         Uni<Integer> uni = Uni.of(1).flatMap(v -> Uni.defer(() -> Uni.of(count.incrementAndGet())));
-        uni.subscribe(test1);
-        uni.subscribe(test2);
+        uni.subscribe().withSubscriber(test1);
+        uni.subscribe().withSubscriber(test2);
         test1.assertCompletedSuccessfully().assertResult(3).assertNoFailure();
         test2.assertCompletedSuccessfully().assertResult(4).assertNoFailure();
     }
@@ -48,7 +48,7 @@ public class UniFlatMapTest {
     public void testWithAnUniResolvedAsynchronously() {
         AssertSubscriber<Integer> test = AssertSubscriber.create();
         Uni<Integer> uni = Uni.of(1).flatMap(v -> Uni.create(emitter -> new Thread(() -> emitter.success(42)).start()));
-        uni.subscribe(test);
+        uni.subscribe().withSubscriber(test);
         test.await().assertCompletedSuccessfully().assertResult(42).assertNoFailure();
     }
 
@@ -56,7 +56,7 @@ public class UniFlatMapTest {
     public void testWithAnUniResolvedAsynchronouslyWithAFailure() {
         AssertSubscriber<Integer> test = AssertSubscriber.create();
         Uni<Integer> uni = Uni.of(1).flatMap(v -> Uni.create(emitter -> new Thread(() -> emitter.fail(new IOException("boom"))).start()));
-        uni.subscribe(test);
+        uni.subscribe().withSubscriber(test);
         test.await().assertCompletedWithFailure().assertFailure(IOException.class, "boom");
     }
 
@@ -67,7 +67,7 @@ public class UniFlatMapTest {
         Uni.failed(new Exception("boom")).flatMap(v -> {
             called.set(true);
             return Uni.of(2);
-        }).subscribe(test);
+        }).subscribe().withSubscriber(test);
         test.await().assertCompletedWithFailure().assertFailure(Exception.class, "boom");
         assertThat(called).isFalse();
     }
@@ -79,7 +79,7 @@ public class UniFlatMapTest {
         Uni.of(1).<Integer>flatMap(v -> {
             called.set(true);
             throw new IllegalStateException("boom");
-        }).subscribe(test);
+        }).subscribe().withSubscriber(test);
         test.await().assertCompletedWithFailure().assertFailure(IllegalStateException.class, "boom");
         assertThat(called).isTrue();
     }
@@ -91,7 +91,7 @@ public class UniFlatMapTest {
         Uni.of(1).<Integer>flatMap(v -> {
             called.set(true);
             return null;
-        }).subscribe(test);
+        }).subscribe().withSubscriber(test);
         test.await().assertCompletedWithFailure().assertFailure(NullPointerException.class, "");
         assertThat(called).isTrue();
     }
@@ -115,7 +115,7 @@ public class UniFlatMapTest {
         };
 
         Uni<Integer> uni = Uni.of(1).flatMap(v -> Uni.fromCompletionStage(future));
-        uni.subscribe(test);
+        uni.subscribe().withSubscriber(test);
         test.cancel();
         test.assertNotCompleted();
         assertThat(cancelled).isTrue();

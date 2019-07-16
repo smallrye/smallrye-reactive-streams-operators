@@ -29,7 +29,7 @@ public class UniDefer<T> extends UniOperator<Void, T> {
             subscriber.onSubscribe(EmptySubscription.INSTANCE);
             subscriber.onFailure(new NullPointerException("The supplier produced `null`"));
         } else {
-            uni.subscribe(subscriber);
+            uni.subscribe().withSubscriber(subscriber);
         }
     }
 }
