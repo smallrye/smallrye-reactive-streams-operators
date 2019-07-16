@@ -1,4 +1,4 @@
-package io.smallrye.reactive.streams.api;
+package io.smallrye.reactive.streams.api.impl;
 
 /**
  * Represents a disposable resource.

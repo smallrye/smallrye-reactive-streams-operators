@@ -1,7 +1,5 @@
 package io.smallrye.reactive.streams.api.impl;
 
-import io.smallrye.reactive.streams.api.Disposable;
-
 import java.util.concurrent.atomic.AtomicReference;
 
 /**

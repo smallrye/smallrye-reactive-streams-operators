@@ -1,6 +1,5 @@
 package io.smallrye.reactive.streams.api.impl;
 
-import io.smallrye.reactive.streams.api.Disposable;
 import io.smallrye.reactive.streams.api.UniEmitter;
 import io.smallrye.reactive.streams.api.UniSubscriber;
 import io.smallrye.reactive.streams.api.UniSubscription;

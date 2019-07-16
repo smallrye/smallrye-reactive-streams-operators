@@ -1,12 +1,10 @@
 package io.smallrye.reactive.streams.api.impl;
 
-import io.smallrye.reactive.streams.api.Disposable;
-
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * Utility methods for working with {@link io.smallrye.reactive.streams.api.Disposable disposables} atomically.
+ * Utility methods for working with {@link Disposable disposables} atomically.
  */
 public enum DisposableHelper implements Disposable {
     /**
