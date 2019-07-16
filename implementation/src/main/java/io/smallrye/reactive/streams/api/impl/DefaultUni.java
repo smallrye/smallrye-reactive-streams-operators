@@ -214,24 +214,10 @@ public abstract class DefaultUni<T> implements Uni<T> {
     }
 
     @Override
-    public Uni<T> onResult(Consumer<T> consumer) {
-        throw new UnsupportedOperationException("Not implemented yet");
+    public UniPeek<T> on() {
+        return new UniPeekImpl<>(this);
     }
 
-    @Override
-    public Uni<T> onSubscribe(Consumer<? super UniSubscription> consumer) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
-    public Uni<T> onFailure(Consumer<Throwable> consumer) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
-    public Uni<T> onTerminate(BiConsumer<T, Throwable> consumer) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
 
     @Override
     public Uni<T> onFailureMap(Function<? super Throwable, ? extends Throwable> mapper) {

@@ -24,7 +24,7 @@ public interface UniSubscribe<T> {
      * @param subscriber the subscriber, must not be {@code null}
      * @return the passed subscriber
      */
-    UniSubscriber<? super T> withSubscriber(UniSubscriber<? super T> subscriber);
+    <S extends UniSubscriber<? super T>> S withSubscriber(UniSubscriber<? super T> subscriber);
 
     /**
      * Like {@link #withSubscriber(UniSubscriber)} with creating an artificial {@link UniSubscriber} calling the

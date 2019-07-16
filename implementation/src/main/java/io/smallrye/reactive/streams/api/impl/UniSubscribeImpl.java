@@ -16,11 +16,12 @@ public class UniSubscribeImpl<T> implements UniSubscribe<T> {
         this.source = Objects.requireNonNull(source, "`source` must not be `null`");
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public UniSubscriber<? super T> withSubscriber(UniSubscriber<? super T> subscriber) {
+    public <S extends UniSubscriber<? super T>> S withSubscriber(UniSubscriber<? super T> subscriber) {
         WrapperUniSubscriber.subscribing(source,
                 Objects.requireNonNull(subscriber, "`subscriber` must not be `null`"));
-        return subscriber;
+        return (S) subscriber;
     }
 
     @Override

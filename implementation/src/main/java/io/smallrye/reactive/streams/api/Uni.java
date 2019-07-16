@@ -267,6 +267,8 @@ public interface Uni<T> {
      */
     UniAwait<T> await();
 
+    UniPeek<T> on();
+
     // Operators
 
     /**
@@ -546,40 +548,7 @@ public interface Uni<T> {
      */
     Uni<Tuple<? extends T>> zipWith(Iterable<Uni<? extends T>> iterable);
 
-    // Actions
 
-    /**
-     * Produces a new {@link Uni} invoking the given consumer when the result is resolved (with a value of {@code null}).
-     *
-     * @param consumer the consumer, must not be {@code null}
-     * @return the new {@link Uni}
-     */
-    Uni<T> onResult(Consumer<T> consumer);
-
-    /**
-     * Produces a new {@link Uni} invoking the given consumer when a subscriber subscribes to the resulting {@link Uni}.
-     *
-     * @param consumer the consumer, must not be {@code null}
-     * @return the new {@link Uni}
-     */
-    Uni<T> onSubscribe(Consumer<? super UniSubscription> consumer);
-
-    /**
-     * Produces a new {@link Uni} invoking the given consumer when this {@link Uni} propagates a failure.
-     *
-     * @param consumer the consumer, must not be {@code null}
-     * @return the new {@link Uni}
-     */
-    Uni<T> onFailure(Consumer<Throwable> consumer);
-
-    /**
-     * Produces a new {@link Uni} invoking the given bi-consumer when this {@link Uni} resolves a value or propagates
-     * a failure.
-     *
-     * @param consumer the bi-consumer called with the result (potentially null) or the failure.
-     * @return the new {@link Uni}
-     */
-    Uni<T> onTerminate(BiConsumer<T, Throwable> consumer);
 
 
     // Error Management
