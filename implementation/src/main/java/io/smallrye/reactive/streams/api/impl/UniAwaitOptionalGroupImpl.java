@@ -1,16 +1,16 @@
 package io.smallrye.reactive.streams.api.impl;
 
-import io.smallrye.reactive.streams.api.UniAwait;
-import io.smallrye.reactive.streams.api.UniAwaitOptional;
+import io.smallrye.reactive.streams.api.UniAwaitGroup;
+import io.smallrye.reactive.streams.api.UniAwaitOptionalGroup;
 
 import java.time.Duration;
 import java.util.Optional;
 
-public class UniAwaitOptionalImpl<T> implements UniAwaitOptional<T> {
+public class UniAwaitOptionalGroupImpl<T> implements UniAwaitOptionalGroup<T> {
 
-    private final UniAwait<T> delegate;
+    private final UniAwaitGroup<T> delegate;
 
-    public UniAwaitOptionalImpl(UniAwait<T> delegate) {
+    public UniAwaitOptionalGroupImpl(UniAwaitGroup<T> delegate) {
         this.delegate = delegate;
     }
 

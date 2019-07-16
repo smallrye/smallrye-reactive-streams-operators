@@ -9,7 +9,7 @@ import java.util.function.Consumer;
  *
  * @param <T> the type of result
  */
-public interface UniSubscribe<T> {
+public interface UniSubscribeGroup<T> {
 
     /**
      * Requests the {@link Uni} to start resolving the result.

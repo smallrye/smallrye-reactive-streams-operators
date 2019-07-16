@@ -18,13 +18,13 @@ public abstract class DefaultUni<T> implements Uni<T> {
 
 
     @Override
-    public UniAwait<T> await() {
-        return new UniAwaitImpl<>(this);
+    public UniAwaitGroup<T> await() {
+        return new UniAwaitGroupImpl<>(this);
     }
 
     @Override
-    public UniSubscribe<T> subscribe() {
-        return new UniSubscribeImpl<>(this);
+    public UniSubscribeGroup<T> subscribe() {
+        return new UniSubscribeGroupImpl<>(this);
     }
 
     // Operator
@@ -214,8 +214,8 @@ public abstract class DefaultUni<T> implements Uni<T> {
     }
 
     @Override
-    public UniPeek<T> on() {
-        return new UniPeekImpl<>(this);
+    public UniPeekGroup<T> on() {
+        return new UniPeekGroupImpl<>(this);
     }
 
 

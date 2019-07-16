@@ -245,7 +245,7 @@ public interface Uni<T> {
      *
      * @return the object to configure the subscription.
      */
-    UniSubscribe<T> subscribe();
+    UniSubscribeGroup<T> subscribe();
 
     /**
      * Awaits (blocking the caller thread) until the result of this {@link Uni} is emitted.
@@ -265,9 +265,9 @@ public interface Uni<T> {
      *
      * @return the object to configure the retrieval.
      */
-    UniAwait<T> await();
+    UniAwaitGroup<T> await();
 
-    UniPeek<T> on();
+    UniPeekGroup<T> on();
 
     // Operators
 

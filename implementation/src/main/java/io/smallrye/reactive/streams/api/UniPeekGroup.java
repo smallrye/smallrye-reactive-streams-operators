@@ -9,7 +9,7 @@ import java.util.function.Consumer;
  *
  * @param <T> the type of result
  */
-public interface UniPeek<T> {
+public interface UniPeekGroup<T> {
 
     /**
      * Produces a new {@link Uni} invoking the given callback when this {@link Uni} resolves a value or propagates

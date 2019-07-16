@@ -8,11 +8,11 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class UniAwaitImpl<T> implements UniAwait<T> {
+public class UniAwaitGroupImpl<T> implements UniAwaitGroup<T> {
 
     private final Uni<T> source;
 
-    public UniAwaitImpl(Uni<T> source) {
+    public UniAwaitGroupImpl(Uni<T> source) {
         this.source = source;
     }
 
@@ -70,7 +70,7 @@ public class UniAwaitImpl<T> implements UniAwait<T> {
     }
 
     @Override
-    public UniAwaitOptional<T> asOptional() {
-        return new UniAwaitOptionalImpl<>(this);
+    public UniAwaitOptionalGroup<T> asOptional() {
+        return new UniAwaitOptionalGroupImpl<>(this);
     }
 }

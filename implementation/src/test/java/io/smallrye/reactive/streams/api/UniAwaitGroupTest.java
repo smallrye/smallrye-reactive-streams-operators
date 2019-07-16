@@ -12,7 +12,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 import static org.awaitility.Awaitility.await;
 
-public class UniAwaitTest {
+public class UniAwaitGroupTest {
 
     @Test(timeout = 100)
     public void testAwaitingOnAnAlreadyResolvedUni() {

@@ -1,6 +1,6 @@
 package io.smallrye.reactive.streams.api.impl;
 
-import io.smallrye.reactive.streams.api.UniSubscribe;
+import io.smallrye.reactive.streams.api.UniSubscribeGroup;
 import io.smallrye.reactive.streams.api.UniSubscriber;
 import io.smallrye.reactive.streams.api.UniSubscription;
 
@@ -8,11 +8,11 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
-public class UniSubscribeImpl<T> implements UniSubscribe<T> {
+public class UniSubscribeGroupImpl<T> implements UniSubscribeGroup<T> {
 
     private final DefaultUni<T> source;
 
-    public UniSubscribeImpl(DefaultUni<T> source) {
+    public UniSubscribeGroupImpl(DefaultUni<T> source) {
         this.source = Objects.requireNonNull(source, "`source` must not be `null`");
     }
 

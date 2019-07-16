@@ -1,18 +1,18 @@
 package io.smallrye.reactive.streams.api.impl;
 
 import io.smallrye.reactive.streams.api.Uni;
-import io.smallrye.reactive.streams.api.UniPeek;
+import io.smallrye.reactive.streams.api.UniPeekGroup;
 import io.smallrye.reactive.streams.api.UniSubscription;
 
 import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-public class UniPeekImpl<T> implements UniPeek<T> {
+public class UniPeekGroupImpl<T> implements UniPeekGroup<T> {
 
     private final DefaultUni<T> source;
 
-    public UniPeekImpl(DefaultUni<T> source) {
+    public UniPeekGroupImpl(DefaultUni<T> source) {
         this.source = Objects.requireNonNull(source, "`source` must not be `null`");
     }
 
