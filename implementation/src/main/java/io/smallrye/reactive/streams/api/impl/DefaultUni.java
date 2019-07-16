@@ -4,6 +4,8 @@ import io.smallrye.reactive.streams.api.*;
 import org.reactivestreams.Publisher;
 
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.*;
@@ -209,7 +211,7 @@ public abstract class DefaultUni<T> implements Uni<T> {
 
     @Override
     public <O> O to(Function<? super Uni<T>, O> transformer) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        return Objects.requireNonNull(transformer, "`transformer` must not be `null`").apply(this);
     }
 
     @Override
@@ -249,7 +251,7 @@ public abstract class DefaultUni<T> implements Uni<T> {
 
     @Override
     public Uni<Void> ignore() {
-        throw new UnsupportedOperationException("Not implemented yet");
+        return this.map(x -> null);
     }
 
     @Override
@@ -298,47 +300,47 @@ public abstract class DefaultUni<T> implements Uni<T> {
     }
 
     @Override
-    public Uni<T> doOnResult(Consumer<T> consumer) {
+    public Uni<T> onResult(Consumer<T> consumer) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
-    public Uni<T> doOnSubscribe(Consumer<? super UniSubscription> consumer) {
+    public Uni<T> onSubscribe(Consumer<? super UniSubscription> consumer) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
-    public Uni<T> doOnFailure(Consumer<Throwable> consumer) {
+    public Uni<T> onFailure(Consumer<Throwable> consumer) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
-    public Uni<T> doFinally(BiConsumer<T, Throwable> consumer) {
+    public Uni<T> onTerminate(BiConsumer<T, Throwable> consumer) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
-    public Uni<T> onErrorMap(Function<? super Throwable, ? extends Throwable> mapper) {
+    public Uni<T> onFailureMap(Function<? super Throwable, ? extends Throwable> mapper) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
-    public Uni<T> onErrorResume(Function<? super Throwable, ? extends T> mapper) {
+    public Uni<T> onFailureResume(Function<? super Throwable, ? extends T> mapper) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
-    public Uni<T> onErrorSwitch(Function<? super Throwable, Uni<? extends T>> mapper) {
+    public Uni<T> onFailureSwitch(Function<? super Throwable, Uni<? extends T>> mapper) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
-    public Uni<T> onErrorReturn(T defaultValue) {
+    public Uni<T> onFailureReturn(T defaultValue) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
-    public Uni<T> onErrorReturn(Supplier<? extends T> supplier) {
+    public Uni<T> onFailureReturn(Supplier<? extends T> supplier) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
@@ -349,6 +351,11 @@ public abstract class DefaultUni<T> implements Uni<T> {
 
     @Override
     public Uni<T> retry(int count) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public <O> Multi<O> toMulti() {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 }

@@ -34,7 +34,7 @@ public interface Uni<T> {
     }
 
     /**
-     * Creates a new {@link Uni} that completes immediately after being subscribed to the specified value if
+     * Creates a new {@link Uni} that completes immediately after being subscribed to with the specified value if
      * {@link Optional#isPresent()} or {@code null} otherwise.
      *
      * @param value the optional, must not be {@code null}
@@ -81,7 +81,7 @@ public interface Uni<T> {
      * {@link CompletionStage#toCompletableFuture()}.
      * <p>
      * If the stage has already been completed (or failed), the produced {@link Uni} sends the result or failure
-     * immediately after subscription. If it's not the case the subscriber's callbacks are called on the thread used
+     * immediately after subscription. If it's not the case, the subscriber's callbacks are called on the thread used
      * by the passed {@link CompletionStage}.
      *
      * @param stage the stage, must not be {@code null}
@@ -225,8 +225,9 @@ public interface Uni<T> {
 
     /**
      * Like {@link #any(Iterable)} but with an array of {@link Uni} as parameter
+     *
      * @param unis the array, must not be {@code null}, must not contain @{code null}
-     * @param <T> the type of result
+     * @param <T>  the type of result
      * @return the produced {@link Uni}
      */
     @SafeVarargs
@@ -255,11 +256,11 @@ public interface Uni<T> {
      * Unlike {@link #subscribe(UniSubscriber)}, this method returns the subscription, and so may block until the
      * subscription is received.
      *
-     * @param onResult callback invoked when the result, potentially {@code null} is received, must not be {@code null}
+     * @param onResult  callback invoked when the result, potentially {@code null} is received, must not be {@code null}
      * @param onFailure callback invoked when a failure is propagated, must not be {@code null}
      * @return the subscription
      */
-    UniSubscription subscribe(Consumer<? super  T> onResult, Consumer<? super Throwable> onFailure);
+    UniSubscription subscribe(Consumer<? super T> onResult, Consumer<? super Throwable> onFailure);
 
     /**
      * Like {@link #subscribe(UniSubscriber)} but provides a {@link CompletableFuture} to retrieve the completed result
@@ -358,11 +359,26 @@ public interface Uni<T> {
     <O> O to(Function<? super Uni<T>, O> transformer);
 
     /**
+     * Transforms this {@link Uni} into an instance of {@link Multi}.
+     * <p>
+     * If this {@link Uni} resolves with a non-null value, this value is emitted in the {@link Multi}, followed by
+     * completion.
+     * If this {@link Uni} resolves with a @{code null} value, the returned {@link Multi} would be completed empty.
+     * If this {@link Uni} receives a failure, the failure is propagated to the {@link Multi}.
+     *
+     * @param <O> the type of item
+     * @return the produced {@link Multi}, never {@code null}
+     * @see #toPublisher()
+     * @see #fromPublisher(Publisher)
+     */
+    <O> Multi<O> toMulti();
+
+    /**
      * Transforms this {@link Uni} into an instance of the given class. The transformations acts as follows:
      * <ol>
      * <li>If this is an instance of O - return this</li>
      * <li>If there is on the classpath, an implementation of {@link io.smallrye.reactive.streams.api.adapter.UniAdapter}
-     * for the type O, the adapter is used</li>
+     * for the type O, the adapter is used (invoking {@link io.smallrye.reactive.streams.api.adapter.UniAdapter#adaptTo(Uni)})</li>
      * <li>If O has a {@code fromPublisher} method, this method is called with a {@link Publisher} produced
      * using {@link #toPublisher()}</li>
      * <li>If O has a {@code from} method, this method is called with a {@link Publisher} produced
@@ -376,7 +392,13 @@ public interface Uni<T> {
      */
     <O> O to(Class<O> clazz);
 
-
+    /**
+     * Creates a new instance of {@link Uni} from the given instance.
+     * @param instance
+     * @param <T>
+     * @param <I>
+     * @return
+     */
     static <T, I> Uni<T> from(I instance) {
         return UniAdaptFrom.adaptFrom(instance);
     }
@@ -574,7 +596,7 @@ public interface Uni<T> {
      * @param consumer the consumer, must not be {@code null}
      * @return the new {@link Uni}
      */
-    Uni<T> doOnResult(Consumer<T> consumer);
+    Uni<T> onResult(Consumer<T> consumer);
 
     /**
      * Produces a new {@link Uni} invoking the given consumer when a subscriber subscribes to the resulting {@link Uni}.
@@ -582,7 +604,7 @@ public interface Uni<T> {
      * @param consumer the consumer, must not be {@code null}
      * @return the new {@link Uni}
      */
-    Uni<T> doOnSubscribe(Consumer<? super UniSubscription> consumer);
+    Uni<T> onSubscribe(Consumer<? super UniSubscription> consumer);
 
     /**
      * Produces a new {@link Uni} invoking the given consumer when this {@link Uni} propagates a failure.
@@ -590,7 +612,7 @@ public interface Uni<T> {
      * @param consumer the consumer, must not be {@code null}
      * @return the new {@link Uni}
      */
-    Uni<T> doOnFailure(Consumer<Throwable> consumer);
+    Uni<T> onFailure(Consumer<Throwable> consumer);
 
     /**
      * Produces a new {@link Uni} invoking the given bi-consumer when this {@link Uni} resolves a value or propagates
@@ -599,7 +621,7 @@ public interface Uni<T> {
      * @param consumer the bi-consumer called with the result (potentially null) or the failure.
      * @return the new {@link Uni}
      */
-    Uni<T> doFinally(BiConsumer<T, Throwable> consumer);
+    Uni<T> onTerminate(BiConsumer<T, Throwable> consumer);
 
 
     // Error Management
@@ -611,7 +633,7 @@ public interface Uni<T> {
      * @param mapper the mapper function, must not be {@code null}
      * @return the new {@link Uni}
      */
-    Uni<T> onErrorMap(Function<? super Throwable, ? extends Throwable> mapper);
+    Uni<T> onFailureMap(Function<? super Throwable, ? extends Throwable> mapper);
 
     /**
      * Produces a new {@link Uni} invoking the given function when this {@link Uni} propagates a failure. The function
@@ -621,7 +643,7 @@ public interface Uni<T> {
      * @param mapper the mapper function, must not be {@code null}
      * @return the new {@link Uni}
      */
-    Uni<T> onErrorResume(Function<? super Throwable, ? extends T> mapper);
+    Uni<T> onFailureResume(Function<? super Throwable, ? extends T> mapper);
 
     /**
      * Produces a new {@link Uni} invoking the given function when this {@link Uni} propagates a failure. The function
@@ -631,7 +653,7 @@ public interface Uni<T> {
      * @param mapper the mapper function, must not be {@code null}
      * @return the new {@link Uni}
      */
-    Uni<T> onErrorSwitch(Function<? super Throwable, Uni<? extends T>> mapper);
+    Uni<T> onFailureSwitch(Function<? super Throwable, Uni<? extends T>> mapper);
 
     /**
      * Produces a new {@link Uni} producing the given value (potentially {@code null}) when this {@link Uni} propagates
@@ -640,7 +662,7 @@ public interface Uni<T> {
      * @param defaultValue the value replacing the failure, can be {@code null}
      * @return the new {@link Uni}
      */
-    Uni<T> onErrorReturn(T defaultValue);
+    Uni<T> onFailureReturn(T defaultValue);
 
     /**
      * Produces a new {@link Uni} producing a value (potentially {@code null}) using the given supplier when
@@ -651,7 +673,7 @@ public interface Uni<T> {
      *                 returned {@code Uni}.
      * @return the new {@link Uni}
      */
-    Uni<T> onErrorReturn(Supplier<? extends T> supplier);
+    Uni<T> onFailureReturn(Supplier<? extends T> supplier);
 
     /**
      * Retries the resolution of this {@link Uni} indefinitely. The process of retrying uses a re-subscription.
@@ -687,5 +709,7 @@ public interface Uni<T> {
      * @return a {@link Publisher} containing at most one item.
      */
     Publisher<T> toPublisher();
+
+
 
 }

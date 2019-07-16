@@ -3,7 +3,7 @@ package io.smallrye.reactive.streams.api;
 
 /**
  * An object allowing to send signals to the downstream {@link Uni}.
- * {@link Uni} propagates a single signals, once the first is propagated, the others signals have no effect.
+ * {@link Uni} propagates a single signal, once the first is propagated, the others signals have no effect.
  *
  * @param <T> the expected type of item.
  */
