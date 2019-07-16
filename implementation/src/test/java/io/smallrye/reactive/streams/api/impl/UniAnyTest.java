@@ -100,21 +100,21 @@ public class UniAnyTest {
     public void testBlockingWithDelay() {
         Uni<Integer> uni1 = Uni.empty().delay(Duration.ofMillis(100), executor).map(x -> 1);
         Uni<Integer> uni2 = Uni.empty().delay(Duration.ofMillis(50), executor).map(x -> 2);
-        assertThat(Uni.any(uni1, uni2).block()).isEqualTo(2);
+        assertThat(Uni.any(uni1, uni2).await().indefinitely()).isEqualTo(2);
     }
 
     @Test(timeout = 1000)
     public void testCompletingAgainstEmpty() {
         Uni<Integer> uni1 = Uni.empty().map(x -> 1);
         Uni<Integer> uni2 = Uni.empty().delay(Duration.ofMillis(50), executor).map(x -> 2);
-        assertThat(Uni.any(uni1, uni2).block()).isEqualTo(1);
+        assertThat(Uni.any(uni1, uni2).await().indefinitely()).isEqualTo(1);
     }
 
     @Test(timeout = 1000)
     public void testCompletingAgainstNever() {
         Uni<Integer> uni1 = Uni.never().map(x -> 1);
         Uni<Integer> uni2 = Uni.empty().delay(Duration.ofMillis(50), executor).map(x -> 2);
-        assertThat(Uni.any(uni1, uni2).block()).isEqualTo(2);
+        assertThat(Uni.any(uni1, uni2).await().asOptional().indefinitely()).contains(2);
     }
 
     @Test

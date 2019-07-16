@@ -67,7 +67,7 @@ public class UniOfTest {
 
     @Test
     public void testThatValueIsRetrievedUsingBlock() {
-        assertThat(Uni.of("foo").block()).isEqualToIgnoringCase("foo");
+        assertThat(Uni.of("foo").await().indefinitely()).isEqualToIgnoringCase("foo");
     }
 
     @Test

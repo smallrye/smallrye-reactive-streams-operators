@@ -253,7 +253,7 @@ public interface Uni<T> {
     /**
      * Like {@link #subscribe(UniSubscriber)} with creating an artificial {@link UniSubscriber} calling the
      * {@code onResult} and {@code onFailure} callbacks.
-     * Unlike {@link #subscribe(UniSubscriber)}, this method returns the subscription, and so may block until the
+     * Unlike {@link #subscribe(UniSubscriber)}, this method returns the subscription, and so may await until the
      * subscription is received.
      *
      * @param onResult  callback invoked when the result, potentially {@code null} is received, must not be {@code null}
@@ -273,42 +273,22 @@ public interface Uni<T> {
 
 
     /**
-     * Subscribes to this {@link Uni} and wait (blocking the caller thread) indefinitely until a result or failure is
-     * received.
-     * <p>
-     * On success, it returns that value, potentially {@code null} if the operation returns {@code null}.
-     * On error,  the original exception is thrown (wrapped in a {@link java.util.concurrent.CompletionException} if
-     * it was a checked exception).
-     * <p>
-     * Note that each call to {@link #block()} triggers a new subscription.
+     * Awaits (blocking the caller thread) until the result of this {@link Uni} is emitted.
      *
-     * @return the result
+     * For example, you can retrieve the result using:
+     * <code>
+     *     T res = uni.await().indefinitely();
+     * </code>
+     * Or configure a timeout with:
+     * <code>
+     *     T res = uni.await().atMost(Duration.ofMillis(1000));
+     * </code>
+     * You can also retrieve an {@link Optional} (empty on {@code null}) with:
+     * <code>
+     *     Optional<T> res = uni.await().asOptional().indefinitely();
+     * </code>
      */
-    T block();
-
-    /**
-     * Like {@link #block()} but throws a {@link java.util.concurrent.TimeoutException} if the passed timeout is reached.
-     *
-     * @param timeout
-     * @return
-     * @throws TimeoutException
-     */
-    T block(Duration timeout) throws TimeoutException;
-
-
-    /**
-     * Subscribes to this {@link Uni} and wait (blocking the caller thread) indefinitely until a result or failure is
-     * received.
-     * <p>
-     * On success, it returns an {@link Optional} containing the value, empty if the operation returns {@code null}.
-     * On error,  the original exception is thrown (wrapped in a {@link java.util.concurrent.CompletionException} if
-     * it was a checked exception).
-     * <p>
-     * Note that each call to {@link #blockOptional()} triggers a new subscription.
-     *
-     * @return an optional wrapping the result.
-     */
-    Optional<T> blockOptional();
+    UniAwait<T> await();
 
     // Operators
 

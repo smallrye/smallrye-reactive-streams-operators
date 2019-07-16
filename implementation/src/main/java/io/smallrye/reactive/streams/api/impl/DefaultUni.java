@@ -4,11 +4,11 @@ import io.smallrye.reactive.streams.api.*;
 import org.reactivestreams.Publisher;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.concurrent.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.*;
@@ -61,51 +61,8 @@ public abstract class DefaultUni<T> implements Uni<T> {
     }
 
     @Override
-    public T block() {
-        CountDownLatch latch = new CountDownLatch(1);
-        AtomicReference<T> reference = new AtomicReference<>();
-        AtomicReference<Throwable> referenceToFailure = new AtomicReference<>();
-        subscribe(new UniSubscriber<T>() {
-            @Override
-            public void onSubscribe(UniSubscription subscription) {
-
-            }
-
-            @Override
-            public void onResult(T result) {
-                reference.compareAndSet(null, result);
-                latch.countDown();
-            }
-
-            @Override
-            public void onFailure(Throwable failure) {
-                referenceToFailure.compareAndSet(null, failure);
-                latch.countDown();
-            }
-        });
-
-        try {
-            latch.await();
-        } catch (InterruptedException e) {
-            referenceToFailure.compareAndSet(null, e);
-            Thread.currentThread().interrupt();
-        }
-
-        Throwable throwable = referenceToFailure.get();
-        if (throwable != null) {
-            if (throwable instanceof RuntimeException) {
-                throw (RuntimeException) throwable;
-            }
-            throw new RuntimeException(throwable);
-        } else {
-            return reference.get();
-        }
-
-    }
-
-    @Override
-    public Optional<T> blockOptional() {
-        return Optional.ofNullable(block());
+    public UniAwait<T> await() {
+        return new UniAwaitImpl<>(this);
     }
 
     // Operator
@@ -197,11 +154,6 @@ public abstract class DefaultUni<T> implements Uni<T> {
 
             subscriber.onSubscribe(downstreamSubscription);
         };
-    }
-
-    @Override
-    public T block(Duration timeout) throws TimeoutException {
-        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override

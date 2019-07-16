@@ -16,7 +16,7 @@ public class UniDeferTest {
         Uni<Integer> s = Uni.defer(() -> Uni.of(counter.incrementAndGet()));
 
         for (int i = 1; i < 100; i++) {
-            assertThat(s.block()).isEqualTo(i);
+            assertThat(s.await().indefinitely()).isEqualTo(i);
         }
     }
 

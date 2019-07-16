@@ -17,7 +17,7 @@ public class UniFailedTest {
     public void testWithASupplier() {
         Uni<Object> failed = Uni.failed(() -> new IOException("boom"));
         try {
-            failed.block();
+            failed.await().indefinitely();
             fail("Exception expected");
         } catch (Exception e) {
             assertThat(e).hasCauseInstanceOf(IOException.class);
@@ -31,7 +31,7 @@ public class UniFailedTest {
         ts.assertFailure(Exception.class, "boom");
 
         try {
-            Uni.failed(new Exception("boom")).block();
+            Uni.failed(new Exception("boom")).await().asOptional().indefinitely();
             fail("Exception expected");
         } catch (Exception e) {
             assertThat(e).hasCauseInstanceOf(Exception.class)
@@ -47,7 +47,7 @@ public class UniFailedTest {
         ts.assertFailure(RuntimeException.class, "boom");
 
         try {
-            Uni.failed(new RuntimeException("boom")).block();
+            Uni.failed(new RuntimeException("boom")).await().indefinitely();
             fail("Exception expected");
         } catch (Exception e) {
             assertThat(e)
@@ -71,7 +71,7 @@ public class UniFailedTest {
     public void testWithASupplierReturningNull() {
         Uni<Object> failed = Uni.failed(() -> null);
         try {
-            failed.block();
+            failed.await().indefinitely();
             fail("Exception expected");
         } catch (Exception e) {
             assertThat(e).isInstanceOf(NullPointerException.class);
@@ -84,7 +84,7 @@ public class UniFailedTest {
             throw new NoSuchElementException("boom");
         });
         try {
-            failed.block();
+            failed.await().indefinitely();
             fail("Exception expected");
         } catch (Exception e) {
             assertThat(e).isInstanceOf(NoSuchElementException.class);

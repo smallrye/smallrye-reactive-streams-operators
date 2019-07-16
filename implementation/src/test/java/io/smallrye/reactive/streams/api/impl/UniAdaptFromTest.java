@@ -2,7 +2,6 @@ package io.smallrye.reactive.streams.api.impl;
 
 import io.reactivex.*;
 import io.smallrye.reactive.streams.api.Uni;
-import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
 import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
 import org.junit.Test;
 import reactor.core.publisher.Flux;
@@ -20,7 +19,7 @@ public class UniAdaptFromTest {
     public void testCreatingFromACompletable() {
         Uni<Void> uni = Uni.from(Completable.complete());
         assertThat(uni).isNotNull();
-        assertThat(uni.block()).isNull();
+        assertThat(uni.await().indefinitely()).isNull();
     }
 
     @Test
@@ -28,7 +27,7 @@ public class UniAdaptFromTest {
         Uni<Void> uni = Uni.from(Completable.error(new IOException("boom")));
         assertThat(uni).isNotNull();
         try {
-            uni.block();
+            uni.await().indefinitely();
             fail("Exception expected");
         } catch (RuntimeException e) {
             assertThat(e).hasCauseInstanceOf(IOException.class);
@@ -39,7 +38,7 @@ public class UniAdaptFromTest {
     public void testCreatingFromASingle() {
         Uni<Integer> uni = Uni.from(Single.just(1));
         assertThat(uni).isNotNull();
-        assertThat(uni.block()).isEqualTo(1);
+        assertThat(uni.await().indefinitely()).isEqualTo(1);
     }
 
 
@@ -48,7 +47,7 @@ public class UniAdaptFromTest {
         Uni<Integer> uni = Uni.from(Single.error(new IOException("boom")));
         assertThat(uni).isNotNull();
         try {
-            uni.block();
+            uni.await().indefinitely();
             fail("Exception expected");
         } catch (RuntimeException e) {
             assertThat(e).hasCauseInstanceOf(IOException.class);
@@ -59,14 +58,14 @@ public class UniAdaptFromTest {
     public void testCreatingFromAMaybe() {
         Uni<Integer> uni = Uni.from(Maybe.just(1));
         assertThat(uni).isNotNull();
-        assertThat(uni.block()).isEqualTo(1);
+        assertThat(uni.await().indefinitely()).isEqualTo(1);
     }
 
     @Test
     public void testCreatingFromAnEmptyMaybe() {
         Uni<Void> uni = Uni.from(Maybe.empty());
         assertThat(uni).isNotNull();
-        assertThat(uni.block()).isNull();
+        assertThat(uni.await().indefinitely()).isNull();
     }
 
     @Test
@@ -74,7 +73,7 @@ public class UniAdaptFromTest {
         Uni<Integer> uni = Uni.from(Maybe.error(new IOException("boom")));
         assertThat(uni).isNotNull();
         try {
-            uni.block();
+            uni.await().indefinitely();
             fail("Exception expected");
         } catch (RuntimeException e) {
             assertThat(e).hasCauseInstanceOf(IOException.class);
@@ -85,21 +84,21 @@ public class UniAdaptFromTest {
     public void testCreatingFromAFlowable() {
         Uni<Integer> uni = Uni.from(Flowable.just(1));
         assertThat(uni).isNotNull();
-        assertThat(uni.block()).isEqualTo(1);
+        assertThat(uni.await().indefinitely()).isEqualTo(1);
     }
 
     @Test
     public void testCreatingFromAMultiValuedFlowable() {
         Uni<Integer> uni = Uni.from(Flowable.just(1, 2, 3));
         assertThat(uni).isNotNull();
-        assertThat(uni.block()).isEqualTo(1);
+        assertThat(uni.await().indefinitely()).isEqualTo(1);
     }
 
     @Test
     public void testCreatingFromAnEmptyFlowable() {
         Uni<Void> uni = Uni.from(Flowable.empty());
         assertThat(uni).isNotNull();
-        assertThat(uni.block()).isNull();
+        assertThat(uni.await().indefinitely()).isNull();
     }
 
     @Test
@@ -107,7 +106,7 @@ public class UniAdaptFromTest {
         Uni<Integer> uni = Uni.from(Flowable.error(new IOException("boom")));
         assertThat(uni).isNotNull();
         try {
-            uni.block();
+            uni.await().indefinitely();
             fail("Exception expected");
         } catch (RuntimeException e) {
             assertThat(e).hasCauseInstanceOf(IOException.class);
@@ -118,21 +117,21 @@ public class UniAdaptFromTest {
     public void testCreatingFromAPublisherBuilder() {
         Uni<Integer> uni = Uni.from(ReactiveStreams.of(1));
         assertThat(uni).isNotNull();
-        assertThat(uni.block()).isEqualTo(1);
+        assertThat(uni.await().indefinitely()).isEqualTo(1);
     }
 
     @Test
     public void testCreatingFromAMultiValuedPublisherBuilder() {
         Uni<Integer> uni = Uni.from(ReactiveStreams.of(1, 2, 3));
         assertThat(uni).isNotNull();
-        assertThat(uni.block()).isEqualTo(1);
+        assertThat(uni.await().indefinitely()).isEqualTo(1);
     }
 
     @Test
     public void testCreatingFromAnEmptyPublisherBuilder() {
         Uni<Void> uni = Uni.from(ReactiveStreams.empty());
         assertThat(uni).isNotNull();
-        assertThat(uni.block()).isNull();
+        assertThat(uni.await().indefinitely()).isNull();
     }
 
     @Test
@@ -140,7 +139,7 @@ public class UniAdaptFromTest {
         Uni<Integer> uni = Uni.from(ReactiveStreams.failed(new IOException("boom")));
         assertThat(uni).isNotNull();
         try {
-            uni.block();
+            uni.await().indefinitely();
             fail("Exception expected");
         } catch (RuntimeException e) {
             assertThat(e).hasCauseInstanceOf(IOException.class);
@@ -152,14 +151,14 @@ public class UniAdaptFromTest {
     public void testCreatingFromAMono() {
         Uni<Integer> uni = Uni.from(Mono.just(1));
         assertThat(uni).isNotNull();
-        assertThat(uni.block()).isEqualTo(1);
+        assertThat(uni.await().indefinitely()).isEqualTo(1);
     }
 
     @Test
     public void testCreatingFromAnEmptyMono() {
         Uni<Void> uni = Uni.from(Mono.empty());
         assertThat(uni).isNotNull();
-        assertThat(uni.block()).isNull();
+        assertThat(uni.await().indefinitely()).isNull();
     }
 
     @Test
@@ -167,7 +166,7 @@ public class UniAdaptFromTest {
         Uni<Integer> uni = Uni.from(Mono.error(new IOException("boom")));
         assertThat(uni).isNotNull();
         try {
-            uni.block();
+            uni.await().indefinitely();
             fail("Exception expected");
         } catch (RuntimeException e) {
             assertThat(e).hasCauseInstanceOf(IOException.class);
@@ -178,21 +177,21 @@ public class UniAdaptFromTest {
     public void testCreatingFromAFlux() {
         Uni<Integer> uni = Uni.from(Flux.just(1));
         assertThat(uni).isNotNull();
-        assertThat(uni.block()).isEqualTo(1);
+        assertThat(uni.await().indefinitely()).isEqualTo(1);
     }
 
     @Test
     public void testCreatingFromAMultiValuedFlux() {
         Uni<Integer> uni = Uni.from(Flux.just(1, 2, 3));
         assertThat(uni).isNotNull();
-        assertThat(uni.block()).isEqualTo(1);
+        assertThat(uni.await().indefinitely()).isEqualTo(1);
     }
 
     @Test
     public void testCreatingFromAnEmptyFlux() {
         Uni<Void> uni = Uni.from(Flux.empty());
         assertThat(uni).isNotNull();
-        assertThat(uni.block()).isNull();
+        assertThat(uni.await().indefinitely()).isNull();
     }
 
     @Test
@@ -200,7 +199,7 @@ public class UniAdaptFromTest {
         Uni<Integer> uni = Uni.from(Flux.error(new IOException("boom")));
         assertThat(uni).isNotNull();
         try {
-            uni.block();
+            uni.await().indefinitely();
             fail("Exception expected");
         } catch (RuntimeException e) {
             assertThat(e).hasCauseInstanceOf(IOException.class);
@@ -220,10 +219,10 @@ public class UniAdaptFromTest {
         Uni<Void> u2 = Uni.from(empty);
         Uni<Void> u3 = Uni.from(failed);
 
-        assertThat(u1.block()).isEqualTo(1);
-        assertThat(u2.block()).isEqualTo(null);
+        assertThat(u1.await().asOptional().indefinitely()).contains(1);
+        assertThat(u2.await().indefinitely()).isEqualTo(null);
         try {
-            u3.block();
+            u3.await();
         } catch (Exception e) {
             assertThat(e).isInstanceOf(RuntimeException.class).hasCauseInstanceOf(Exception.class);
         }

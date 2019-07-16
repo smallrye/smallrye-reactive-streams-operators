@@ -63,7 +63,7 @@ public class UniCache<I> extends UniOperator<I, I> implements UniSubscriber<I> {
             }
         }
 
-        // Execute outside of the synchronized block
+        // Execute outside of the synchronized await
         if (action != null) {
             action.run();
         }
@@ -112,7 +112,7 @@ public class UniCache<I> extends UniOperator<I, I> implements UniSubscriber<I> {
             // Clear the list
             this.subscribers.clear();
         }
-        // Here we may notify a subscriber that would have cancelled its subscription just after the synchronized block
+        // Here we may notify a subscriber that would have cancelled its subscription just after the synchronized await
         // we consider it as pending cancellation.
         list.forEach(s -> s.onResult(result));
     }
@@ -130,7 +130,7 @@ public class UniCache<I> extends UniOperator<I, I> implements UniSubscriber<I> {
             // Clear the list
             this.subscribers.clear();
         }
-        // Here we may notify a subscriber that would have cancelled its subscription just after the synchronized block
+        // Here we may notify a subscriber that would have cancelled its subscription just after the synchronized await
         // we consider it as pending cancellation.
         list.forEach(s -> s.onFailure(failure));
     }
