@@ -14,13 +14,13 @@ public class UniCreateTest {
 
     @Test(expected = NullPointerException.class)
     public void testThatConsumerCannotBeNull() {
-        Uni.create(null);
+         Uni.from().emitter(null);
     }
 
     @Test
     public void testThatOnlyTheFirstSignalIsConsidered() {
         AtomicReference<UniEmitter> reference = new AtomicReference<>();
-        Uni<Integer> uni = Uni.create(emitter -> {
+        Uni<Integer> uni =  Uni.from().emitter(emitter -> {
             reference.set(emitter);
             emitter.success(1);
             emitter.fail(new Exception());
@@ -39,7 +39,7 @@ public class UniCreateTest {
     public void testWithOnCancellationAction() {
         AssertSubscriber<Integer> subscriber = AssertSubscriber.create();
         AtomicInteger onCancellationCalled = new AtomicInteger();
-        Uni.<Integer>create(emitter -> {
+         Uni.from().<Integer>emitter(emitter -> {
             emitter.onCancellation(onCancellationCalled::incrementAndGet).success(1);
             emitter.fail(new Exception());
             emitter.success(2);
@@ -56,7 +56,7 @@ public class UniCreateTest {
     public void testWithCancellation() {
         AssertSubscriber<Integer> subscriber = AssertSubscriber.create();
         AtomicInteger onCancellationCalled = new AtomicInteger();
-        Uni.<Integer>create(emitter -> emitter.onCancellation(onCancellationCalled::incrementAndGet)).subscribe().withSubscriber(subscriber);
+         Uni.from().<Integer>emitter(emitter -> emitter.onCancellation(onCancellationCalled::incrementAndGet)).subscribe().withSubscriber(subscriber);
 
         assertThat(onCancellationCalled).hasValue(0);
         subscriber.cancel();
@@ -66,7 +66,7 @@ public class UniCreateTest {
     @Test
     public void testWithFailure() {
         AssertSubscriber<Integer> subscriber = AssertSubscriber.create();
-        Uni.<Integer>create(emitter -> emitter.fail(new Exception("boom"))).subscribe().withSubscriber(subscriber);
+         Uni.from().<Integer>emitter(emitter -> emitter.fail(new Exception("boom"))).subscribe().withSubscriber(subscriber);
 
         subscriber.assertFailure(Exception.class, "boom");
     }
@@ -74,7 +74,7 @@ public class UniCreateTest {
     @Test
     public void testWhenTheCallbackThrowsAnException() {
         AssertSubscriber<Integer> subscriber = AssertSubscriber.create();
-        Uni.<Integer>create(emitter -> {
+         Uni.from().<Integer>emitter(emitter -> {
             throw new NullPointerException("boom");
         }).subscribe().withSubscriber(subscriber);
 
@@ -86,7 +86,7 @@ public class UniCreateTest {
     public void testThatEmitterIsDisposed() {
         AssertSubscriber<Void> subscriber = AssertSubscriber.create();
         AtomicReference<UniEmitter<? super Void>> reference = new AtomicReference<>();
-        Uni.<Void>create(emitter -> {
+        Uni.from().<Void>emitter(emitter -> {
             reference.set(emitter);
             emitter.success();
         }).subscribe().withSubscriber(subscriber);
@@ -98,7 +98,7 @@ public class UniCreateTest {
     @Test
     public void testThatFailuresCannotBeNull() {
         AssertSubscriber<Integer> subscriber = AssertSubscriber.create();
-        Uni.<Integer>create(emitter -> emitter.fail(null)).subscribe().withSubscriber(subscriber);
+         Uni.from().<Integer>emitter(emitter -> emitter.fail(null)).subscribe().withSubscriber(subscriber);
 
         subscriber.assertFailure(NullPointerException.class, "");
     }
@@ -107,7 +107,7 @@ public class UniCreateTest {
     public void testFailureThrownBySubscribersOnResult() {
         AtomicBoolean called = new AtomicBoolean();
         AtomicBoolean onCancellationCalled = new AtomicBoolean();
-        Uni.<Integer>create(emitter -> {
+         Uni.from().<Integer>emitter(emitter -> {
             emitter.onCancellation(() -> onCancellationCalled.set(true));
             try {
                 emitter.success(1);
@@ -141,7 +141,7 @@ public class UniCreateTest {
     @Test
     public void testFailureThrownBySubscribersOnFailure() {
         AtomicBoolean onCancellationCalled = new AtomicBoolean();
-        Uni.<Integer>create(emitter -> {
+         Uni.from().<Integer>emitter(emitter -> {
             emitter.onCancellation(() -> onCancellationCalled.set(true));
             try {
                 emitter.fail(new Exception("boom"));

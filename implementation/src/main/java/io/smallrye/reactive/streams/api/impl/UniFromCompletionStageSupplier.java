@@ -4,8 +4,6 @@ import java.util.Objects;
 import java.util.concurrent.CompletionStage;
 import java.util.function.Supplier;
 
-import static io.smallrye.reactive.streams.api.impl.UniFromCompletionStage.forwardFromCompletionStage;
-
 public class UniFromCompletionStageSupplier<O> extends UniOperator<Void, O> {
     private final Supplier<? extends  CompletionStage<? extends O>> supplier;
 
@@ -25,5 +23,16 @@ public class UniFromCompletionStageSupplier<O> extends UniOperator<Void, O> {
         }
 
         forwardFromCompletionStage(stage, subscriber);
+    }
+
+    private static <O> void forwardFromCompletionStage(CompletionStage<? extends O> stage, WrapperUniSubscriber<? super O> subscriber) {
+        subscriber.onSubscribe(() -> stage.toCompletableFuture().cancel(false));
+        stage.whenComplete((res, fail) -> {
+            if (fail != null) {
+                subscriber.onFailure(fail);
+            } else {
+                subscriber.onResult(res);
+            }
+        });
     }
 }

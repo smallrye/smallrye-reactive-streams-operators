@@ -56,6 +56,7 @@ public class UniAdaptTo<O> {
         return instance;
     }
 
+    @SuppressWarnings("unchecked")
     private O instantiateUsingFromPublisher() {
         try {
             Method method = output.getMethod("fromPublisher", Publisher.class);
@@ -68,6 +69,7 @@ public class UniAdaptTo<O> {
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     private O instantiateUsingFrom() {
         try {
             Method method = output.getMethod("from", Publisher.class);

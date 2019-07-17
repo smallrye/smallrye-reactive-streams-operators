@@ -36,12 +36,12 @@ public class OnErrorStageFactoryTest extends StageTestBase {
                 .map(this::asString)
                 .toList()
                 .run().toCompletableFuture().exceptionally(x -> Collections.emptyList()).get();
-        assertThat(error.get()).hasMessage("failed");
+        assertThat(error.get()).hasMessage("Uni.from().failure");
     }
 
     private Integer squareOrFailed(int i) {
         if (i == 2) {
-            throw new RuntimeException("failed");
+            throw new RuntimeException("Uni.from().failure");
         }
         return i * i;
     }

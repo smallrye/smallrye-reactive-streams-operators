@@ -42,7 +42,7 @@ public class UniActionsTest {
         AtomicReference<Throwable> failure = new AtomicReference<>();
         AtomicReference<UniSubscription> subscription = new AtomicReference<>();
         AtomicReference<Throwable> terminate = new AtomicReference<>();
-        AssertSubscriber<? super Integer> subscriber = Uni.<Integer>failed(new IOException("boom"))
+        AssertSubscriber<? super Integer> subscriber = Uni.from().<Integer>failure(new IOException("boom"))
                 .on().result(result::set)
                 .on().failure(failure::set)
                 .on().subscribe(subscription::set)
@@ -91,7 +91,7 @@ public class UniActionsTest {
         AtomicReference<UniSubscription> subscription = new AtomicReference<>();
         AtomicInteger resultFromTerminate = new AtomicInteger();
         AtomicReference<Throwable> failureFromTerminate = new AtomicReference<>();
-        AssertSubscriber<? super Integer> subscriber = Uni.<Integer>failed(new IOException("kaboom"))
+        AssertSubscriber<? super Integer> subscriber = Uni.from().<Integer>failure(new IOException("kaboom"))
                 .on().result(result::set)
                 .on().failure(e -> {
                     throw new IllegalStateException("boom");

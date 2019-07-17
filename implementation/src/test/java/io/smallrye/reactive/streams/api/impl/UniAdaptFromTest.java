@@ -136,7 +136,7 @@ public class UniAdaptFromTest {
 
     @Test
     public void testCreatingFromAPublisherBuilderWithFailure() {
-        Uni<Integer> uni = Uni.from(ReactiveStreams.failed(new IOException("boom")));
+        Uni<Integer> uni = Uni.from().publisher(ReactiveStreams.<Integer>failed(new IOException("boom")).buildRs());
         assertThat(uni).isNotNull();
         try {
             uni.await().indefinitely();
@@ -211,13 +211,13 @@ public class UniAdaptFromTest {
     public void testCreatingFromCompletionStages() {
         CompletableFuture<Integer> valued = CompletableFuture.completedFuture(1);
         CompletableFuture<Void> empty = CompletableFuture.completedFuture(null);
-        CompletableFuture<Void> failed = new CompletableFuture<>();
-        failed.completeExceptionally(new Exception("boom"));
+        CompletableFuture<Void> boom = new CompletableFuture<>();
+        boom.completeExceptionally(new Exception("boom"));
 
 
-        Uni<Integer> u1 = Uni.from(valued);
-        Uni<Void> u2 = Uni.from(empty);
-        Uni<Void> u3 = Uni.from(failed);
+        Uni<Integer> u1 = Uni.from().completionStage(valued);
+        Uni<Void> u2 = Uni.from().completionStage(empty);
+        Uni<Void> u3 = Uni.from(Uni.from().completionStage(boom));
 
         assertThat(u1.await().asOptional().indefinitely()).contains(1);
         assertThat(u2.await().indefinitely()).isEqualTo(null);

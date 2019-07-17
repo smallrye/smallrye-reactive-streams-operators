@@ -37,7 +37,7 @@ public class UniFlatMapTest {
         AssertSubscriber<Integer> test1 = AssertSubscriber.create();
         AssertSubscriber<Integer> test2 = AssertSubscriber.create();
         AtomicInteger count = new AtomicInteger(2);
-        Uni<Integer> uni = Uni.of(1).flatMap(v -> Uni.defer(() -> Uni.of(count.incrementAndGet())));
+        Uni<Integer> uni = Uni.of(1).flatMap(v ->  Uni.from().deferredUni(() -> Uni.of(count.incrementAndGet())));
         uni.subscribe().withSubscriber(test1);
         uni.subscribe().withSubscriber(test2);
         test1.assertCompletedSuccessfully().assertResult(3).assertNoFailure();
@@ -47,7 +47,7 @@ public class UniFlatMapTest {
     @Test
     public void testWithAnUniResolvedAsynchronously() {
         AssertSubscriber<Integer> test = AssertSubscriber.create();
-        Uni<Integer> uni = Uni.of(1).flatMap(v -> Uni.create(emitter -> new Thread(() -> emitter.success(42)).start()));
+        Uni<Integer> uni = Uni.of(1).flatMap(v ->  Uni.from().emitter(emitter -> new Thread(() -> emitter.success(42)).start()));
         uni.subscribe().withSubscriber(test);
         test.await().assertCompletedSuccessfully().assertResult(42).assertNoFailure();
     }
@@ -55,7 +55,7 @@ public class UniFlatMapTest {
     @Test
     public void testWithAnUniResolvedAsynchronouslyWithAFailure() {
         AssertSubscriber<Integer> test = AssertSubscriber.create();
-        Uni<Integer> uni = Uni.of(1).flatMap(v -> Uni.create(emitter -> new Thread(() -> emitter.fail(new IOException("boom"))).start()));
+        Uni<Integer> uni = Uni.of(1).flatMap(v ->  Uni.from().emitter(emitter -> new Thread(() -> emitter.fail(new IOException("boom"))).start()));
         uni.subscribe().withSubscriber(test);
         test.await().assertCompletedWithFailure().assertFailure(IOException.class, "boom");
     }
@@ -64,7 +64,7 @@ public class UniFlatMapTest {
     public void testThatMapperIsNotCalledOnUpstreamFailure() {
         AssertSubscriber<Integer> test = AssertSubscriber.create();
         AtomicBoolean called = new AtomicBoolean();
-        Uni.failed(new Exception("boom")).flatMap(v -> {
+        Uni.from().failure(new Exception("boom")).flatMap(v -> {
             called.set(true);
             return Uni.of(2);
         }).subscribe().withSubscriber(test);
@@ -114,7 +114,7 @@ public class UniFlatMapTest {
             }
         };
 
-        Uni<Integer> uni = Uni.of(1).flatMap(v -> Uni.fromCompletionStage(future));
+        Uni<Integer> uni = Uni.of(1).flatMap(v -> Uni.from().completionStage(future));
         uni.subscribe().withSubscriber(test);
         test.cancel();
         test.assertNotCompleted();

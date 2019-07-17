@@ -23,15 +23,15 @@ public class UniAdaptFrom<O> {
         }
 
         if (instance instanceof CompletionStage) {
-            return Uni.fromCompletionStage((CompletionStage) instance);
+            return Uni.from().completionStage((CompletionStage) instance);
         }
 
         if (instance instanceof Publisher) {
-            return Uni.fromPublisher((Publisher) instance);
+            return Uni.from().publisher((Publisher) instance);
         }
 
         if (instance instanceof PublisherBuilder) {
-            return Uni.fromPublisher((PublisherBuilder) instance);
+            return Uni.from().publisher(((PublisherBuilder) instance).buildRs());
         }
 
         ServiceLoader<UniAdapter> adapters = ServiceLoader.load(UniAdapter.class);
@@ -55,7 +55,7 @@ public class UniAdaptFrom<O> {
         try {
             Method method = instance.getClass().getMethod("toPublisher");
             Object result = method.invoke(instance);
-            return Uni.fromPublisher((Publisher) result);
+            return Uni.from().publisher((Publisher) result);
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             return null;
         }
@@ -71,7 +71,7 @@ public class UniAdaptFrom<O> {
         try {
             Method method = instance.getClass().getMethod("toFlowable");
             Object result = method.invoke(instance);
-            return Uni.fromPublisher((Publisher) result);
+            return Uni.from().publisher((Publisher) result);
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             return null;
         }

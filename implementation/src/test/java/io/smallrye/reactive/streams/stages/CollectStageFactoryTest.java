@@ -62,7 +62,7 @@ public class CollectStageFactoryTest extends StageTestBase {
         CompletionStage<Integer> result = infiniteStream()
                 .onTerminate(() -> cancelled.complete(null))
                 .collect(Collector.<Integer, Integer, Integer>of(() -> {
-                    throw new QuietRuntimeException("failed");
+                    throw new QuietRuntimeException("Uni.from().failure");
                 }, (a, b) -> {
                 }, (a, b) -> a + b, Function.identity()))
                 .run();

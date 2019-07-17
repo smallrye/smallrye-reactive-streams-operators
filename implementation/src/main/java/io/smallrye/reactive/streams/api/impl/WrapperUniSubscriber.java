@@ -21,7 +21,7 @@ public class WrapperUniSubscriber<T> implements UniSubscriber<T>, UniSubscriptio
     private final UniSubscriber<? super T> downstream;
     private UniSubscription upstream;
 
-    public static <T> void subscribing(DefaultUni<T> source, UniSubscriber<? super  T> subscriber) {
+    public static <T> void subscribing(DefaultUni<T> source, UniSubscriber<? super T> subscriber) {
         WrapperUniSubscriber<T> wrapped = new WrapperUniSubscriber<>(source, subscriber);
         wrapped.subscribe();
     }
@@ -59,7 +59,7 @@ public class WrapperUniSubscriber<T> implements UniSubscriber<T>, UniSubscriptio
         if (state.compareAndSet(HAS_SUBSCRIPTION, DONE)) {
             downstream.onResult(result);
             dispose();
-        } else if(state.get() != DONE) { // Are we already done? In this case, drop the signal
+        } else if (state.get() != DONE) { // Are we already done? In this case, drop the signal
             downstream.onSubscribe(EmptySubscription.INSTANCE);
             downstream.onFailure(new IllegalStateException("Invalid transition, expected to be in the HAS_SUBSCRIPTION state but was in " + state.get()));
         }
@@ -69,7 +69,7 @@ public class WrapperUniSubscriber<T> implements UniSubscriber<T>, UniSubscriptio
     public void onFailure(Throwable failure) {
         if (state.compareAndSet(HAS_SUBSCRIPTION, DONE)) {
             downstream.onFailure(failure);
-        } else if(state.get() != DONE) { // Are we already done? In this case, drop the signal
+        } else if (state.get() != DONE) { // Are we already done? In this case, drop the signal
             downstream.onSubscribe(EmptySubscription.INSTANCE);
             downstream.onFailure(new IllegalStateException("Invalid transition, expected to be in the HAS_SUBSCRIPTION state but was in " + state.get()));
         }

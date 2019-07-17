@@ -29,7 +29,7 @@ public class UniAdaptToTest {
     @Test
     public void testThatSubscriptionOnCompletableProducesTheValue() {
         AtomicBoolean called = new AtomicBoolean();
-        Completable completable = Uni.defer(() -> {
+        Completable completable =  Uni.from().deferredUni(() -> {
             called.set(true);
             return Uni.of(2);
         }).to(Completable.class);
@@ -42,14 +42,14 @@ public class UniAdaptToTest {
 
     @Test
     public void testCreatingACompletableFromVoid() {
-        Completable completable = Uni.empty().to(Completable.class);
+        Completable completable = Uni.from().nullValue().to(Completable.class);
         assertThat(completable).isNotNull();
         completable.test().assertComplete();
     }
 
     @Test
     public void testCreatingACompletableWithFailure() {
-        Completable completable = Uni.failed(new IOException("boom")).to(Completable.class);
+        Completable completable = Uni.from().failure(new IOException("boom")).to(Completable.class);
         assertThat(completable).isNotNull();
         completable.test().assertError(e -> {
             assertThat(e).hasMessage("boom").isInstanceOf(IOException.class);
@@ -70,7 +70,7 @@ public class UniAdaptToTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testCreatingASingleFromNull() {
-        Single<Integer> single = Uni.empty().to(Single.class);
+        Single<Integer> single = Uni.from().nullValue().to(Single.class);
         assertThat(single).isNotNull();
         single
                 .test()
@@ -80,7 +80,7 @@ public class UniAdaptToTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testCreatingASingleWithFailure() {
-        Single<Integer> single = Uni.<Integer>failed(new IOException("boom")).to(Single.class);
+        Single<Integer> single = Uni.from().failure(new IOException("boom")).to(Single.class);
         assertThat(single).isNotNull();
         single.test().assertError(e -> {
             assertThat(e).hasMessage("boom").isInstanceOf(IOException.class);
@@ -101,7 +101,7 @@ public class UniAdaptToTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testCreatingAMaybeFromNull() {
-        Maybe<Integer> maybe = Uni.empty().to(Maybe.class);
+        Maybe<Integer> maybe = Uni.from().nullValue().to(Maybe.class);
         assertThat(maybe).isNotNull();
         maybe
                 .test()
@@ -112,7 +112,7 @@ public class UniAdaptToTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testCreatingAMaybeWithFailure() {
-        Maybe<Integer> maybe = Uni.<Integer>failed(new IOException("boom")).to(Maybe.class);
+        Maybe<Integer> maybe = Uni.from().failure(new IOException("boom")).to(Maybe.class);
         assertThat(maybe).isNotNull();
         maybe.test().assertError(e -> {
             assertThat(e).hasMessage("boom").isInstanceOf(IOException.class);
@@ -133,7 +133,7 @@ public class UniAdaptToTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testCreatingAnObservableFromNull() {
-        Observable<Integer> observable = Uni.empty().to(Observable.class);
+        Observable<Integer> observable = Uni.from().nullValue().to(Observable.class);
         assertThat(observable).isNotNull();
         observable
                 .test()
@@ -144,7 +144,7 @@ public class UniAdaptToTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testCreatingAnObservableWithFailure() {
-        Observable<Integer> observable = Uni.<Integer>failed(new IOException("boom")).to(Observable.class);
+        Observable<Integer> observable = Uni.from().failure(new IOException("boom")).to(Observable.class);
         assertThat(observable).isNotNull();
         observable.test().assertError(e -> {
             assertThat(e).hasMessage("boom").isInstanceOf(IOException.class);
@@ -166,7 +166,7 @@ public class UniAdaptToTest {
     @Test
     public void testCreatingAFlowableWithRequest() {
         AtomicBoolean called = new AtomicBoolean();
-        Flowable<Integer> flowable = Uni.defer(() -> {
+        Flowable<Integer> flowable =  Uni.from().deferredUni(() -> {
             called.set(true);
             return Uni.of(1);
         }).to(Flowable.class);
@@ -182,7 +182,7 @@ public class UniAdaptToTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testCreatingAFlowableFromNull() {
-        Flowable<Integer> flowable = Uni.empty().to(Flowable.class);
+        Flowable<Integer> flowable = Uni.from().nullValue().to(Flowable.class);
         assertThat(flowable).isNotNull();
         flowable
                 .test()
@@ -193,7 +193,7 @@ public class UniAdaptToTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testCreatingAFlowableWithFailure() {
-        Flowable<Integer> flowable = Uni.<Integer>failed(new IOException("boom")).to(Flowable.class);
+        Flowable<Integer> flowable = Uni.from().failure(new IOException("boom")).to(Flowable.class);
         assertThat(flowable).isNotNull();
         flowable.test().assertError(e -> {
             assertThat(e).hasMessage("boom").isInstanceOf(IOException.class);
@@ -215,7 +215,7 @@ public class UniAdaptToTest {
     @Test
     public void testCreatingAPublisherBuilderWithRequest() {
         AtomicBoolean called = new AtomicBoolean();
-        PublisherBuilder<Integer> builder = Uni.defer(() -> {
+        PublisherBuilder<Integer> builder =  Uni.from().deferredUni(() -> {
             called.set(true);
             return Uni.of(1);
         }).to(PublisherBuilder.class);
@@ -231,7 +231,7 @@ public class UniAdaptToTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testCreatingAPublisherBuilderFromNull() {
-        PublisherBuilder<Integer> builder = Uni.empty().to(PublisherBuilder.class);
+        PublisherBuilder<Integer> builder = Uni.from().nullValue().to(PublisherBuilder.class);
         assertThat(builder).isNotNull();
         Flowable.fromPublisher(builder.buildRs()).test()
                 .assertComplete()
@@ -241,7 +241,7 @@ public class UniAdaptToTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testCreatingAPublisherBuilderWithFailure() {
-        PublisherBuilder<Integer> builder = Uni.<Integer>failed(new IOException("boom")).to(PublisherBuilder.class);
+        PublisherBuilder<Integer> builder = Uni.from().failure(new IOException("boom")).to(PublisherBuilder.class);
         assertThat(builder).isNotNull();
         Flowable.fromPublisher(builder.buildRs()).test()
                 .assertError(e -> {
@@ -261,7 +261,7 @@ public class UniAdaptToTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testCreatingAFluxFromNull() {
-        Flux<Integer> flux = Uni.empty().to(Flux.class);
+        Flux<Integer> flux = Uni.from().nullValue().to(Flux.class);
         assertThat(flux).isNotNull();
         assertThat(flux.blockFirst()).isNull();
     }
@@ -269,7 +269,7 @@ public class UniAdaptToTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testCreatingAFluxWithFailure() {
-        Flux<Integer> flux = Uni.<Integer>failed(new IOException("boom")).to(Flux.class);
+        Flux<Integer> flux = Uni.from().failure(new IOException("boom")).to(Flux.class);
         assertThat(flux).isNotNull();
         try {
             flux.blockFirst();
@@ -290,7 +290,7 @@ public class UniAdaptToTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testCreatingAMonoFromNull() {
-        Mono<Integer> mono = Uni.empty().to(Mono.class);
+        Mono<Integer> mono = Uni.from().nullValue().to(Mono.class);
         assertThat(mono).isNotNull();
         assertThat(mono.block()).isNull();
     }
@@ -298,7 +298,7 @@ public class UniAdaptToTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testCreatingAMonoWithFailure() {
-        Mono<Integer> mono = Uni.<Integer>failed(new IOException("boom")).to(Mono.class);
+        Mono<Integer> mono = Uni.from().failure(new IOException("boom")).to(Mono.class);
         assertThat(mono).isNotNull();
         try {
             mono.block();
@@ -312,12 +312,12 @@ public class UniAdaptToTest {
     @Test
     public void testCreatingCompletionStages() {
         Uni<Integer> valued = Uni.of(1);
-        Uni<Void> empty = Uni.empty();
-        Uni<Void> failed = Uni.failed(new Exception("boom"));
+        Uni<Void> empty = Uni.from().nullValue();
+        Uni<Void> failure = Uni.from().failure(new Exception("boom"));
 
         CompletionStage<Integer> stage1 = valued.to(CompletionStage.class);
         CompletionStage<Void> stage2 = empty.to(CompletionStage.class);
-        CompletionStage<Void> stage3 = failed.to(CompletionStage.class);
+        CompletionStage<Void> stage3 = failure.to(CompletionStage.class);
 
         assertThat(stage1).isCompletedWithValue(1);
         assertThat(stage2).isCompletedWithValue(null);
@@ -328,12 +328,12 @@ public class UniAdaptToTest {
     @Test
     public void testCreatingCompletableFutures() {
         Uni<Integer> valued = Uni.of(1);
-        Uni<Void> empty = Uni.empty();
-        Uni<Void> failed = Uni.failed(new Exception("boom"));
+        Uni<Void> empty = Uni.from().nullValue();
+        Uni<Void> failure = Uni.from().failure(new Exception("boom"));
 
         CompletableFuture<Integer> stage1 = valued.to(CompletableFuture.class);
         CompletableFuture<Void> stage2 = empty.to(CompletableFuture.class);
-        CompletableFuture<Void> stage3 = failed.to(CompletableFuture.class);
+        CompletableFuture<Void> stage3 = failure.to(CompletableFuture.class);
 
         assertThat(stage1).isCompletedWithValue(1);
         assertThat(stage2).isCompletedWithValue(null);

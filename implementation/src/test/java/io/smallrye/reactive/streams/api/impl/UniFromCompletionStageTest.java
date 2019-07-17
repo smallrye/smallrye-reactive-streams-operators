@@ -18,7 +18,7 @@ public class UniFromCompletionStageTest {
     public void testThatNullValueAreAccepted() {
         AssertSubscriber<String> ts = AssertSubscriber.create();
         CompletionStage<String> cs = new CompletableFuture<>();
-        Uni.fromCompletionStage(cs).subscribe().withSubscriber(ts);
+        Uni.from().completionStage(cs).subscribe().withSubscriber(ts);
         cs.toCompletableFuture().complete(null);
         ts.assertCompletedSuccessfully().assertResult(null);
     }
@@ -28,7 +28,7 @@ public class UniFromCompletionStageTest {
     public void testWithNonNullValue() {
         AssertSubscriber<String> ts = AssertSubscriber.create();
         CompletionStage<String> cs = new CompletableFuture<>();
-        Uni.fromCompletionStage(cs).subscribe().withSubscriber(ts);
+        Uni.from().completionStage(cs).subscribe().withSubscriber(ts);
         cs.toCompletableFuture().complete("1");
         ts.assertCompletedSuccessfully().assertResult("1");
     }
@@ -38,7 +38,7 @@ public class UniFromCompletionStageTest {
     public void testWithException() {
         AssertSubscriber<String> ts = AssertSubscriber.create();
         CompletionStage<String> cs = new CompletableFuture<>();
-        Uni.fromCompletionStage(cs).subscribe().withSubscriber(ts);
+        Uni.from().completionStage(cs).subscribe().withSubscriber(ts);
         cs.toCompletableFuture().completeExceptionally(new IOException("boom"));
         ts.assertFailure(IOException.class, "boom");
     }
@@ -46,7 +46,7 @@ public class UniFromCompletionStageTest {
     @Test
     public void testThatNullValueAreAcceptedWithSupplier() {
         AssertSubscriber<Void> ts = AssertSubscriber.create();
-        Uni.<Void>fromCompletionStage(() -> CompletableFuture.completedFuture(null)).subscribe().withSubscriber(ts);
+        Uni.from().<Void>completionStage(() -> CompletableFuture.completedFuture(null)).subscribe().withSubscriber(ts);
         ts.assertCompletedSuccessfully().assertResult(null);
     }
 
@@ -55,7 +55,7 @@ public class UniFromCompletionStageTest {
     public void testWithNonNullValueWithSupplier() {
         AssertSubscriber<String> ts = AssertSubscriber.create();
         CompletionStage<String> cs = new CompletableFuture<>();
-        Uni.fromCompletionStage(() -> cs).subscribe().withSubscriber(ts);
+        Uni.from().completionStage(() -> cs).subscribe().withSubscriber(ts);
         cs.toCompletableFuture().complete("1");
         ts.assertCompletedSuccessfully().assertResult("1");
     }
@@ -65,7 +65,7 @@ public class UniFromCompletionStageTest {
     public void testWithExceptionWithSupplier() {
         AssertSubscriber<String> ts = AssertSubscriber.create();
         CompletionStage<String> cs = new CompletableFuture<>();
-        Uni.fromCompletionStage(() -> cs).subscribe().withSubscriber(ts);
+        Uni.from().completionStage(() -> cs).subscribe().withSubscriber(ts);
         cs.toCompletableFuture().completeExceptionally(new IOException("boom"));
         ts.assertFailure(IOException.class, "boom");
     }
@@ -76,7 +76,7 @@ public class UniFromCompletionStageTest {
         AtomicBoolean called = new AtomicBoolean();
         CompletableFuture<Integer> cs = new CompletableFuture<>();
         cs.complete(1);
-        Uni<Integer> uni = Uni.fromCompletionStage(cs).map(i -> {
+        Uni<Integer> uni = Uni.from().completionStage(cs).map(i -> {
             called.set(true);
             return i + 1;
         });
@@ -95,7 +95,7 @@ public class UniFromCompletionStageTest {
         AtomicBoolean called = new AtomicBoolean();
         CompletableFuture<Integer> cs = new CompletableFuture<>();
 
-        Uni<Integer> uni = Uni.fromCompletionStage(() -> {
+        Uni<Integer> uni = Uni.from().completionStage(() -> {
             called.set(true);
             return cs;
         }).map(i -> i + 1);
@@ -116,7 +116,7 @@ public class UniFromCompletionStageTest {
         AssertSubscriber<Integer> ts = AssertSubscriber.create();
         AtomicBoolean called = new AtomicBoolean();
         CompletableFuture<Integer> cs = new CompletableFuture<>();
-        Uni<Integer> uni = Uni.fromCompletionStage(cs).map(i -> {
+        Uni<Integer> uni = Uni.from().completionStage(cs).map(i -> {
             called.set(true);
             return i + 1;
         });
@@ -134,7 +134,7 @@ public class UniFromCompletionStageTest {
         AssertSubscriber<Integer> ts = AssertSubscriber.create();
         AtomicBoolean called = new AtomicBoolean();
         CompletableFuture<Integer> cs = new CompletableFuture<>();
-        Uni<Integer> uni = Uni.fromCompletionStage(() -> cs).map(i -> {
+        Uni<Integer> uni = Uni.from().completionStage(() -> cs).map(i -> {
             called.set(true);
             return i + 1;
         });
@@ -151,7 +151,7 @@ public class UniFromCompletionStageTest {
     public void testThatSubscriberCanCancelBeforeEmission() {
         AssertSubscriber<Integer> ts = AssertSubscriber.create();
         CompletableFuture<Integer> cs = new CompletableFuture<>();
-        Uni<Integer> uni = Uni.fromCompletionStage(cs).map(i -> i + 1);
+        Uni<Integer> uni = Uni.from().completionStage(cs).map(i -> i + 1);
 
         uni.subscribe().withSubscriber(ts);
         ts.cancel();
@@ -165,7 +165,7 @@ public class UniFromCompletionStageTest {
     public void testThatSubscriberCanCancelBeforeEmissionWithSupplier() {
         AssertSubscriber<Integer> ts = AssertSubscriber.create();
         CompletableFuture<Integer> cs = new CompletableFuture<>();
-        Uni<Integer> uni = Uni.fromCompletionStage(() -> cs).map(i -> i + 1);
+        Uni<Integer> uni = Uni.from().completionStage(() -> cs).map(i -> i + 1);
 
         uni.subscribe().withSubscriber(ts);
         ts.cancel();
@@ -179,7 +179,7 @@ public class UniFromCompletionStageTest {
     public void testThatSubscriberCanCancelAfterEmission() {
         AssertSubscriber<Integer> ts = AssertSubscriber.create();
         CompletableFuture<Integer> cs = new CompletableFuture<>();
-        Uni<Integer> uni = Uni.fromCompletionStage(cs).map(i -> i + 1);
+        Uni<Integer> uni = Uni.from().completionStage(cs).map(i -> i + 1);
 
         uni.subscribe().withSubscriber(ts);
         cs.complete(1);
@@ -192,7 +192,7 @@ public class UniFromCompletionStageTest {
     public void testThatSubscriberCanCancelAfterEmissionWithSupplier() {
         AssertSubscriber<Integer> ts = AssertSubscriber.create();
         CompletableFuture<Integer> cs = new CompletableFuture<>();
-        Uni<Integer> uni = Uni.fromCompletionStage(() -> cs).map(i -> i + 1);
+        Uni<Integer> uni = Uni.from().completionStage(() -> cs).map(i -> i + 1);
 
         uni.subscribe().withSubscriber(ts);
         cs.complete(1);
@@ -203,18 +203,18 @@ public class UniFromCompletionStageTest {
 
     @Test(expected = NullPointerException.class)
     public void testThatCompletionStageCannotBeNull() {
-        Uni.fromCompletionStage((CompletionStage<Void>) null);
+        Uni.from().completionStage((CompletionStage<Void>) null);
     }
 
     @Test(expected = NullPointerException.class)
     public void testThatCompletionStageSupplierCannotBeNull() {
-        Uni.fromCompletionStage((Supplier<CompletionStage<Void>>) null);
+        Uni.from().completionStage((Supplier<CompletionStage<Void>>) null);
     }
 
     @Test
     public void testThatCompletionStageSupplierCannotReturnNull() {
         AssertSubscriber<Integer> ts = AssertSubscriber.create();
-        Uni<Integer> uni = Uni.fromCompletionStage(() -> null);
+        Uni<Integer> uni = Uni.from().completionStage(() -> null);
 
         uni.subscribe().withSubscriber(ts);
         ts.assertFailure(NullPointerException.class, "");

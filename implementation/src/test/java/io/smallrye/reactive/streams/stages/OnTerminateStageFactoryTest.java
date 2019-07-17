@@ -55,7 +55,7 @@ public class OnTerminateStageFactoryTest extends StageTestBase {
 
     private Integer squareOrFailed(int i) {
         if (i == 2) {
-            throw new RuntimeException("failed");
+            throw new RuntimeException("Uni.from().failure");
         }
         return i * i;
     }

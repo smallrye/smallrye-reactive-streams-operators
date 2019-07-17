@@ -8,6 +8,8 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
+import static io.smallrye.reactive.streams.api.impl.EmptySubscription.CANCELLED;
+
 /**
  * Implementation of a {@link UniSubscriber} based on callbacks.
  * This implementation also implement {@link UniSubscription} to expose the {@link #cancel()}.
@@ -21,9 +23,6 @@ final class CallbackUniSubscriber<T> implements UniSubscriber<T>, UniSubscriptio
 
     final AtomicReference<UniSubscription> subscription = new AtomicReference<>();
 
-    private static final UniSubscription CANCELLED = () -> {
-        // do nothing.
-    };
 
     /**
      * Creates a {@link io.smallrye.reactive.streams.api.UniSubscriber} consuming the result and failure of a

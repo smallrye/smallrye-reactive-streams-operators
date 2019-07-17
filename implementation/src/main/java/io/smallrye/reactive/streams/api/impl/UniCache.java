@@ -19,8 +19,8 @@ public class UniCache<I> extends UniOperator<I, I> implements UniSubscriber<I> {
     private int state = 0;
 
 
-    private AtomicReference<UniSubscription> subscription = new AtomicReference<>();
-    private List<UniSubscriber<? super I>> subscribers = new ArrayList<>();
+    private final AtomicReference<UniSubscription> subscription = new AtomicReference<>();
+    private final List<UniSubscriber<? super I>> subscribers = new ArrayList<>();
     private I result;
     private Throwable failure;
 

@@ -1,18 +1,20 @@
 package io.smallrye.reactive.streams.api;
 
-import io.smallrye.reactive.streams.api.impl.*;
-import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
-import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
+import io.smallrye.reactive.streams.api.impl.UniAdaptFrom;
+import io.smallrye.reactive.streams.api.impl.UniAny;
+import io.smallrye.reactive.streams.api.impl.UniFromGroupImpl;
 import org.reactivestreams.Publisher;
 
 import java.time.Duration;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.function.*;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 /**
  * A {@link Uni} represent a lazy asynchronous action. Once triggered, by a {@link UniSubscriber}, it starts computing
@@ -26,183 +28,26 @@ public interface Uni<T> {
 
     /**
      * Creates a new {@link Uni} that completes immediately after being subscribed to with the specified (potentially
-     * {@code null}) value.
+     * {@code null}) value. This method is equivalent to <code>Uni.from().value(value)</code>.
      *
      * @param value the value, can be {@code null}
      * @param <T>   the type of the produced item
      * @return the new {@link Uni}
+     * @see #from()
      */
     static <T> Uni<T> of(T value) {
-        return new UniOf<>(value);
+        return from().value(value);
     }
 
     /**
-     * Creates a new {@link Uni} that completes immediately after being subscribed to with the specified value if
-     * {@link Optional#isPresent()} or {@code null} otherwise.
+     * Creates a new {@link Uni} from various sources such as {@link CompletionStage}, {@link UniEmitter}, direct values,
+     * {@link Exception}...
      *
-     * @param value the optional, must not be {@code null}
-     * @param <T>   the type of the produced item
-     * @return the new {@link Uni}
+     * @return the object containing method to create instances of {@link Uni}.
+     * @see UniFromGroup
      */
-    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    static <T> Uni<T> fromOptional(Optional<T> value) {
-        return new UniOf<>(value);
-    }
-
-    /**
-     * Creates a {@link Uni} that emits the passed failure immediately after being subscribed to.
-     *
-     * @param failure the failure, must not be {@code null}
-     * @param <T>     the type of the {@link Uni}, must be explicitly set as in {@code Uni.<String>failed(exception);}
-     * @return the new {@link Uni}
-     */
-    static <T> Uni<T> failed(Throwable failure) {
-        return new UniFailed<>(Objects.requireNonNull(failure, "The passed exception must not be `null`"));
-    }
-
-    /**
-     * Creates a {@link Uni} that emits a failure produced using the passed supplier immediately after being subscribed
-     * to.
-     *
-     * @param supplier the supplier producing the failure, must not be {@code null}
-     * @param <T>      the type of the {@link Uni}, must be explicitly set as in
-     *                 {@code Uni.<String>failed(() -> exception);}
-     * @return the new {@link Uni}
-     */
-    static <T> Uni<T> failed(Supplier<? extends Throwable> supplier) {
-        Objects.requireNonNull(supplier, "The supplier must not be `null`");
-        return new UniFailed<>(supplier);
-    }
-
-    /**
-     * Creates a {@link Uni} from the given {@link CompletionStage} or {@link CompletableFuture}.
-     * The produced {@code Uni} emits the result of the passed  {@link CompletionStage}. If the {@link CompletionStage}
-     * never completes (or failed), the produced {@link Uni} would not emit a value or a failure.
-     * <p>
-     * Cancelling the subscription on the produced {@link Uni} cancels the passed {@link CompletionStage}
-     * (calling {@link CompletableFuture#cancel(boolean)} on the future retrieved using
-     * {@link CompletionStage#toCompletableFuture()}.
-     * <p>
-     * If the stage has already been completed (or failed), the produced {@link Uni} sends the result or failure
-     * immediately after subscription. If it's not the case, the subscriber's callbacks are called on the thread used
-     * by the passed {@link CompletionStage}.
-     *
-     * @param stage the stage, must not be {@code null}
-     * @param <T>   the type of result
-     * @return the produced {@link Uni}
-     */
-    static <T> Uni<T> fromCompletionStage(CompletionStage<T> stage) {
-        return new UniFromCompletionStage<>(Objects.requireNonNull(stage, "The passed completion stage must not be `null`"));
-    }
-
-    /**
-     * Creates a {@link Uni} from the given {@link CompletionStage} or {@link CompletableFuture}. The future is
-     * created by invoking the passed {@link Supplier} at subscription time.
-     * <p>
-     * The produced {@code Uni} emits the result of the passed  {@link CompletionStage}. If the {@link CompletionStage}
-     * never completes (or failed), the produced {@link Uni} would not emit a value or a failure.
-     * <p>
-     * Cancelling the subscription on the produced {@link Uni} cancels the passed {@link CompletionStage}
-     * (calling {@link CompletableFuture#cancel(boolean)} on the future retrieved using
-     * {@link CompletionStage#toCompletableFuture()}.
-     * <p>
-     * If the produced stage has already been completed (or failed), the produced {@link Uni} sends the result or failure
-     * immediately after subscription. If it's not the case the subscriber's callbacks are called on the thread used
-     * by the passed {@link CompletionStage}.
-     *
-     * @param supplier the supplier, must not be {@code null}, must not produce {@code null}
-     * @param <T>      the type of result
-     * @return the produced {@link Uni}
-     */
-    static <T> Uni<T> fromCompletionStage(Supplier<CompletionStage<T>> supplier) {
-        return new UniFromCompletionStageSupplier<>(Objects.requireNonNull(supplier, "The passed supplier must not be `null`"));
-    }
-
-    /**
-     * Creates a {@link Uni} from the passed {@link Publisher}.
-     * <p>
-     * The produced {@link Uni} emits the first value emitted by the passed {@link Publisher}.
-     * If the publisher emits multiple values, others are dropped. If the publisher emits a failure after a value, the
-     * failure is dropped. If the publisher emits the end of stream signal before a value, the produced {@link Uni} is
-     * resolved with {@code null}.
-     * <p>
-     * When a subscriber subscribes to the produced {@link Uni}, it subscribes to the {@link Publisher} and requests
-     * {@code 1} item. When the first signal is received, the subscription is cancelled. Note that each Uni's subscriber
-     * would produce a new subscription.
-     * <p>
-     * If the Uni's observer cancels its subscription, the subscription to the {@link Publisher} is also cancelled.
-     *
-     * @param publisher the publisher, must not be {@code null}
-     * @param <T>       the type of item
-     * @return the produced {@link Uni}
-     */
-    static <T> Uni<T> fromPublisher(Publisher<T> publisher) {
-        return fromPublisher(ReactiveStreams.fromPublisher(
-                Objects.requireNonNull(publisher, "`publisher` must not be `null`"))
-        );
-    }
-
-    /**
-     * Same as {@link #fromPublisher(Publisher)} but with a {@link PublisherBuilder} as parameter.
-     *
-     * @param publisher the publisher, must not be {@code null}
-     * @param <T>       the type of item
-     * @return the produced {@link Uni}
-     */
-    static <T> Uni<T> fromPublisher(PublisherBuilder<T> publisher) {
-        return new UniFromPublisher<>(
-                Objects.requireNonNull(publisher, "The passed publisher stage must not be `null`")
-        );
-    }
-
-    /**
-     * Creates a {@link Uni} that will {@link Supplier#get supply} a target {@link Uni} to subscribe to for
-     * each {@link UniSubscriber} downstream. The supplier is called for each subscriber at subscription time.
-     *
-     * @param supplier the supplier, must not be {@code null}, must not produce {@code null}
-     * @param <T>      the type of item
-     * @return the produced {@link Uni}
-     */
-    static <T> Uni<T> defer(Supplier<? extends Uni<? extends T>> supplier) {
-        return new UniDefer<>(Objects.requireNonNull(supplier, "The passed supplier must not be `null`"));
-    }
-
-    /**
-     * Creates a {@link Uni} deferring the logic to the given consumer. The consumer can be used with callback-based
-     * APIs to signal at most one value (potentially {@code null}), or an failure signal.
-     * <p>
-     * Using this method, you can produce a {@link Uni} listener or callbacks APIs. You register the listener in
-     * the consumer and emits the value / failure on events. Don't forget to unregister the listener on cancellation.
-     * Note that the emitter only forwards the first signal, subsequent signals are dropped.
-     *
-     * @param consumer callback receiving the {@link UniEmitter} and producing signals downstream. The callback is
-     *                 called for each subscriber (at subscription time)
-     * @param <T>      the type of item
-     * @return the produced {@link Uni}
-     */
-    static <T> Uni<T> create(Consumer<UniEmitter<? super T>> consumer) {
-        return new UniCreate<>(consumer);
-    }
-
-    /**
-     * Equivalent to {@link #of(Object)} called with {@code null}.
-     *
-     * @return a {@link Uni} immediately calling {@link UniSubscriber#onResult(Object)} with {@code null} just
-     * after subscription.
-     */
-    static Uni<Void> empty() {
-        return of(null);
-    }
-
-    /**
-     * Creates a {@link Uni} that will never signal any data, error or completion signal, essentially running
-     * indefinitely.
-     *
-     * @param <T> the type of item
-     * @return a never completing {@link Uni}
-     */
-    static <T> Uni<T> never() {
-        return new UniFromCompletionStage<>(new CompletableFuture<>());
+    static UniFromGroup from() {
+        return UniFromGroupImpl.INSTANCE;
     }
 
     /**
@@ -328,7 +173,7 @@ public interface Uni<T> {
      * @param <O> the type of item
      * @return the produced {@link Multi}, never {@code null}
      * @see #toPublisher()
-     * @see #fromPublisher(Publisher)
+     * @see UniFromGroup#publisher(Publisher)
      */
     <O> Multi<O> toMulti();
 
@@ -547,8 +392,6 @@ public interface Uni<T> {
      * @return the new {@link Uni}
      */
     Uni<Tuple<? extends T>> zipWith(Iterable<Uni<? extends T>> iterable);
-
-
 
 
     // Error Management

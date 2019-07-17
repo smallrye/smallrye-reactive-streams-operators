@@ -66,7 +66,7 @@ public class UniFlatMap<I, O> extends UniOperator<I, O> {
 
     private class FlatMapSubscription implements UniSubscription {
 
-        private AtomicReference<Subscription> upstream = new AtomicReference<>();
+        private final AtomicReference<Subscription> upstream = new AtomicReference<>();
 
         @Override
         public void cancel() {

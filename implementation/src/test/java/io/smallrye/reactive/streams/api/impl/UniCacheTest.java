@@ -45,7 +45,7 @@ public class UniCacheTest {
     @Test
     public void testThatIFailureAreCached() {
         AtomicInteger counter = new AtomicInteger();
-        Uni<Object> cache = Uni.failed(new Exception("" + counter.getAndIncrement())).cache();
+        Uni<Object> cache = Uni.from().failure(new Exception("" + counter.getAndIncrement())).cache();
 
         AssertSubscriber<Object> sub1 = AssertSubscriber.create();
         AssertSubscriber<Object> sub2 = AssertSubscriber.create();
@@ -63,7 +63,7 @@ public class UniCacheTest {
     @Test
     public void testThatValueEmittedAfterSubscriptionAreCached() {
         CompletableFuture<Integer> cs = new CompletableFuture<>();
-        Uni<Integer> cache = Uni.fromCompletionStage(cs).cache();
+        Uni<Integer> cache = Uni.from().completionStage(cs).cache();
 
         AssertSubscriber<Integer> sub1 = AssertSubscriber.create();
         AssertSubscriber<Integer> sub2 = AssertSubscriber.create();
@@ -84,7 +84,7 @@ public class UniCacheTest {
     @Test
     public void testThatSubscriberCanCancelTheirSubscriptionBeforeReceivingAValue() {
         CompletableFuture<Integer> cs = new CompletableFuture<>();
-        Uni<Integer> cache = Uni.fromCompletionStage(cs).cache();
+        Uni<Integer> cache = Uni.from().completionStage(cs).cache();
 
         AssertSubscriber<Integer> sub1 = AssertSubscriber.create();
         AssertSubscriber<Integer> sub2 = AssertSubscriber.create();
@@ -107,7 +107,7 @@ public class UniCacheTest {
     @Test
     public void testThatSubscriberCanCancelTheirSubscriptionAfterHavingReceivingAValue() {
         CompletableFuture<Integer> cs = new CompletableFuture<>();
-        Uni<Integer> cache = Uni.fromCompletionStage(cs).cache();
+        Uni<Integer> cache = Uni.from().completionStage(cs).cache();
 
         AssertSubscriber<Integer> sub1 = AssertSubscriber.create();
         AssertSubscriber<Integer> sub2 = AssertSubscriber.create();
@@ -131,7 +131,7 @@ public class UniCacheTest {
     @Test
     public void assertCachingTheValueEmittedByAProcessor() {
         Processor<Integer, Integer> processor = ReactiveStreams.<Integer>builder().buildRs();
-        Uni<Integer> cached = Uni.fromPublisher(ReactiveStreams.<Integer>fromPublisher(Flowable.never()).via(processor)).cache();
+        Uni<Integer> cached = Uni.from().publisher(ReactiveStreams.<Integer>fromPublisher(Flowable.never()).via(processor).buildRs()).cache();
 
         AssertSubscriber<Integer> sub1 = new AssertSubscriber<>();
         AssertSubscriber<Integer> sub2 = new AssertSubscriber<>();
@@ -153,7 +153,7 @@ public class UniCacheTest {
     @Test
     public void assertCancellingImmediately() {
         Processor<Integer, Integer> processor = ReactiveStreams.<Integer>builder().buildRs();
-        Uni<Integer> cached = Uni.fromPublisher(ReactiveStreams.<Integer>fromPublisher(Flowable.never()).via(processor)).cache();
+        Uni<Integer> cached = Uni.from().publisher(ReactiveStreams.<Integer>fromPublisher(Flowable.never()).via(processor).buildRs()).cache();
 
         AssertSubscriber<Integer> sub1 = new AssertSubscriber<>(true);
         AssertSubscriber<Integer> sub2 = new AssertSubscriber<>(true);
@@ -175,8 +175,8 @@ public class UniCacheTest {
     @Test
     public void testSubscribersRace() {
         for (int i = 0; i < 2000; i++) {
-            Processor<Integer, Integer> processor = ReactiveStreams.<Integer>builder().buildRs();
-            Uni<Integer> cached = Uni.fromPublisher(processor).cache();
+            Flowable<Integer> flowable = Flowable.just(1, 2, 3);
+            Uni<Integer> cached = Uni.from().publisher(flowable).cache();
 
             AssertSubscriber<Integer> subscriber = new AssertSubscriber<>(false);
 

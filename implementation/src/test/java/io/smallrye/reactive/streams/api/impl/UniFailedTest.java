@@ -15,9 +15,9 @@ public class UniFailedTest {
 
     @Test
     public void testWithASupplier() {
-        Uni<Object> failed = Uni.failed(() -> new IOException("boom"));
+        Uni<Object> boom = Uni.from().failure(() -> new IOException("boom"));
         try {
-            failed.await().indefinitely();
+            boom.await().indefinitely();
             fail("Exception expected");
         } catch (Exception e) {
             assertThat(e).hasCauseInstanceOf(IOException.class);
@@ -27,11 +27,11 @@ public class UniFailedTest {
     @Test
     public void testCreationWithCheckedException() {
         AssertSubscriber<Object> ts = AssertSubscriber.create();
-        Uni.failed(new Exception("boom")).subscribe().withSubscriber(ts);
+        Uni.from().failure(new Exception("boom")).subscribe().withSubscriber(ts);
         ts.assertFailure(Exception.class, "boom");
 
         try {
-            Uni.failed(new Exception("boom")).await().asOptional().indefinitely();
+            Uni.from().failure(new Exception("boom")).await().asOptional().indefinitely();
             fail("Exception expected");
         } catch (Exception e) {
             assertThat(e).hasCauseInstanceOf(Exception.class)
@@ -43,11 +43,11 @@ public class UniFailedTest {
     @Test
     public void testCreationWithRuntimeException() {
         AssertSubscriber<Object> ts = AssertSubscriber.create();
-        Uni.failed(new RuntimeException("boom")).subscribe().withSubscriber(ts);
+        Uni.from().failure(new RuntimeException("boom")).subscribe().withSubscriber(ts);
         ts.assertFailure(RuntimeException.class, "boom");
 
         try {
-            Uni.failed(new RuntimeException("boom")).await().indefinitely();
+            Uni.from().failure(new RuntimeException("boom")).await().indefinitely();
             fail("Exception expected");
         } catch (Exception e) {
             assertThat(e)
@@ -59,19 +59,19 @@ public class UniFailedTest {
 
     @Test(expected = NullPointerException.class)
     public void testCreationWithNull() {
-        Uni.failed((Exception) null);
+        Uni.from().failure((Exception) null);
     }
 
     @Test(expected = NullPointerException.class)
     public void testCreationWithNullAsSupplier() {
-        Uni.failed((Supplier<? extends Throwable>) null);
+        Uni.from().failure((Supplier<Throwable>) null);
     }
 
     @Test
     public void testWithASupplierReturningNull() {
-        Uni<Object> failed = Uni.failed(() -> null);
+        Uni<Object> boom = Uni.from().failure(() -> null);
         try {
-            failed.await().indefinitely();
+            boom.await().indefinitely();
             fail("Exception expected");
         } catch (Exception e) {
             assertThat(e).isInstanceOf(NullPointerException.class);
@@ -80,11 +80,11 @@ public class UniFailedTest {
 
     @Test
     public void testWithASupplierThrowingAnException() {
-        Uni<Object> failed = Uni.failed(() -> {
+        Uni<Object> boom = Uni.from().failure(() -> {
             throw new NoSuchElementException("boom");
         });
         try {
-            failed.await().indefinitely();
+            boom.await().indefinitely();
             fail("Exception expected");
         } catch (Exception e) {
             assertThat(e).isInstanceOf(NoSuchElementException.class);

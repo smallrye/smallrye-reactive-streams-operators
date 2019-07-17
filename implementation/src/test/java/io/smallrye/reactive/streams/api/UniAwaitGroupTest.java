@@ -21,32 +21,32 @@ public class UniAwaitGroupTest {
 
     @Test(timeout = 100)
     public void testAwaitingOnAnAlreadyResolvedWitNullUni() {
-        assertThat(Uni.empty().await().indefinitely()).isNull();
+        assertThat(Uni.from().nullValue().await().indefinitely()).isNull();
     }
 
     @Test(timeout = 100)
     public void testAwaitingOnAnAlreadyFailedUni() {
         try {
-            Uni.failed(new IOException("boom")).await().indefinitely();
+            Uni.from().failure(new IOException("boom")).await().indefinitely();
             fail("Exception expected");
         } catch (CompletionException e) {
             assertThat(e).hasCauseInstanceOf(IOException.class).hasMessageEndingWith("boom");
         }
     }
 
-    // failed before timeout
+    // Uni.from().failure before timeout
 
     @Test(timeout = 1000)
     public void testAwaitingOnAnAsyncUni() {
         assertThat(
-                Uni.create(emitter -> new Thread(() -> emitter.success(1)).start()).await().indefinitely()
+                 Uni.from().emitter(emitter -> new Thread(() -> emitter.success(1)).start()).await().indefinitely()
         ).isEqualTo(1);
     }
 
     @Test(timeout = 1000)
     public void testAwaitingOnAnAsyncFailingUni() {
         try {
-            Uni.create(emitter -> new Thread(() -> emitter.fail(new IOException("boom"))).start()).await().indefinitely();
+             Uni.from().emitter(emitter -> new Thread(() -> emitter.fail(new IOException("boom"))).start()).await().indefinitely();
             fail("Exception expected");
         } catch (CompletionException e) {
             assertThat(e).hasCauseInstanceOf(IOException.class).hasMessageEndingWith("boom");
@@ -60,7 +60,7 @@ public class UniAwaitGroupTest {
 
     @Test(timeout = 100, expected = TimeoutException.class)
     public void testTimeout() {
-        Uni.never().await().atMost(Duration.ofMillis(10));
+        Uni.from().nothing().await().atMost(Duration.ofMillis(10));
     }
 
     @Test(timeout = 5000)
@@ -70,7 +70,7 @@ public class UniAwaitGroupTest {
         Thread thread = new Thread(() -> {
             try {
                 awaiting.set(true);
-                Uni.never().await().atMost(Duration.ofMillis(1000));
+                Uni.from().nothing().await().atMost(Duration.ofMillis(1000));
             } catch (RuntimeException e) {
                 exception.set(e);
             }
@@ -85,14 +85,14 @@ public class UniAwaitGroupTest {
     @Test
     public void testAwaitAsOptionalWithResult() {
         assertThat(
-                Uni.create(emitter -> new Thread(() -> emitter.success(1)).start()).await().asOptional().indefinitely()
+                 Uni.from().emitter(emitter -> new Thread(() -> emitter.success(1)).start()).await().asOptional().indefinitely()
         ).contains(1);
     }
 
     @Test
     public void testAwaitAsOptionalWithFailure() {
         try {
-            Uni.create(emitter -> new Thread(() -> emitter.fail(new IOException("boom"))).start())
+             Uni.from().emitter(emitter -> new Thread(() -> emitter.fail(new IOException("boom"))).start())
                     .await().asOptional().indefinitely();
             fail("Exception expected");
         } catch (CompletionException e) {
@@ -103,20 +103,20 @@ public class UniAwaitGroupTest {
     @Test
     public void testAwaitAsOptionalWithNull() {
         assertThat(
-                Uni.create(emitter -> new Thread(() -> emitter.success(null)).start()).await().asOptional().indefinitely()
+                 Uni.from().emitter(emitter -> new Thread(() -> emitter.success(null)).start()).await().asOptional().indefinitely()
         ).isEmpty();
     }
 
     @Test
     public void testAwaitAsOptionalWithTimeout() {
         assertThat(
-                Uni.create(emitter -> new Thread(() -> emitter.success(1)).start()).await().asOptional().atMost(Duration.ofMillis(1000))
+                 Uni.from().emitter(emitter -> new Thread(() -> emitter.success(1)).start()).await().asOptional().atMost(Duration.ofMillis(1000))
         ).contains(1);
     }
 
     @Test(timeout = 100, expected = TimeoutException.class)
     public void testTimeoutAndOptional() {
-        Uni.never().await().asOptional().atMost(Duration.ofMillis(10));
+        Uni.from().nothing().await().asOptional().atMost(Duration.ofMillis(10));
     }
 
 }

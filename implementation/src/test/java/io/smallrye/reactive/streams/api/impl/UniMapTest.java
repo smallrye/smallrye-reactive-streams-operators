@@ -109,7 +109,7 @@ public class UniMapTest {
     public void testThatMapperIsNotCalledIfPreviousStageFailed() {
         AssertSubscriber<Integer> ts = AssertSubscriber.create();
         AtomicBoolean called = new AtomicBoolean();
-        Uni.<Integer>failed(new Exception("boom"))
+        Uni.from().<Integer>failure(new Exception("boom"))
                 .map(x -> {
                     called.set(true);
                     return x + 1;

@@ -42,7 +42,7 @@ public class UniToCompletionStageTest {
 
     @Test
     public void testWithImmediateFailure() {
-        CompletableFuture<Integer> future = Uni.<Integer>failed(new IOException("boom")).subscribe().asCompletionStage();
+        CompletableFuture<Integer> future = Uni.from().<Integer>failure(new IOException("boom")).subscribe().asCompletionStage();
         assertThat(future).isNotNull();
         try {
             future.join();
@@ -57,7 +57,7 @@ public class UniToCompletionStageTest {
     @Test
     public void testThatSubscriptionsAreNotShared() {
         AtomicInteger count = new AtomicInteger(1);
-        Uni<Integer> deferred = Uni.defer(() -> Uni.of(count.getAndIncrement()));
+        Uni<Integer> deferred =  Uni.from().deferredUni(() -> Uni.of(count.getAndIncrement()));
         CompletionStage<Integer> cs1 = deferred.subscribe().asCompletionStage();
         CompletionStage<Integer> cs2 = deferred.subscribe().asCompletionStage();
         assertThat(cs1).isNotNull();
@@ -70,7 +70,7 @@ public class UniToCompletionStageTest {
     @Test
     public void testThatTwoSubscribersWithCache() {
         AtomicInteger count = new AtomicInteger(1);
-        Uni<Integer> cached = Uni.defer(() -> Uni.of(count.getAndIncrement())).cache();
+        Uni<Integer> cached =  Uni.from().deferredUni(() -> Uni.of(count.getAndIncrement())).cache();
         CompletionStage<Integer> cs1 = cached.subscribe().asCompletionStage();
         CompletionStage<Integer> cs2 = cached.subscribe().asCompletionStage();
         assertThat(cs1).isNotNull();
@@ -128,7 +128,7 @@ public class UniToCompletionStageTest {
     @Test
     public void testWithAsyncFailure() {
         executor = Executors.newSingleThreadScheduledExecutor();
-        CompletableFuture<Integer> future = Uni.<Integer>failed(new IOException("boom")).publishOn(executor).subscribe().asCompletionStage();
+        CompletableFuture<Integer> future = Uni.from().<Integer>failure(new IOException("boom")).publishOn(executor).subscribe().asCompletionStage();
         await().until(future::isDone);
         assertThat(future).isCompletedExceptionally();
     }

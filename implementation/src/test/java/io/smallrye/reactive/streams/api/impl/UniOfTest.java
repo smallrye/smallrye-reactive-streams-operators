@@ -30,21 +30,21 @@ public class UniOfTest {
     @Test
     public void testThatEmptyIsAcceptedWithFromOptional() {
         AssertSubscriber<Object> ts = AssertSubscriber.create();
-        Uni.fromOptional(Optional.empty()).subscribe().withSubscriber(ts);
+        Uni.from().optional(Optional.empty()).subscribe().withSubscriber(ts);
         ts.assertCompletedSuccessfully().assertResult(null);
     }
 
-    @SuppressWarnings("OptionalAssignedToNull")
+    @SuppressWarnings({"OptionalAssignedToNull", "unchecked"})
     @Test(expected = NullPointerException.class)
     public void testThatNullIfNotAcceptedByFromOptional() {
-        Uni.fromOptional(null); // Immediate failure, no need for subscription
+        Uni.from().optional((Optional) null); // Immediate failure, no need for subscription
     }
 
 
     @Test
     public void testThatFulfilledOptionalIsAcceptedWithFromOptional() {
         AssertSubscriber<Integer> ts = AssertSubscriber.create();
-        Uni.fromOptional(Optional.of(1)).subscribe().withSubscriber(ts);
+        Uni.from().optional(Optional.of(1)).subscribe().withSubscriber(ts);
         ts.assertCompletedSuccessfully().assertResult(1);
     }
 
@@ -84,14 +84,14 @@ public class UniOfTest {
     @Test
     public void testEmpty() {
         AssertSubscriber<Void> subscriber = AssertSubscriber.create();
-        Uni.empty().subscribe().withSubscriber(subscriber);
+        Uni.from().nullValue().subscribe().withSubscriber(subscriber);
         subscriber.assertCompletedSuccessfully().assertResult(null);
     }
 
     @Test
     public void testEmptyWithImmediateCancellation() {
         AssertSubscriber<Void> subscriber = new AssertSubscriber<>(true);
-        Uni.empty().subscribe().withSubscriber(subscriber);
+        Uni.from().nullValue().subscribe().withSubscriber(subscriber);
         subscriber.assertNoFailure().assertNoResult();
     }
 

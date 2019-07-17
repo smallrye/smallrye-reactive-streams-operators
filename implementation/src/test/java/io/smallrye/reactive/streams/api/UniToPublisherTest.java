@@ -44,7 +44,7 @@ public class UniToPublisherTest {
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testWithImmediateFailure() {
-        Publisher<Integer> publisher = Uni.<Integer>failed(new IOException("boom")).toPublisher();
+        Publisher<Integer> publisher = Uni.from().<Integer>failure(new IOException("boom")).toPublisher();
         assertThat(publisher).isNotNull();
         try {
             Flowable.fromPublisher(publisher).blockingFirst();
@@ -102,7 +102,7 @@ public class UniToPublisherTest {
     @Test
     public void testThatTwoSubscribersHaveTwoSubscriptions() {
         AtomicInteger count = new AtomicInteger(1);
-        Publisher<Integer> publisher = Uni.defer(() -> Uni.of(count.getAndIncrement())).toPublisher();
+        Publisher<Integer> publisher =  Uni.from().deferredUni(() -> Uni.of(count.getAndIncrement())).toPublisher();
         assertThat(publisher).isNotNull();
         Flowable<Integer> flow = Flowable.fromPublisher(publisher);
         int first = flow.blockingFirst();
@@ -114,7 +114,7 @@ public class UniToPublisherTest {
     @Test
     public void testThatTwoSubscribersWithCache() {
         AtomicInteger count = new AtomicInteger(1);
-        Publisher<Integer> publisher = Uni.defer(() -> Uni.of(count.getAndIncrement())).cache().toPublisher();
+        Publisher<Integer> publisher =  Uni.from().deferredUni(() -> Uni.of(count.getAndIncrement())).cache().toPublisher();
         assertThat(publisher).isNotNull();
         Flowable<Integer> flow = Flowable.fromPublisher(publisher);
         int first = flow.blockingFirst();
@@ -196,7 +196,7 @@ public class UniToPublisherTest {
     @Test
     public void testWithAsyncFailure() {
         executor = Executors.newSingleThreadScheduledExecutor();
-        Publisher<Integer> publisher = Uni.<Integer>failed(new IOException("boom")).publishOn(executor).toPublisher();
+        Publisher<Integer> publisher = Uni.from().<Integer>failure(new IOException("boom")).publishOn(executor).toPublisher();
         assertThat(publisher).isNotNull();
         try {
             Flowable.fromPublisher(publisher).blockingFirst();
