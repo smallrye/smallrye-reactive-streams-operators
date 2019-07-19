@@ -13,7 +13,7 @@ public class UniMapToBooleanTest {
 
     private Uni<Integer> one = Uni.of(1);
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testThatPredicateCannotBeNull() {
         one = Uni.of(1);
         one.map().toBoolean(null);

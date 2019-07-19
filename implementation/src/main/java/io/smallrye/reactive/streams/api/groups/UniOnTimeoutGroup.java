@@ -5,10 +5,10 @@ import io.smallrye.reactive.streams.api.Uni;
 import io.smallrye.reactive.streams.api.impl.UniFailOnTimeout;
 
 import java.time.Duration;
-import java.util.Objects;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.Supplier;
 
+import static io.smallrye.reactive.streams.api.impl.ParameterValidation.nonNull;
 import static io.smallrye.reactive.streams.api.impl.ParameterValidation.validate;
 
 public class UniOnTimeoutGroup<T> {
@@ -18,13 +18,14 @@ public class UniOnTimeoutGroup<T> {
     private final ScheduledExecutorService executor;
 
     public UniOnTimeoutGroup(Uni<T> source, Duration timeout, ScheduledExecutorService executor) {
-        this.source = Objects.requireNonNull(source, "`source` must not be `null`");
+        this.source = nonNull(source, "source");
         this.timeout = timeout;
         this.executor = executor;
     }
 
     /**
      * Configures the timeout duration.
+     *
      * @param timeout the timeout, must not be {@code null}, must be strictly positive.
      * @return a new {@link UniOnTimeoutGroup}
      */

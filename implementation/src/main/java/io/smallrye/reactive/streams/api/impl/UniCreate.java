@@ -2,14 +2,15 @@ package io.smallrye.reactive.streams.api.impl;
 
 import io.smallrye.reactive.streams.api.UniEmitter;
 
-import java.util.Objects;
 import java.util.function.Consumer;
+
+import static io.smallrye.reactive.streams.api.impl.ParameterValidation.nonNull;
 
 public class UniCreate<T> extends DefaultUni<T> {
     private final Consumer<UniEmitter<? super T>> consumer;
 
     public UniCreate(Consumer<UniEmitter<? super T>> consumer) {
-        this.consumer = Objects.requireNonNull(consumer, "`onResultCallback` cannot be `null`");
+        this.consumer = nonNull(consumer, "consumer");
     }
 
     @Override

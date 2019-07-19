@@ -4,17 +4,17 @@ import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static io.smallrye.reactive.streams.api.impl.EmptySubscription.CANCELLED;
+import static io.smallrye.reactive.streams.api.impl.ParameterValidation.nonNull;
 
 public class UniFromPublisher<O> extends UniOperator<Void, O> {
     private final Publisher<? extends O> publisher;
 
     public UniFromPublisher(Publisher<? extends O> publisher) {
         super(null);
-        this.publisher = Objects.requireNonNull(publisher, "`publisher` must not be `null`");
+        this.publisher = nonNull(publisher, "publisher");
     }
 
     @SuppressWarnings("SubscriberImplementation")

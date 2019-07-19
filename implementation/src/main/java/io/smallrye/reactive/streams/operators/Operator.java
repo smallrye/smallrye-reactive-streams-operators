@@ -9,7 +9,7 @@ public class Operator<T extends Stage> implements Predicate<Stage> {
     private Class<T> clazz;
 
     Operator(Class<T> clazz) {
-     this.clazz = Objects.requireNonNull(clazz);
+        this.clazz = Objects.requireNonNull(clazz);
     }
 
     public boolean test(Stage s) {

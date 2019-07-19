@@ -3,14 +3,14 @@ package io.smallrye.reactive.streams.api.impl;
 import io.smallrye.reactive.streams.api.UniSubscriber;
 import io.smallrye.reactive.streams.api.UniSubscription;
 
-import java.util.Objects;
+import static io.smallrye.reactive.streams.api.impl.ParameterValidation.nonNull;
 
 public class DelegatingUniSubscriber<O> implements UniSubscriber<O> {
 
     private final UniSubscriber<O> delegate;
 
     public DelegatingUniSubscriber(UniSubscriber<O> delegate) {
-        this.delegate = Objects.requireNonNull(delegate, "`delegate` must not be `null`");
+        this.delegate = nonNull(delegate, "delegate");
     }
 
     @Override

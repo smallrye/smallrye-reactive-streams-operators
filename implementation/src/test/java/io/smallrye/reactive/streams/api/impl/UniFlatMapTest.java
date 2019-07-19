@@ -97,7 +97,7 @@ public class UniFlatMapTest {
         assertThat(called).isTrue();
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testThatTheMapperCannotBeNull() {
         Uni.of(1).flatMap((Function<Integer, Uni<?>>) null);
     }

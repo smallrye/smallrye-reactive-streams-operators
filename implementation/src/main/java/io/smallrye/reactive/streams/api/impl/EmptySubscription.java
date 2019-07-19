@@ -8,9 +8,8 @@ import io.smallrye.reactive.streams.api.UniSubscription;
  */
 public class EmptySubscription implements UniSubscription {
 
-    static final UniSubscription CANCELLED = new EmptySubscription();
-
     public static final EmptySubscription INSTANCE = new EmptySubscription();
+    static final UniSubscription CANCELLED = new EmptySubscription();
 
     private EmptySubscription() {
         // Avoid direct instantiation.

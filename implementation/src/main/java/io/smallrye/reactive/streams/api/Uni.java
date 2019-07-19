@@ -82,8 +82,53 @@ public interface Uni<T> {
      * @return the new {@link Uni}
      * @see #from()
      */
-    static<T> Uni<T> of(T value) {
+    static <T> Uni<T> of(T value) {
         return from().value(value);
+    }
+
+    /**
+     * Creates a new instance of {@link Uni} from the given instance.
+     *
+     * @param instance
+     * @param <T>
+     * @param <I>
+     * @return
+     */
+    static <T, I> Uni<T> from(I instance) {
+        return UniAdaptFrom.adaptFrom(instance);
+    }
+
+    /**
+     * Creates a {@link Uni} forwarding the first signal (value, {@code null} or failure). It behaves like the fastest
+     * of these competing unis. If the passed iterable is empty, the resulting {@link Uni} gets a {@code null} result
+     * just after subscription.
+     * <p>
+     * This method subscribes to the set of {@link Uni}. When one of the {@link Uni} resolves successfully or with
+     * a failure, the signals is propagated to the returned {@link Uni}. Also the other subscriptions are cancelled.
+     * Note that the callback from the subscriber are called on the thread used to resolve the winning {@link Uni}.
+     * Use {@link #publishOn(Executor)} to change the thread.
+     * <p>
+     * If the subscription to the returned {@link Uni} is cancelled, the subscription to the {@link Uni unis} from the
+     * {@code iterable} are also cancelled.
+     *
+     * @param iterable a set of {@link Uni}, must not be {@code null}.
+     * @param <T>      the type of item
+     * @return the produced {@link Uni}
+     */
+    static <T> Uni<T> any(Iterable<? extends Uni<? super T>> iterable) {
+        return new UniAny<>(iterable);
+    }
+
+    /**
+     * Like {@link #any(Iterable)} but with an array of {@link Uni} as parameter
+     *
+     * @param unis the array, must not be {@code null}, must not contain @{code null}
+     * @param <T>  the type of result
+     * @return the produced {@link Uni}
+     */
+    @SafeVarargs
+    static <T> Uni<T> any(Uni<? super T>... unis) {
+        return new UniAny<>(unis);
     }
 
     /**
@@ -179,7 +224,7 @@ public interface Uni<T> {
      *     uni = upstream.map().failure(failure -> ...); // transforms the failure using the given function
      *     uni = upstream.map().toFailure(t -> ...) // transforms the result into a failure
      * </code></pre>
-     *
+     * <p>
      * Transforming failure is not a recovery action. See {@link #recover()} to handle failure gracefully.
      *
      * @return the object to configure the functions to apply.
@@ -198,7 +243,6 @@ public interface Uni<T> {
      * @return a new {@link Uni} computing a result of type {@code <O>}.
      */
     <O> Uni<O> map(Function<T, O> mapper);
-
 
     /**
      * Runs {@link UniSubscriber#onResult(Object)}  and {@link UniSubscriber#onFailure(Throwable)} on the supplied
@@ -219,7 +263,6 @@ public interface Uni<T> {
      * the outcome but replayed the cached signals.
      */
     Uni<T> cache();
-
 
     /**
      * // TODO Rewrite me.
@@ -274,19 +317,6 @@ public interface Uni<T> {
     <O> O to(Class<O> clazz);
 
     /**
-     * Creates a new instance of {@link Uni} from the given instance.
-     *
-     * @param instance
-     * @param <T>
-     * @param <I>
-     * @return
-     */
-    static <T, I> Uni<T> from(I instance) {
-        return UniAdaptFrom.adaptFrom(instance);
-    }
-
-
-    /**
      * Delays the completion of this {@link Uni} by the given duration.
      * The downstream signals are sent on the default executor.
      * <p>
@@ -330,17 +360,18 @@ public interface Uni<T> {
      * @return the {@link UniIgnoreGroup} to configure the action.
      */
     UniIgnoreGroup<T> ignore();
+    //TODO CES - thinking about renaming it to uni.onNoResult().after(duration).[continueWith(...), fail...]
 
     /**
      * Composes this {@link Uni} with a set of {@link Uni} passed to {@link UniOrGroup#unis(Uni[])} to produce a new
      * {@link Uni} forwarding the first signal (value, {@code null} or failure). It behaves like the fastest
      * of these competing unis.
-     *
+     * <p>
      * The process subscribes to the set of {@link Uni}. When one of the {@link Uni} resolves successfully or with
      * a failure, the signals is propagated to the returned {@link Uni}. Also the other subscriptions are cancelled.
      * Note that the callback from the subscriber are called on the thread used to resolve the winning {@link Uni}.
      * Use {@link #publishOn(Executor)} to change the thread.
-     *
+     * <p>
      * If the subscription to the returned {@link Uni} is cancelled, the subscription to the {@link Uni unis} from the
      * {@code iterable} are also cancelled.
      *
@@ -348,7 +379,6 @@ public interface Uni<T> {
      * @see #any(Iterable) for a static version of this operator
      */
     UniOrGroup or();
-
 
     /**
      * Produces a {@link Uni} reacting when a time out is reached.
@@ -366,42 +396,8 @@ public interface Uni<T> {
      * @return the on timeout group
      */
     UniOnTimeoutGroup<T> onTimeout();
-    //TODO CES - thinking about renaming it to uni.onNoResult().after(duration).[continueWith(...), fail...]
 
     UniRecoveryGroup<T> recover();
-
-    /**
-     * Creates a {@link Uni} forwarding the first signal (value, {@code null} or failure). It behaves like the fastest
-     * of these competing unis. If the passed iterable is empty, the resulting {@link Uni} gets a {@code null} result
-     * just after subscription.
-     * <p>
-     * This method subscribes to the set of {@link Uni}. When one of the {@link Uni} resolves successfully or with
-     * a failure, the signals is propagated to the returned {@link Uni}. Also the other subscriptions are cancelled.
-     * Note that the callback from the subscriber are called on the thread used to resolve the winning {@link Uni}.
-     * Use {@link #publishOn(Executor)} to change the thread.
-     * <p>
-     * If the subscription to the returned {@link Uni} is cancelled, the subscription to the {@link Uni unis} from the
-     * {@code iterable} are also cancelled.
-     *
-     * @param iterable a set of {@link Uni}, must not be {@code null}.
-     * @param <T>      the type of item
-     * @return the produced {@link Uni}
-     */
-    static<T> Uni<T> any(Iterable<? extends Uni<? super T>> iterable) {
-        return new UniAny<>(iterable);
-    }
-
-    /**
-     * Like {@link #any(Iterable)} but with an array of {@link Uni} as parameter
-     *
-     * @param unis the array, must not be {@code null}, must not contain @{code null}
-     * @param <T>  the type of result
-     * @return the produced {@link Uni}
-     */
-    @SafeVarargs
-    static<T> Uni<T> any(Uni<? super T>... unis) {
-        return new UniAny<>(unis);
-    }
 
     // Exports
 

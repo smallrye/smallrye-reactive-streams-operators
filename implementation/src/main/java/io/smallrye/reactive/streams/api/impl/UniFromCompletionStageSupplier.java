@@ -1,15 +1,27 @@
 package io.smallrye.reactive.streams.api.impl;
 
-import java.util.Objects;
 import java.util.concurrent.CompletionStage;
 import java.util.function.Supplier;
 
+import static io.smallrye.reactive.streams.api.impl.ParameterValidation.nonNull;
+
 public class UniFromCompletionStageSupplier<O> extends UniOperator<Void, O> {
-    private final Supplier<? extends  CompletionStage<? extends O>> supplier;
+    private final Supplier<? extends CompletionStage<? extends O>> supplier;
 
     public UniFromCompletionStageSupplier(Supplier<? extends CompletionStage<? extends O>> supplier) {
         super(null);
-        this.supplier = Objects.requireNonNull(supplier, "`supplier` must not be `null`");
+        this.supplier = nonNull(supplier, "supplier");
+    }
+
+    private static <O> void forwardFromCompletionStage(CompletionStage<? extends O> stage, WrapperUniSubscriber<? super O> subscriber) {
+        subscriber.onSubscribe(() -> stage.toCompletableFuture().cancel(false));
+        stage.whenComplete((res, fail) -> {
+            if (fail != null) {
+                subscriber.onFailure(fail);
+            } else {
+                subscriber.onResult(res);
+            }
+        });
     }
 
     @Override
@@ -23,16 +35,5 @@ public class UniFromCompletionStageSupplier<O> extends UniOperator<Void, O> {
         }
 
         forwardFromCompletionStage(stage, subscriber);
-    }
-
-    private static <O> void forwardFromCompletionStage(CompletionStage<? extends O> stage, WrapperUniSubscriber<? super O> subscriber) {
-        subscriber.onSubscribe(() -> stage.toCompletableFuture().cancel(false));
-        stage.whenComplete((res, fail) -> {
-            if (fail != null) {
-                subscriber.onFailure(fail);
-            } else {
-                subscriber.onResult(res);
-            }
-        });
     }
 }

@@ -5,17 +5,17 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
-public class Tuple5<T1, T2, T3, T4, T5>  extends Tuple4<T1, T2, T3, T4> implements Tuple {
+public class Tuple5<T1, T2, T3, T4, T5> extends Tuple4<T1, T2, T3, T4> implements Tuple {
 
     final T5 item5;
-
-    public static <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> of(T1 a, T2 b, T3 c, T4 d, T5 e) {
-        return new Tuple5<>(a, b, c, d, e);
-    }
 
     Tuple5(T1 a, T2 b, T3 c, T4 d, T5 e) {
         super(a, b, c, d);
         this.item5 = e;
+    }
+
+    public static <T1, T2, T3, T4, T5> Tuple5<T1, T2, T3, T4, T5> of(T1 a, T2 b, T3 c, T4 d, T5 e) {
+        return new Tuple5<>(a, b, c, d, e);
     }
 
     public T5 getItem5() {
@@ -46,7 +46,7 @@ public class Tuple5<T1, T2, T3, T4, T5>  extends Tuple4<T1, T2, T3, T4> implemen
     public Object nth(int index) {
         assertIndexInBounds(index);
 
-        if (index < size() -1) {
+        if (index < size() - 1) {
             return super.nth(index);
         }
 

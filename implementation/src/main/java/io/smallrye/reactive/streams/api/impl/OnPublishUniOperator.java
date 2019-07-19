@@ -4,15 +4,16 @@ import io.smallrye.reactive.streams.api.Uni;
 import io.smallrye.reactive.streams.api.UniSubscriber;
 import io.smallrye.reactive.streams.api.UniSubscription;
 
-import java.util.Objects;
 import java.util.concurrent.Executor;
+
+import static io.smallrye.reactive.streams.api.impl.ParameterValidation.nonNull;
 
 public class OnPublishUniOperator<I> extends UniOperator<I, I> {
     private final Executor executor;
 
     OnPublishUniOperator(Uni<I> source, Executor executor) {
         super(source);
-        this.executor = Objects.requireNonNull(executor, "`executor` cannot be `null`");
+        this.executor = nonNull(executor, "executor");
     }
 
     @Override

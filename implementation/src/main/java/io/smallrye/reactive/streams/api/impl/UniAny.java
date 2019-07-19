@@ -5,9 +5,10 @@ import io.smallrye.reactive.streams.api.UniSubscriber;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import static io.smallrye.reactive.streams.api.impl.ParameterValidation.nonNull;
 
 public class UniAny<T> extends UniOperator<Void, T> {
 
@@ -15,17 +16,17 @@ public class UniAny<T> extends UniOperator<Void, T> {
 
     public UniAny(Iterable<? extends Uni<? super T>> iterable) {
         super(null);
-        Objects.requireNonNull(iterable, "`iterable` must not be `null`");
+        nonNull(iterable, "iterable");
         this.challengers = new ArrayList<>();
-        iterable.forEach(u -> challengers.add(Objects.requireNonNull(u, "`iterable` must not contain a `null` value")));
+        iterable.forEach(u -> challengers.add(nonNull(u, "iterable` must not contain a `null` value")));
     }
 
     public UniAny(Uni<? super T>[] array) {
         super(null);
-        Objects.requireNonNull(array, "`array` must not be `null`");
+        nonNull(array, "array");
         this.challengers = new ArrayList<>();
         for (Uni<? super T> u : array) {
-            challengers.add(Objects.requireNonNull(u, "`array` must not contain a `null` value"));
+            challengers.add(nonNull(u, "array` must not contain a `null` value"));
         }
     }
 

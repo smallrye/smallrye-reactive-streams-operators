@@ -5,17 +5,17 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
-public class Tuple4<T1, T2, T3, T4>  extends Tuple3<T1, T2, T3> implements Tuple {
+public class Tuple4<T1, T2, T3, T4> extends Tuple3<T1, T2, T3> implements Tuple {
 
     final T4 item4;
-
-    public static <T1, T2, T3, T4> Tuple4<T1, T2, T3, T4> of(T1 a, T2 b, T3 c, T4 d) {
-        return new Tuple4<>(a, b, c, d);
-    }
 
     Tuple4(T1 a, T2 b, T3 c, T4 d) {
         super(a, b, c);
         this.item4 = d;
+    }
+
+    public static <T1, T2, T3, T4> Tuple4<T1, T2, T3, T4> of(T1 a, T2 b, T3 c, T4 d) {
+        return new Tuple4<>(a, b, c, d);
     }
 
     public T4 getItem4() {
@@ -27,11 +27,16 @@ public class Tuple4<T1, T2, T3, T4>  extends Tuple3<T1, T2, T3> implements Tuple
         assertIndexInBounds(index);
 
         switch (index) {
-            case 0: return item1;
-            case 1: return item2;
-            case 2: return item3;
-            case 3: return item4;
-            default: throw new IllegalArgumentException("invalid index " + index);
+            case 0:
+                return item1;
+            case 1:
+                return item2;
+            case 2:
+                return item3;
+            case 3:
+                return item4;
+            default:
+                throw new IllegalArgumentException("invalid index " + index);
         }
     }
 

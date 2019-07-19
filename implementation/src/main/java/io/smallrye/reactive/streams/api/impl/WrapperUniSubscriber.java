@@ -3,8 +3,9 @@ package io.smallrye.reactive.streams.api.impl;
 import io.smallrye.reactive.streams.api.UniSubscriber;
 import io.smallrye.reactive.streams.api.UniSubscription;
 
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import static io.smallrye.reactive.streams.api.impl.ParameterValidation.nonNull;
 
 /**
  * An implementation of {@link UniSubscriber} and {@link UniSubscription} making sure signals are only called once.
@@ -21,16 +22,16 @@ public class WrapperUniSubscriber<T> implements UniSubscriber<T>, UniSubscriptio
     private final UniSubscriber<? super T> downstream;
     private UniSubscription upstream;
 
-    public static <T> void subscribing(DefaultUni<T> source, UniSubscriber<? super T> subscriber) {
-        WrapperUniSubscriber<T> wrapped = new WrapperUniSubscriber<>(source, subscriber);
-        wrapped.subscribe();
+    private WrapperUniSubscriber(DefaultUni<T> source, UniSubscriber<? super T> subscriber) {
+        this.source = nonNull(source, "source");
+        this.downstream = nonNull(subscriber, "subscriber` must not be `null`");
     }
 
     // TODO Caught RuntimeException thrown by the onResult and onFailure and log them accordingly
 
-    private WrapperUniSubscriber(DefaultUni<T> source, UniSubscriber<? super T> subscriber) {
-        this.source = Objects.requireNonNull(source, "`source` must not be `null`");
-        this.downstream = Objects.requireNonNull(subscriber, "`subscriber` must not be `null`");
+    public static <T> void subscribing(DefaultUni<T> source, UniSubscriber<? super T> subscriber) {
+        WrapperUniSubscriber<T> wrapped = new WrapperUniSubscriber<>(source, subscriber);
+        wrapped.subscribe();
     }
 
     private void subscribe() {
@@ -44,7 +45,7 @@ public class WrapperUniSubscriber<T> implements UniSubscriber<T>, UniSubscriptio
 
     @Override
     public void onSubscribe(UniSubscription subscription) {
-        Objects.requireNonNull(subscription, "`subscription` must not be`null`");
+        nonNull(subscription, "subscription");
         if (state.compareAndSet(SUBSCRIBED, HAS_SUBSCRIPTION)) {
             this.upstream = subscription;
             this.downstream.onSubscribe(this);

@@ -57,12 +57,12 @@ public class UniFailedTest {
     }
 
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testCreationWithNull() {
         Uni.from().failure((Exception) null);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testCreationWithNullAsSupplier() {
         Uni.from().failure((Supplier<Throwable>) null);
     }

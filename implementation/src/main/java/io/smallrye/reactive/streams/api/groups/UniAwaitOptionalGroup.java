@@ -2,7 +2,6 @@ package io.smallrye.reactive.streams.api.groups;
 
 import io.smallrye.reactive.streams.api.TimeoutException;
 import io.smallrye.reactive.streams.api.Uni;
-import io.smallrye.reactive.streams.api.groups.UniAwaitGroup;
 
 import java.time.Duration;
 import java.util.Optional;

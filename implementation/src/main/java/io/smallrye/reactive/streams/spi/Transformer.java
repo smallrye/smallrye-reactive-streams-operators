@@ -7,13 +7,13 @@ import java.util.ServiceLoader;
 
 public class Transformer {
 
-    private final ExecutionModel model;
-
     private static final Transformer INSTANCE;
 
     static {
         INSTANCE = new Transformer();
     }
+
+    private final ExecutionModel model;
 
     private Transformer() {
         ServiceLoader<ExecutionModel> loader = ServiceLoader.load(ExecutionModel.class);

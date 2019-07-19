@@ -29,7 +29,7 @@ public class UniFailOnNullTest {
         Uni.from().nullValue().onNull().failWith(new RuntimeException("boom")).await().indefinitely();
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testFailWithExceptionSetToNull() {
         Uni.from().nullValue().onNull().failWith((Exception) null).await().indefinitely();
     }
@@ -48,7 +48,7 @@ public class UniFailOnNullTest {
         assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> boom.await().indefinitely()).withMessageEndingWith("2");
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testFailWithExceptionSupplierSetToNull() {
         Uni.from().nullValue().onNull().failWith((Supplier<Throwable>) null).await().indefinitely();
     }

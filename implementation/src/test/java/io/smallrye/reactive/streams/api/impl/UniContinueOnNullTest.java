@@ -60,7 +60,7 @@ public class UniContinueOnNullTest {
         ).withCauseExactlyInstanceOf(IOException.class).withMessageEndingWith("boom");
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testThatContinueWithCannotUseNull() {
         Uni.from().value(23).map().to(Integer.class)
                 .onNull().continueWith((Integer) null);
@@ -72,7 +72,7 @@ public class UniContinueOnNullTest {
                 .onNull().continueWith(() -> null).await().indefinitely();
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testThatContinueWithSupplierCannotBeNull() {
         Uni.from().value(23).map().to(Integer.class)
                 .onNull().continueWith((Supplier<Integer>) null);

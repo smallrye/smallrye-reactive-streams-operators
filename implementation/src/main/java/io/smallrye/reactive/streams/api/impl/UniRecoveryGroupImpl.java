@@ -4,10 +4,11 @@ import io.smallrye.reactive.streams.api.Uni;
 import io.smallrye.reactive.streams.api.groups.UniRecoveryGroup;
 import io.smallrye.reactive.streams.api.groups.UniRetryGroup;
 
-import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+
+import static io.smallrye.reactive.streams.api.impl.ParameterValidation.nonNull;
 
 public class UniRecoveryGroupImpl<T> implements UniRecoveryGroup<T> {
 
@@ -16,7 +17,7 @@ public class UniRecoveryGroupImpl<T> implements UniRecoveryGroup<T> {
     private final Predicate<? super Throwable> predicate;
 
     public UniRecoveryGroupImpl(Uni<T> source, Predicate<? super Throwable> predicate) {
-        this.source = Objects.requireNonNull(source, "`source` must not be `null`");
+        this.source = nonNull(source, "source");
         this.predicate = predicate;
     }
 
@@ -42,7 +43,7 @@ public class UniRecoveryGroupImpl<T> implements UniRecoveryGroup<T> {
 
     @Override
     public <E extends Throwable> UniRecoveryGroup<T> fromFailure(Class<E> type) {
-        Objects.requireNonNull(type, "`type` must not be `null`");
+        nonNull(type, "type");
         return new UniRecoveryGroupImpl<>(source, type::isInstance);
     }
 

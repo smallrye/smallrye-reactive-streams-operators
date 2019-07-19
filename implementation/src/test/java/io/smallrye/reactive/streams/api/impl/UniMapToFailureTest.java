@@ -11,7 +11,7 @@ public class UniMapToFailureTest {
 
     private Uni<Integer> one = Uni.of(1);
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testThatMapperCannotBeNull() {
         one = Uni.of(1);
         one.map().toFailure(null);

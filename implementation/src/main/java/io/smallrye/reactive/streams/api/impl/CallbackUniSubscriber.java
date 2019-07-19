@@ -4,11 +4,11 @@ import io.smallrye.reactive.streams.api.UniSubscriber;
 import io.smallrye.reactive.streams.api.UniSubscription;
 import org.reactivestreams.Subscription;
 
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 import static io.smallrye.reactive.streams.api.impl.EmptySubscription.CANCELLED;
+import static io.smallrye.reactive.streams.api.impl.ParameterValidation.nonNull;
 
 /**
  * Implementation of a {@link UniSubscriber} based on callbacks.
@@ -18,10 +18,9 @@ import static io.smallrye.reactive.streams.api.impl.EmptySubscription.CANCELLED;
  */
 class CallbackUniSubscriber<T> implements UniSubscriber<T>, UniSubscription {
 
+    final AtomicReference<UniSubscription> subscription = new AtomicReference<>();
     private final Consumer<? super T> onResultCallback;
     private final Consumer<? super Throwable> onFailureCallback;
-
-    final AtomicReference<UniSubscription> subscription = new AtomicReference<>();
 
 
     /**
@@ -33,8 +32,8 @@ class CallbackUniSubscriber<T> implements UniSubscriber<T>, UniSubscription {
      */
     CallbackUniSubscriber(Consumer<? super T> onResultCallback,
                           Consumer<? super Throwable> onFailureCallback) {
-        this.onResultCallback = Objects.requireNonNull(onResultCallback, "`onResultCallback` must not be `null`");
-        this.onFailureCallback = Objects.requireNonNull(onFailureCallback, "`onFailureCallback` must not be `null`");
+        this.onResultCallback = nonNull(onResultCallback, "onResultCallback");
+        this.onFailureCallback = nonNull(onFailureCallback, "onFailureCallback");
     }
 
     @Override

@@ -201,12 +201,12 @@ public class UniFromCompletionStageTest {
         ts.assertResult(2);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testThatCompletionStageCannotBeNull() {
         Uni.from().completionStage((CompletionStage<Void>) null);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testThatCompletionStageSupplierCannotBeNull() {
         Uni.from().completionStage((Supplier<CompletionStage<Void>>) null);
     }

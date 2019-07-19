@@ -5,15 +5,16 @@ import io.smallrye.reactive.streams.api.impl.UniFailOnNull;
 import io.smallrye.reactive.streams.api.impl.UniSwitchOnNull;
 
 import java.util.NoSuchElementException;
-import java.util.Objects;
 import java.util.function.Supplier;
+
+import static io.smallrye.reactive.streams.api.impl.ParameterValidation.nonNull;
 
 public class UniNullGroup<T> {
 
     private final Uni<T> source;
 
     public UniNullGroup(Uni<T> source) {
-        this.source = Objects.requireNonNull(source, "`source` must not be `null`");
+        this.source = nonNull(source, "source");
     }
 
     /**
@@ -23,7 +24,7 @@ public class UniNullGroup<T> {
      * @return the new {@link Uni}
      */
     public Uni<T> failWith(Throwable failure) {
-        Objects.requireNonNull(failure, "`failure` must not be `null`");
+        nonNull(failure, "failure");
         return failWith(() -> failure);
     }
 
@@ -35,7 +36,7 @@ public class UniNullGroup<T> {
      * @return the new {@link Uni}
      */
     public Uni<T> failWith(Supplier<Throwable> supplier) {
-        return new UniFailOnNull<>(source, Objects.requireNonNull(supplier, "`supplier` must not be `null`"));
+        return new UniFailOnNull<>(source, nonNull(supplier, "supplier"));
     }
 
     /**
@@ -52,7 +53,7 @@ public class UniNullGroup<T> {
     }
 
     public Uni<T> switchTo(Supplier<Uni<? extends T>> supplier) {
-        return new UniSwitchOnNull<>(source, Objects.requireNonNull(supplier, "`supplier` must not be `null`"));
+        return new UniSwitchOnNull<>(source, nonNull(supplier, "supplier"));
     }
 
     /**
@@ -63,7 +64,7 @@ public class UniNullGroup<T> {
      * @return the new {@link Uni}
      */
     public Uni<T> continueWith(T fallback) {
-        return switchTo(Uni.from().value(Objects.requireNonNull(fallback, "`fallback` must not be `null`")));
+        return switchTo(Uni.from().value(nonNull(fallback, "fallback")));
     }
 
     /**
@@ -75,7 +76,7 @@ public class UniNullGroup<T> {
      * @return the new {@link Uni}
      */
     public Uni<T> continueWith(Supplier<? extends T> supplier) {
-        return switchTo(Uni.from().value(Objects.requireNonNull(supplier, "`supplier` must not be `null`"))
+        return switchTo(Uni.from().value(nonNull(supplier, "supplier"))
                 .onNull().failWith(NullPointerException::new));
     }
 

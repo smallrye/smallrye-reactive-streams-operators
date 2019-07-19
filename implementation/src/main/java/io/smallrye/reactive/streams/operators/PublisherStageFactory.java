@@ -16,7 +16,7 @@ public interface PublisherStageFactory<T extends Stage> {
      *
      * @param engine the reactive engine
      * @param stage  the stage
-     * @param <O>  output data
+     * @param <O>    output data
      * @return the created processing stage, should never be {@code null}
      */
     <O> PublisherStage<O> create(Engine engine, T stage);

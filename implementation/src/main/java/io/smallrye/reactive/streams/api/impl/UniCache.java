@@ -6,8 +6,9 @@ import io.smallrye.reactive.streams.api.UniSubscription;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
+
+import static io.smallrye.reactive.streams.api.impl.ParameterValidation.nonNull;
 
 public class UniCache<I> extends UniOperator<I, I> implements UniSubscriber<I> {
 
@@ -15,17 +16,14 @@ public class UniCache<I> extends UniOperator<I, I> implements UniSubscriber<I> {
     private static final int SUBSCRIBING = 1;
     private static final int SUBSCRIBED = 2;
     private static final int COMPLETED = 3;
-
-    private int state = 0;
-
-
     private final AtomicReference<UniSubscription> subscription = new AtomicReference<>();
     private final List<UniSubscriber<? super I>> subscribers = new ArrayList<>();
+    private int state = 0;
     private I result;
     private Throwable failure;
 
     UniCache(Uni<? extends I> source) {
-        super(Objects.requireNonNull(source, "`source` must not be `null`"));
+        super(nonNull(source, "source"));
     }
 
     @Override

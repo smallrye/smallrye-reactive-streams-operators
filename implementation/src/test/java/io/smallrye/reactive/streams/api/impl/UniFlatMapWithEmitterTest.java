@@ -93,7 +93,7 @@ public class UniFlatMapWithEmitterTest {
         assertThat(called).isTrue();
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testThatTheMapperCannotBeNull() {
         Uni.of(1).flatMap((BiConsumer<Integer, UniEmitter<? super Integer>>) null);
     }

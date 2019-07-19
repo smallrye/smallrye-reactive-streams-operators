@@ -2,15 +2,16 @@ package io.smallrye.reactive.streams.api.groups;
 
 import io.smallrye.reactive.streams.api.Uni;
 
-import java.util.Objects;
 import java.util.function.Supplier;
+
+import static io.smallrye.reactive.streams.api.impl.ParameterValidation.nonNull;
 
 public class UniIgnoreGroup<T> {
 
     private final Uni<T> source;
 
     public UniIgnoreGroup(Uni<T> source) {
-        this.source = Objects.requireNonNull(source, "`source` must not be `null`");
+        this.source = nonNull(source, "source");
     }
 
     /**
@@ -20,7 +21,7 @@ public class UniIgnoreGroup<T> {
      * @return the new {@link Uni}
      */
     public Uni<T> andFail(Throwable failure) {
-        Objects.requireNonNull(failure, "`failure` must not be `null`");
+        nonNull(failure, "failure");
         return andFail(() -> failure);
     }
 
@@ -31,7 +32,7 @@ public class UniIgnoreGroup<T> {
      * @return the new {@link Uni}
      */
     public Uni<T> andFail(Supplier<Throwable> supplier) {
-        Objects.requireNonNull(supplier, "`supplier` must not be `null`");
+        nonNull(supplier, "supplier");
         return source.flatMap(ignored -> Uni.from().failure(supplier));
     }
 
@@ -51,7 +52,7 @@ public class UniIgnoreGroup<T> {
      * @return the new Uni
      */
     public <O> Uni<O> andSwitchTo(Uni<? extends O> other) {
-        Objects.requireNonNull(other, "`other` must not be `null`");
+        nonNull(other, "other");
         return source.flatMap(ignored -> other);
     }
 
@@ -62,7 +63,7 @@ public class UniIgnoreGroup<T> {
      * @return the new Uni
      */
     public <O> Uni<O> andSwitchTo(Supplier<Uni<? extends O>> supplier) {
-        Objects.requireNonNull(supplier, "`supplier` must not be `null`");
+        nonNull(supplier, "supplier");
         return source.flatMap(ignored -> supplier.get());
     }
 
@@ -94,7 +95,7 @@ public class UniIgnoreGroup<T> {
      * @return the new {@link Uni}
      */
     public Uni<T> andContinueWith(Supplier<? extends T> supplier) {
-        Objects.requireNonNull(supplier, "`supplier` must not be `null`");
+        nonNull(supplier, "supplier");
         return source.map(ignored -> supplier.get());
     }
 

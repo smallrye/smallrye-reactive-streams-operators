@@ -3,7 +3,8 @@ package io.smallrye.reactive.streams.api.groups;
 import io.smallrye.reactive.streams.api.Uni;
 
 import java.util.Arrays;
-import java.util.Objects;
+
+import static io.smallrye.reactive.streams.api.impl.ParameterValidation.nonNull;
 
 /**
  * Combines several {@link Uni} into a new {@link Uni} that will be fulfilled when all {@link Uni} are
@@ -19,7 +20,7 @@ public class AndGroup<T1> {
     private final Uni<T1> source;
 
     public AndGroup(Uni<T1> source) {
-        this.source = Objects.requireNonNull(source, "`source` must not be `null`");
+        this.source = nonNull(source, "source");
     }
 
     /**
@@ -99,13 +100,13 @@ public class AndGroup<T1> {
      * failed, the propagated failure is a {@link io.smallrye.reactive.streams.api.CompositeException} wrapping all the
      * failures.
      *
-     * @param u2    the second uni to be combined, must not be {@code null}
-     * @param u3    the third uni to be combined, must not be {@code null}
-     * @param u4    the fourth uni to be combined, must not be {@code null}
-     * @param u5    the fifth uni to be combined, must not be {@code null}
-     * @param <T2>  the type of the result for the second uni
-     * @param <T3>  the type of the result for the third uni
-     * @param <T4>  the type of the result for the fourth uni
+     * @param u2   the second uni to be combined, must not be {@code null}
+     * @param u3   the third uni to be combined, must not be {@code null}
+     * @param u4   the fourth uni to be combined, must not be {@code null}
+     * @param u5   the fifth uni to be combined, must not be {@code null}
+     * @param <T2> the type of the result for the second uni
+     * @param <T3> the type of the result for the third uni
+     * @param <T4> the type of the result for the fourth uni
      * @param <T5> the type of the result for the fifth uni
      * @return an {@link AndGroup3} to configure the combination
      */

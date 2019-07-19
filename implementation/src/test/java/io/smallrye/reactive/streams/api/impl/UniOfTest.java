@@ -35,7 +35,7 @@ public class UniOfTest {
     }
 
     @SuppressWarnings({"OptionalAssignedToNull", "unchecked"})
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testThatNullIfNotAcceptedByFromOptional() {
         Uni.from().optional((Optional) null); // Immediate failure, no need for subscription
     }

@@ -13,7 +13,7 @@ public class TerminalOperator<T extends Stage> extends Operator<T> {
         this.factory = factory;
     }
 
-    public <I,O> TerminalStage<I, O> create(Engine engine, T stage) {
+    public <I, O> TerminalStage<I, O> create(Engine engine, T stage) {
         return factory.create(engine, stage);
     }
 }

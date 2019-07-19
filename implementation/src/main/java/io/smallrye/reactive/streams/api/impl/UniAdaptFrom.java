@@ -7,16 +7,17 @@ import org.reactivestreams.Publisher;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Objects;
 import java.util.ServiceLoader;
 import java.util.concurrent.CompletionStage;
+
+import static io.smallrye.reactive.streams.api.impl.ParameterValidation.nonNull;
 
 public class UniAdaptFrom<O> {
 
     @SuppressWarnings("unchecked")
     public static <O, T> Uni<T> adaptFrom(O instance) {
 
-        Objects.requireNonNull(instance, "`instance` must not be `null`");
+        nonNull(instance, "instance");
 
         if (instance instanceof Uni) {
             return (Uni) instance;
@@ -63,8 +64,9 @@ public class UniAdaptFrom<O> {
 
     /**
      * Very RX Java specific.
+     *
      * @param instance the instance
-     * @param <O> the returned type
+     * @param <O>      the returned type
      * @return an instance of O or {@code null}
      */
     private static <O> Uni instantiateUsingToFlowable(O instance) {

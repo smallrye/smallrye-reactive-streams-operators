@@ -74,6 +74,6 @@ public class Tuple3Test {
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> Tuples.tuple3(Collections.emptyList()));
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> Tuples.tuple3(Collections.singletonList(1)));
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> Tuples.tuple3(Arrays.asList(1, 2, 3, 4)));
-        assertThatExceptionOfType(NullPointerException.class).isThrownBy(() -> Tuples.tuple3(null));
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> Tuples.tuple3(null));
     }
 }

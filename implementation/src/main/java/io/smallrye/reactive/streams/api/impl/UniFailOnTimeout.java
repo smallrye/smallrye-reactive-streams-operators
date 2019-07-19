@@ -1,6 +1,5 @@
 package io.smallrye.reactive.streams.api.impl;
 
-import io.smallrye.reactive.streams.api.TimeoutException;
 import io.smallrye.reactive.streams.api.Uni;
 import io.smallrye.reactive.streams.api.UniSubscriber;
 import io.smallrye.reactive.streams.api.UniSubscription;

@@ -5,9 +5,10 @@ import io.smallrye.reactive.streams.api.UniSubscriber;
 import io.smallrye.reactive.streams.api.UniSubscription;
 import org.reactivestreams.Subscription;
 
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
+
+import static io.smallrye.reactive.streams.api.impl.ParameterValidation.nonNull;
 
 public class UniFlatMap<I, O> extends UniOperator<I, O> {
 
@@ -15,8 +16,36 @@ public class UniFlatMap<I, O> extends UniOperator<I, O> {
     private final Function<? super I, ? extends Uni<? extends O>> mapper;
 
     UniFlatMap(Uni<I> source, Function<? super I, ? extends Uni<? extends O>> mapper) {
-        super(Objects.requireNonNull(source, "`source` must not be `null`"));
-        this.mapper = Objects.requireNonNull(mapper, "`mapper` must not be `null`");
+        super(nonNull(source, "source"));
+        this.mapper = nonNull(mapper, "mapper");
+    }
+
+    static <I, O> void invokeAndSubstitute(Function<? super I, ? extends Uni<? extends O>> mapper, I input,
+                                           WrapperUniSubscriber<? super O> subscriber,
+                                           FlatMapSubscription flatMapSubscription) {
+        Uni<? extends O> outcome;
+        try {
+            outcome = mapper.apply(input);
+            // We cannot call onResult here, as if onResult would throw an exception
+            // it would be caught and onFailure would be called. This would be illegal.
+        } catch (Exception e) {
+            subscriber.onFailure(e);
+            return;
+        }
+
+        if (outcome == null) {
+            subscriber.onFailure(new NullPointerException("The mapper returned `null`"));
+        } else {
+            @SuppressWarnings("unchecked")
+            DelegatingUniSubscriber<? super O> delegate = new DelegatingUniSubscriber(subscriber) {
+                @Override
+                public void onSubscribe(UniSubscription secondSubscription) {
+                    flatMapSubscription.replace(secondSubscription);
+                }
+            };
+
+            outcome.subscribe().withSubscriber(delegate);
+        }
     }
 
     @Override
@@ -40,34 +69,6 @@ public class UniFlatMap<I, O> extends UniOperator<I, O> {
                 subscriber.onFailure(failure);
             }
         });
-    }
-
-    static <I, O> void invokeAndSubstitute(Function<? super I, ? extends Uni<? extends O>> mapper, I input,
-                                           WrapperUniSubscriber<? super O> subscriber,
-                                           FlatMapSubscription flatMapSubscription) {
-        Uni<? extends O> outcome;
-        try {
-            outcome  = mapper.apply(input);
-            // We cannot call onResult here, as if onResult would throw an exception
-            // it would be caught and onFailure would be called. This would be illegal.
-        } catch (Exception e) {
-            subscriber.onFailure(e);
-            return;
-        }
-
-        if (outcome == null) {
-            subscriber.onFailure(new NullPointerException("The mapper returned `null`"));
-        } else {
-            @SuppressWarnings("unchecked")
-            DelegatingUniSubscriber<? super O> delegate = new DelegatingUniSubscriber(subscriber) {
-                @Override
-                public void onSubscribe(UniSubscription secondSubscription) {
-                    flatMapSubscription.replace(secondSubscription);
-                }
-            };
-
-            outcome.subscribe().withSubscriber(delegate);
-        }
     }
 
     protected static class FlatMapSubscription implements UniSubscription {

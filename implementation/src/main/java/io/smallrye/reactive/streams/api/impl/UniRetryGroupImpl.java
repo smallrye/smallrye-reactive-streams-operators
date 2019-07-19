@@ -3,8 +3,9 @@ package io.smallrye.reactive.streams.api.impl;
 import io.smallrye.reactive.streams.api.Uni;
 import io.smallrye.reactive.streams.api.groups.UniRetryGroup;
 
-import java.util.Objects;
 import java.util.function.Predicate;
+
+import static io.smallrye.reactive.streams.api.impl.ParameterValidation.nonNull;
 
 public class UniRetryGroupImpl<T> implements UniRetryGroup<T> {
 
@@ -12,7 +13,7 @@ public class UniRetryGroupImpl<T> implements UniRetryGroup<T> {
     private final Predicate<? super Throwable> predicate;
 
     UniRetryGroupImpl(Uni<T> source, Predicate<? super Throwable> predicate) {
-        this.source = Objects.requireNonNull(source, "`source` must not be `null`");
+        this.source = nonNull(source, "source");
         this.predicate = predicate;
     }
 

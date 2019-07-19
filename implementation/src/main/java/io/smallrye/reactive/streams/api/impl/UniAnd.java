@@ -17,6 +17,7 @@ import static io.smallrye.reactive.streams.api.impl.EmptySubscription.CANCELLED;
 
 public class UniAnd<I, O> extends UniOperator<I, O> {
 
+    private static final Object SENTINEL = new Object();
     private final Function<List<Object>, O> combinator;
     private final List<Uni<?>> unis;
     private final boolean delayError;
@@ -119,17 +120,13 @@ public class UniAnd<I, O> extends UniOperator<I, O> {
         }
     }
 
-    private static final Object SENTINEL = new Object();
-
-
     private class UniResult implements UniSubscription, UniSubscriber {
 
+        final AtomicReference<UniSubscription> subscription = new AtomicReference<>();
         private final AndSupervisor supervisor;
         private final Uni uni;
         Object result = SENTINEL;
         Throwable failure;
-
-        final AtomicReference<UniSubscription> subscription = new AtomicReference<>();
 
         public UniResult(AndSupervisor supervisor, Uni observed) {
             this.supervisor = supervisor;

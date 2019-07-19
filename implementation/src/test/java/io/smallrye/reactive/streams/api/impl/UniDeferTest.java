@@ -20,7 +20,7 @@ public class UniDeferTest {
         }
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testWithNull() {
          Uni.from().deferred(null);
     }

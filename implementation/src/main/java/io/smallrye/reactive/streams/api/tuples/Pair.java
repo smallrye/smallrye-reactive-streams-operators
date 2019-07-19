@@ -1,6 +1,8 @@
 package io.smallrye.reactive.streams.api.tuples;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 
 /**
@@ -14,13 +16,13 @@ public class Pair<L, R> implements Tuple {
     final L item1;
     final R item2;
 
-    public static <L, R> Pair<L, R> of(L l, R r) {
-        return new Pair<>(l, r);
-    }
-
     protected Pair(L left, R right) {
         this.item1 = left;
         this.item2 = right;
+    }
+
+    public static <L, R> Pair<L, R> of(L l, R r) {
+        return new Pair<>(l, r);
     }
 
     /**
@@ -75,7 +77,7 @@ public class Pair<L, R> implements Tuple {
     }
 
     protected void assertIndexInBounds(int index) {
-        if (index < 0  || index >= size()) {
+        if (index < 0 || index >= size()) {
             throw new IndexOutOfBoundsException(
                     "Cannot retrieve item at position " + index + ", size is " + size());
         }

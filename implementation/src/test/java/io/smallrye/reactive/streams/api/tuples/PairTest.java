@@ -140,7 +140,7 @@ public class PairTest {
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> Tuples.pair(Collections.emptyList()));
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> Tuples.pair(Collections.singletonList(1)));
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> Tuples.pair(Arrays.asList(1, 2, 3)));
-        assertThatExceptionOfType(NullPointerException.class).isThrownBy(() -> Tuples.pair(null));
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> Tuples.pair(null));
     }
 
 }

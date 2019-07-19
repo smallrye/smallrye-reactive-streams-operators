@@ -16,12 +16,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class UniMapOnResultTest {
 
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testThatMapperMustNotBeNull() {
         Uni.of(1).map(null);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testThatSourceMustNotBeNull() {
         new UniMapOnResult<>(null, Function.identity());
     }

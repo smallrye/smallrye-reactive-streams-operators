@@ -5,12 +5,13 @@ import io.smallrye.reactive.streams.api.groups.*;
 import io.smallrye.reactive.streams.api.tuples.Pair;
 import org.reactivestreams.Publisher;
 
-import java.util.Objects;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
+
+import static io.smallrye.reactive.streams.api.impl.ParameterValidation.nonNull;
 
 public abstract class DefaultUni<T> implements Uni<T> {
 
@@ -121,12 +122,12 @@ public abstract class DefaultUni<T> implements Uni<T> {
 
     @Override
     public <O> O to(Function<? super Uni<T>, O> transformer) {
-        return Objects.requireNonNull(transformer, "`transformer` must not be `null`").apply(this);
+        return nonNull(transformer, "transformer").apply(this);
     }
 
     @Override
     public <O> O to(Class<O> clazz) {
-        return new UniAdaptTo<>(this, Objects.requireNonNull(clazz, "`clazz` must be set")).adapt();
+        return new UniAdaptTo<>(this, nonNull(clazz, "clazz")).adapt();
     }
 
     @Override
@@ -136,7 +137,7 @@ public abstract class DefaultUni<T> implements Uni<T> {
 
     @Override
     public <O> Uni<O> flatMap(BiConsumer<? super T, UniEmitter<? super O>> consumer) {
-        Objects.requireNonNull(consumer, "`consumer` must not be `null`");
+        nonNull(consumer, "consumer");
         return this.flatMap(x ->
                 Uni.from().emitter(emitter -> consumer.accept(x, emitter)));
     }

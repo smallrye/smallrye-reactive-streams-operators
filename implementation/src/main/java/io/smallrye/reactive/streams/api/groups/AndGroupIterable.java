@@ -4,10 +4,11 @@ import io.smallrye.reactive.streams.api.Uni;
 import io.smallrye.reactive.streams.api.impl.UniAnd;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+
+import static io.smallrye.reactive.streams.api.impl.ParameterValidation.nonNull;
 
 public class AndGroupIterable<T1> {
 
@@ -41,8 +42,7 @@ public class AndGroupIterable<T1> {
 
     @SuppressWarnings("unchecked")
     public <O> Uni<O> combinedWith(Function<List<?>, O> function) {
-        Objects.requireNonNull(function, "`function` must not be `null`");
-        return new UniAnd(source, unis, function, awaitCompletion);
+        return new UniAnd(source, unis, nonNull(function, "function"), awaitCompletion);
     }
 
 }

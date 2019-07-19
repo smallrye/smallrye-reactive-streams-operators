@@ -4,16 +4,17 @@ import io.smallrye.reactive.streams.api.Uni;
 import io.smallrye.reactive.streams.api.UniSubscriber;
 import io.smallrye.reactive.streams.api.UniSubscription;
 
-import java.util.Objects;
 import java.util.function.Function;
+
+import static io.smallrye.reactive.streams.api.impl.ParameterValidation.nonNull;
 
 public class UniMapOnFailure<I> extends UniOperator<I, I> {
 
     private final Function<? super Throwable, ? extends Throwable> mapper;
 
     public UniMapOnFailure(Uni<I> source, Function<? super Throwable, ? extends Throwable> mapper) {
-        super(Objects.requireNonNull(source, "`source` must not be `null`"));
-        this.mapper = Objects.requireNonNull(mapper, "`mapper` must not be `null`");
+        super(nonNull(source, "source"));
+        this.mapper = nonNull(mapper, "mapper");
     }
 
     @Override

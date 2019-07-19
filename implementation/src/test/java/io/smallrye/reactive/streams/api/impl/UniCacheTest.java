@@ -18,7 +18,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class UniCacheTest {
 
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testThatSourceCannotBeNull() {
         new UniCache<>(null);
     }

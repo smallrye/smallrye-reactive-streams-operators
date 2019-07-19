@@ -4,7 +4,6 @@ import io.reactivex.Emitter;
 import io.smallrye.reactive.streams.api.Uni;
 
 import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public interface UniFlatMapGroup<T> {

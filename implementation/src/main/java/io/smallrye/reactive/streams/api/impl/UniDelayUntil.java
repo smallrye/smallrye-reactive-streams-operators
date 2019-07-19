@@ -4,10 +4,11 @@ import io.smallrye.reactive.streams.api.Uni;
 import io.smallrye.reactive.streams.api.UniSubscriber;
 import io.smallrye.reactive.streams.api.UniSubscription;
 
-import java.util.Objects;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
+
+import static io.smallrye.reactive.streams.api.impl.ParameterValidation.nonNull;
 
 public class UniDelayUntil<T> extends UniOperator<T, T> {
     private final Function<? super T, ? extends Uni<?>> function;
@@ -15,7 +16,7 @@ public class UniDelayUntil<T> extends UniOperator<T, T> {
 
     public UniDelayUntil(Uni<T> source, Function<? super T, ? extends Uni<?>> function, ScheduledExecutorService executor) {
         super(source);
-        this.function = Objects.requireNonNull(function, "`function` must not be `null`");
+        this.function = nonNull(function, "function");
         this.executor = executor;
     }
 

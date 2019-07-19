@@ -54,15 +54,15 @@ public class Stages {
         ALL.add(new TerminalOperator<>(Stage.SubscriberStage.class, new SubscriberStageFactory()));
     }
 
+    private Stages() {
+        // Avoid direct instantiation.
+    }
+
     @SuppressWarnings("unchecked")
     public static <T extends Stage> Operator<T> lookup(T stage) {
         Objects.requireNonNull(stage, "The stage must not be `null`");
         return ALL.stream().filter(p -> p.test(stage)).findAny()
                 .orElseThrow(() -> new UnsupportedStageException(stage));
-    }
-
-    private Stages() {
-        // Avoid direct instantiation.
     }
 
 

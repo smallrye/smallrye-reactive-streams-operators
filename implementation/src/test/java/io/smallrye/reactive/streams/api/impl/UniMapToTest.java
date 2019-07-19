@@ -8,7 +8,7 @@ public class UniMapToTest {
 
     private Uni<Integer> one = Uni.of(1);
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testThatClassCannotBeNull() {
         one = Uni.of(1);
         one.map().to(null);

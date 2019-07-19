@@ -28,7 +28,7 @@ public class UniDelayTest {
         executor.shutdown();
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testWithNullDuration() {
         Uni.of(1).delay().of(null);
     }

@@ -25,18 +25,18 @@ public class UniAnyTest {
 
 
     @SuppressWarnings("unchecked")
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testWithNullAsIterable() {
         Uni.any((Iterable) null);
     }
 
     @SuppressWarnings("unchecked")
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testWithNullAsArray() {
         Uni.any((Uni[]) null);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testWithItemInIterable() {
         List<Uni<String>> unis = new ArrayList<>();
         unis.add(Uni.of("foo"));
@@ -45,7 +45,7 @@ public class UniAnyTest {
         Uni.any(unis);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testWithItemInArray() {
         Uni.any(Uni.of("foo"), null, Uni.of("bar"));
     }

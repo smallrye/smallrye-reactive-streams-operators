@@ -27,10 +27,10 @@ public class UniToCompletionStage {
             }
         };
 
-       uni.subscribe().withSubscriber(new UniSubscriber<T>() {
+        uni.subscribe().withSubscriber(new UniSubscriber<T>() {
             @Override
             public void onSubscribe(UniSubscription subscription) {
-                if (! ref.compareAndSet(null, subscription)) {
+                if (!ref.compareAndSet(null, subscription)) {
                     future.completeExceptionally(new IllegalStateException("Invalid subscription state - Already having an upstream subscription"));
                 }
             }

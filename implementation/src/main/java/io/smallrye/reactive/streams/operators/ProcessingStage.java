@@ -9,7 +9,6 @@ import java.util.function.Function;
  *
  * @param <I> type of the received items
  * @param <O> type of the emitted items
- *
  * @author <a href="http://escoffier.me">Clement Escoffier</a>
  */
 @FunctionalInterface

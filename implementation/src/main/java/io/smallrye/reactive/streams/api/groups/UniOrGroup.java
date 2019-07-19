@@ -4,14 +4,15 @@ import io.smallrye.reactive.streams.api.Uni;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
+
+import static io.smallrye.reactive.streams.api.impl.ParameterValidation.nonNull;
 
 public class UniOrGroup<T> {
 
     private final Uni<T> source;
 
     public UniOrGroup(Uni<T> source) {
-        this.source = Objects.requireNonNull(source, "`source` must not be `null`");
+        this.source = nonNull(source, "source");
     }
 
     public Uni<T> uni(Uni<T> other) {

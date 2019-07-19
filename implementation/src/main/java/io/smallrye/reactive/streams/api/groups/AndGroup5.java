@@ -1,7 +1,9 @@
 package io.smallrye.reactive.streams.api.groups;
 
 import io.smallrye.reactive.streams.api.Uni;
-import io.smallrye.reactive.streams.api.tuples.*;
+import io.smallrye.reactive.streams.api.tuples.Functions;
+import io.smallrye.reactive.streams.api.tuples.Tuple5;
+import io.smallrye.reactive.streams.api.tuples.Tuples;
 
 import java.util.Arrays;
 import java.util.List;

@@ -1,7 +1,6 @@
 package io.smallrye.reactive.streams.utils.recovery;
 
 import io.reactivex.FlowableSubscriber;
-import io.reactivex.exceptions.Exceptions;
 import io.reactivex.internal.subscriptions.EmptySubscription;
 import io.reactivex.internal.subscriptions.SubscriptionArbiter;
 import io.reactivex.plugins.RxJavaPlugins;

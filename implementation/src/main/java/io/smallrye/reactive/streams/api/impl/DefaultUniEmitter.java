@@ -4,17 +4,18 @@ import io.smallrye.reactive.streams.api.UniEmitter;
 import io.smallrye.reactive.streams.api.UniSubscriber;
 import io.smallrye.reactive.streams.api.UniSubscription;
 
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
+
+import static io.smallrye.reactive.streams.api.impl.ParameterValidation.nonNull;
 
 /**
  * Implementation of the Uni Emitter.
  * This implementation makes sure:
  * <ul>
- *     <li>only the first signal is propagated downstream</li>
- *     <li>cancellation action is called only once and then drop</li>
+ * <li>only the first signal is propagated downstream</li>
+ * <li>cancellation action is called only once and then drop</li>
  * </ul>
- *
+ * <p>
  * Implementation Note: This class extends AtomicReference, so do not leak. Also the contained disposable can be:
  * {@code null} (everything is fine), {@code disposed} (we are done), a runnable called on cancellation.
  *
@@ -25,7 +26,7 @@ public class DefaultUniEmitter<T> extends AtomicReference<Disposable> implements
     private final UniSubscriber<T> downstream;
 
     DefaultUniEmitter(UniSubscriber<T> subscriber) {
-        this.downstream = Objects.requireNonNull(subscriber);
+        this.downstream = nonNull(subscriber, "subscriber");
     }
 
     @Override
@@ -46,7 +47,7 @@ public class DefaultUniEmitter<T> extends AtomicReference<Disposable> implements
 
     @Override
     public void fail(Throwable failure) {
-        Objects.requireNonNull(failure, "`failure` must not be `null`");
+        nonNull(failure, "failure");
         if (get() != DisposableHelper.DISPOSED) {
             Disposable d = getAndSet(DisposableHelper.DISPOSED);
             if (d != DisposableHelper.DISPOSED) {
@@ -63,8 +64,7 @@ public class DefaultUniEmitter<T> extends AtomicReference<Disposable> implements
 
     @Override
     public UniEmitter<T> onCancellation(Runnable onCancel) {
-        Objects.requireNonNull(onCancel);
-        DisposableHelper.set(this, new ActionDisposable(onCancel));
+        DisposableHelper.set(this, new ActionDisposable(nonNull(onCancel, "onCancel")));
         return this;
     }
 

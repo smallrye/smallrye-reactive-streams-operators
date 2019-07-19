@@ -17,56 +17,28 @@ import java.util.function.Consumer;
 class SubscriptionObserver<X> {
 
     /**
-     * The state ot the exchange.
-     */
-    private enum State {
-        /**
-         * Initialization - no subscriber yet
-         */
-        INIT,
-        /**
-         * A subscriber is observing, the subscription has been passed to this subscriber.
-         */
-        SUBSCRIBED,
-        /**
-         * The stream has completed.
-         */
-        COMPLETED,
-        /**
-         * The stream has failed.
-         */
-        FAILED
-    }
-
-
-    /**
      * The source.
      */
     private final Publisher<X> upstream;
-
     /**
      * The sink.
      * It's an atomic reference to allow releasing the reference on the subscriber as mandated by the
      * Reactive Streams TCK.
      */
     private final AtomicReference<Subscriber<? super X>> downstream = new AtomicReference<>();
-
     /**
      * A reference on another {@link SubscriptionObserver} notified on cancellation, termination and
      * failure.
      */
     private final AtomicReference<SubscriptionObserver> observer = new AtomicReference<>();
-
     /**
      * The current state.
      */
     private final AtomicReference<State> state = new AtomicReference<>(State.INIT);
-
     /**
      * The subscription to upstream.
      */
     private final AtomicReference<Subscription> subscription = new AtomicReference<>();
-
     /**
      * A reference on the error emitted by upstream (if any). It's required as the observer can
      * start the observation after the error to be thrown and so we must pass it.
@@ -78,6 +50,13 @@ class SubscriptionObserver<X> {
         this.downstream.set(Objects.requireNonNull(downstream));
     }
 
+    private static <X> void apply(AtomicReference<X> ref, Consumer<X> consumer) {
+        X x = ref.get();
+        if (x != null) {
+            consumer.accept(x);
+        }
+    }
+
     void setObserver(SubscriptionObserver other) {
         this.observer.set(Objects.requireNonNull(other));
     }
@@ -86,7 +65,7 @@ class SubscriptionObserver<X> {
         upstream.subscribe(new Subscriber<X>() {
             @Override
             public synchronized void onSubscribe(Subscription sub) {
-                if (manageCompletionOrErrorFromBeforeSubscription(sub)  || manageAlreadySubscribed(sub)) {
+                if (manageCompletionOrErrorFromBeforeSubscription(sub) || manageAlreadySubscribed(sub)) {
                     return;
                 }
                 if (downstream.get() == null) {
@@ -194,10 +173,25 @@ class SubscriptionObserver<X> {
         }
     }
 
-    private static <X> void apply(AtomicReference<X> ref, Consumer<X> consumer) {
-        X x = ref.get();
-        if (x != null) {
-            consumer.accept(x);
-        }
+    /**
+     * The state ot the exchange.
+     */
+    private enum State {
+        /**
+         * Initialization - no subscriber yet
+         */
+        INIT,
+        /**
+         * A subscriber is observing, the subscription has been passed to this subscriber.
+         */
+        SUBSCRIBED,
+        /**
+         * The stream has completed.
+         */
+        COMPLETED,
+        /**
+         * The stream has failed.
+         */
+        FAILED
     }
 }

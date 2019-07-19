@@ -16,8 +16,8 @@ public interface TerminalStageFactory<T extends Stage> {
      *
      * @param engine the reactive engine, must not be {@code null}
      * @param stage  the stage, must not be {@code null}
-     * @param <I>   incoming data
-     * @param <O>  computed result
+     * @param <I>    incoming data
+     * @param <O>    computed result
      * @return the terminal stage, must not be {@code null}
      */
     <I, O> TerminalStage<I, O> create(Engine engine, T stage);

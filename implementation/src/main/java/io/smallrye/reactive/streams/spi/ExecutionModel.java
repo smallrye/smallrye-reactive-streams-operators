@@ -6,6 +6,6 @@ import java.util.function.UnaryOperator;
 
 @FunctionalInterface
 public interface ExecutionModel extends UnaryOperator<Flowable> {
-    
+
 
 }

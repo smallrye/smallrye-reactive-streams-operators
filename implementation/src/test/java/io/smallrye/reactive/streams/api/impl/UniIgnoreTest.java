@@ -48,12 +48,12 @@ public class UniIgnoreTest {
         s2.assertFailure(IOException.class, "boom 2");
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testIgnoreAndFailWithWithNullFailure() {
         Uni.of(22).ignore().andFail((Exception) null);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testIgnoreAndFailWithWithNullSupplier() {
         Uni.of(22).ignore().andFail((Supplier<Throwable>) null);
     }
@@ -92,12 +92,12 @@ public class UniIgnoreTest {
         assertThat(uni.await().indefinitely()).isEqualTo(2);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testIgnoreAndSwitchToNullSupplier() {
         Uni.of(22).ignore().andSwitchTo((Supplier<Uni<?>>) null);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testIgnoreAndSwitchToNull() {
         Uni.of(22).ignore().andSwitchTo((Uni<?>) null);
     }

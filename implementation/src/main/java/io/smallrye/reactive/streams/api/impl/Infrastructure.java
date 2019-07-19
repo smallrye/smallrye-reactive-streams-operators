@@ -13,7 +13,6 @@ public class Infrastructure {
     }
 
 
-
     public static synchronized ScheduledExecutorService getDefaultExecutor() {
         if (DEFAULT_EXECUTOR == null) {
             // TODO

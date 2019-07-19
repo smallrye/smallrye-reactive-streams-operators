@@ -5,12 +5,13 @@ import io.smallrye.reactive.streams.api.UniSubscriber;
 import io.smallrye.reactive.streams.api.UniSubscription;
 
 import java.time.Duration;
-import java.util.Objects;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
+
+import static io.smallrye.reactive.streams.api.impl.ParameterValidation.nonNull;
 
 public class UniDelay<T> extends UniOperator<T, T> {
     private final Duration delay;
@@ -18,8 +19,8 @@ public class UniDelay<T> extends UniOperator<T, T> {
 
     public UniDelay(Uni<T> source, Duration delay, ScheduledExecutorService executor) {
         super(source);
-        this.delay = Objects.requireNonNull(delay, "`delay` must not be `null`");
-        this.executor = Objects.requireNonNull(executor, "`executor` must not be `null`");
+        this.delay = nonNull(delay, "delay");
+        this.executor = nonNull(executor, "executor");
 
         if (delay.isNegative() || delay.isZero()) {
             throw new IllegalArgumentException("`delay` must be greater than 0");

@@ -1,20 +1,21 @@
 package io.smallrye.reactive.streams.api.tuples;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 
-public class Tuple3<T1, T2, T3>  extends Pair<T1, T2> implements Tuple {
+public class Tuple3<T1, T2, T3> extends Pair<T1, T2> implements Tuple {
 
     final T3 item3;
-
-    public static <T1, T2, T3> Tuple3<T1, T2, T3> of(T1 a, T2 b, T3 c) {
-        return new Tuple3<>(a, b, c);
-    }
-
 
     Tuple3(T1 a, T2 b, T3 c) {
         super(a, b);
         this.item3 = c;
+    }
+
+    public static <T1, T2, T3> Tuple3<T1, T2, T3> of(T1 a, T2 b, T3 c) {
+        return new Tuple3<>(a, b, c);
     }
 
     public T3 getItem3() {
@@ -26,10 +27,14 @@ public class Tuple3<T1, T2, T3>  extends Pair<T1, T2> implements Tuple {
         assertIndexInBounds(index);
 
         switch (index) {
-            case 0: return item1;
-            case 1: return item2;
-            case 2: return item3;
-            default: throw new IllegalArgumentException("invalid index " + index);
+            case 0:
+                return item1;
+            case 1:
+                return item2;
+            case 2:
+                return item3;
+            default:
+                throw new IllegalArgumentException("invalid index " + index);
         }
     }
 

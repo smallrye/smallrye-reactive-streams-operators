@@ -9,9 +9,10 @@ import org.reactivestreams.Publisher;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.Objects;
 import java.util.ServiceLoader;
 import java.util.concurrent.CompletableFuture;
+
+import static io.smallrye.reactive.streams.api.impl.ParameterValidation.nonNull;
 
 public class UniAdaptTo<O> {
 
@@ -20,8 +21,8 @@ public class UniAdaptTo<O> {
     private final ServiceLoader<UniAdapter> adapters;
 
     public UniAdaptTo(Uni<?> uni, Class<O> output) {
-        this.source = Objects.requireNonNull(uni, "The source cannot be `null`");
-        this.output = Objects.requireNonNull(output, "The output cannot be `null`");
+        this.source = nonNull(uni, "source");
+        this.output = nonNull(output, "output");
         this.adapters = ServiceLoader.load(UniAdapter.class);
     }
 

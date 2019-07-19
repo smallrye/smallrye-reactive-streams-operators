@@ -12,7 +12,7 @@ import static org.junit.Assert.fail;
 
 public class UniCreateTest {
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testThatConsumerCannotBeNull() {
          Uni.from().emitter(null);
     }
@@ -100,7 +100,7 @@ public class UniCreateTest {
         AssertSubscriber<Integer> subscriber = AssertSubscriber.create();
          Uni.from().<Integer>emitter(emitter -> emitter.fail(null)).subscribe().withSubscriber(subscriber);
 
-        subscriber.assertFailure(NullPointerException.class, "");
+        subscriber.assertFailure(IllegalArgumentException.class, "");
     }
 
     @Test

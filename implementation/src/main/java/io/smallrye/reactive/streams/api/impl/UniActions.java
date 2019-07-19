@@ -35,7 +35,7 @@ public class UniActions<T> extends UniOperator<T, T> {
         source().subscribe().withSubscriber(new UniSubscriber<T>() {
             @Override
             public void onSubscribe(UniSubscription subscription) {
-                UniSubscription sub  = () -> {
+                UniSubscription sub = () -> {
                     subscription.cancel();
                     if (onCancellation != null) {
                         onCancellation.run();
