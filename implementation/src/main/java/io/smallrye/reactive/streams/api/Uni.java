@@ -1,30 +1,77 @@
 package io.smallrye.reactive.streams.api;
 
+import io.smallrye.reactive.streams.api.groups.*;
 import io.smallrye.reactive.streams.api.impl.UniAdaptFrom;
 import io.smallrye.reactive.streams.api.impl.UniAny;
 import io.smallrye.reactive.streams.api.impl.UniFromGroupImpl;
+import io.smallrye.reactive.streams.api.tuples.Pair;
 import org.reactivestreams.Publisher;
 
-import java.time.Duration;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Executor;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 /**
- * A {@link Uni} represent a lazy asynchronous action. Once triggered, by a {@link UniSubscriber}, it starts computing
- * and emits the result or failures.
+ * A {@link Uni} represent a lazy asynchronous action. It follows a subscription pattern, meaning the the action
+ * is only triggered on subscription.
  * <p>
- * The {@link Uni} type proposes a set of operators to chain operations.
+ * A {@link Uni} can have two outcomes:
+ * <ol>
+ * <li>A result, potentially {@code null}</li>
+ * <li>A failure</li>
+ * </ol>
+ * <p>
+ * To trigger the computation, a {@link UniSubscriber} must subscribe to the Uni. It will receive the result or failure
+ * once they are emitted by the observed Uni. A subscriber receives (asynchronously) a {@link UniSubscription} and
+ * can cancel the demand at any time. Note that cancelling after having received the outcome is a no-op.
+ * <p>
+ * The {@link Uni} class proposes a set of <em>groups</em> for various tasks:
+ *
+ * <ul>
+ * <li>{@link UniFromGroup Uni.from()} let's you create instance of <code>Uni</code> from different sources</li>
+ * <li>{@link UniMapGroup uni.map()} let's you transform the result of the failure in a synchronous manner</li>
+ * <li>{@link Uni#flatMap(Function) uni.flatMap()}</code> let's you transform the result into another Uni, it allows
+ * asynchronous composition</li>
+ * <li>{@link UniPeekGroup uni.on()} let's you <em>peek</em> to the different signals (result, failure) and events
+ * (subscription and cancellation)</li>
+ * <li>{@link UniSubscribeGroup uni.subscribe()} let's you register a subscriber and trigger the computation</li>
+ * <li>{@link UniAwaitGroup uni.await()} let's you block and wait for the outcome</li>
+ * <li>{@link UniNullGroup uni.onNull()} let's you handle {@code null} values</li>
+ * <li>{@link UniRecoveryGroup uni.recover()} let's you handle failures and recovery on failure (such as retry)</li>
+ * <li>{@link UniOnTimeoutGroup uni.onTimeout()} let's you handle timeout and recovery on timeout</li>
+ * <li>{@link UniIgnoreGroup uni.ignore()} let's you ignore the result, but continue the processing with
+ * <em>something</em> else</li>
+ * <li>{@link UniAwaitGroup uni.and()} let's you compose several unis together and join their results</li>
+ * </ul>
  *
  * @param <T> the type of item produced by the {@link Uni}
  */
 public interface Uni<T> {
+
+    /**
+     * Creates a new {@link Uni} from various sources such as {@link CompletionStage}, {@link UniEmitter}, direct values,
+     * {@link Exception}...
+     *
+     * <p>Examples:</p>
+     * <pre><code>
+     * Uni.from().value(1); // Emit 1 at subscription time
+     * Uni.from().value(() -> x); // Emit x at subscription time, the supplier is invoked for each subscription
+     * Uni.from().completionState(cs); // Emit the result from this completion stage
+     * Uni.from().completionState(() -> cs); // Emit the result from this completion stage, the stage is not created before subscription
+     * Uni.from().failure(exception); // Emit the failure at subscription time
+     * Uni.from().deferred(() -> Uni.from().value(x)); // Defer the uni creation until subscription. Each subscription can produce a different uni
+     * Uni.from().nullValue(); // Emit null at subscription time
+     * Uni.from().nothing(); // Create a Uni not emitting any signal
+     * Uni.from().publisher(publisher); // Create a Uni from a Reactive Streams Publisher
+     * </code></pre>
+     *
+     * @return the factory used to create {@link Uni} instances.
+     * @see UniFromGroup
+     */
+    static UniFromGroup from() {
+        return UniFromGroupImpl.INSTANCE;
+    }
 
     /**
      * Creates a new {@link Uni} that completes immediately after being subscribed to with the specified (potentially
@@ -35,52 +82,8 @@ public interface Uni<T> {
      * @return the new {@link Uni}
      * @see #from()
      */
-    static <T> Uni<T> of(T value) {
+    static<T> Uni<T> of(T value) {
         return from().value(value);
-    }
-
-    /**
-     * Creates a new {@link Uni} from various sources such as {@link CompletionStage}, {@link UniEmitter}, direct values,
-     * {@link Exception}...
-     *
-     * @return the object containing method to create instances of {@link Uni}.
-     * @see UniFromGroup
-     */
-    static UniFromGroup from() {
-        return UniFromGroupImpl.INSTANCE;
-    }
-
-    /**
-     * Creates a {@link Uni} forwarding the first signal (value, {@code null} or failure). It behaves like the fastest
-     * of these competing unis. If the passed iterable is empty, the resulting {@link Uni} gets a {@code null} result
-     * just after subscription.
-     * <p>
-     * This method subscribes to the set of {@link Uni}. When one of the {@link Uni} resolves successfully or with
-     * a failure, the signals is propagated to the returned {@link Uni}. Also the other subscriptions are cancelled.
-     * Note that the callback from the subscriber are called on the thread used to resolve the winning {@link Uni}.
-     * Use {@link #publishOn(Executor)} to change the thread.
-     * <p>
-     * If the subscription to the returned {@link Uni} is cancelled, the subscription to the {@link Uni unis} from the
-     * {@code iterable} are also cancelled.
-     *
-     * @param iterable a set of {@link Uni}, must not be {@code null}.
-     * @param <T>      the type of item
-     * @return the produced {@link Uni}
-     */
-    static <T> Uni<T> any(Iterable<? extends Uni<? super T>> iterable) {
-        return new UniAny<>(iterable);
-    }
-
-    /**
-     * Like {@link #any(Iterable)} but with an array of {@link Uni} as parameter
-     *
-     * @param unis the array, must not be {@code null}, must not contain @{code null}
-     * @param <T>  the type of result
-     * @return the produced {@link Uni}
-     */
-    @SafeVarargs
-    static <T> Uni<T> any(Uni<? super T>... unis) {
-        return new UniAny<>(unis);
     }
 
     /**
@@ -88,36 +91,106 @@ public interface Uni<T> {
      * (using a {@link UniSubscriber}, callbacks, or a {@link CompletionStage}. Unlike {@link #await()}, this method
      * configures non-blocking retrieval of the result and failure.
      *
+     * <p>Examples:</p>
+     * <pre><code>
+     *     Uni<String> uni = ...;
+     *
+     *    Subscription sub = uni.subscribe().with( // The return subscription can be used to cancel the operation
+     *              result -> {},           // Callback calls on result
+     *              failure -> {}           // Callback calls on failure
+     *    );
+     *
+     *    UniSubscriber<String> myUniSubscriber = ...
+     *    uni.subscribe().withSubscriber(myUniSubscriber); // Subscribes to the Uni with the passed subscriber
+     *
+     *    CompletableFuture future = uni.subscribe().asCompletableFuture(); // Get a CompletionStage receiving the result or failure
+     *    // Cancelling the returned future cancels the subscription.
+     * </code></pre>
+     *
      * @return the object to configure the subscription.
+     * @see #await() for waiting (blocking the caller thread) until the resolution of the observed Uni.
      */
     UniSubscribeGroup<T> subscribe();
 
     /**
-     * Awaits (blocking the caller thread) until the result of this {@link Uni} is emitted.
-     * <p>
-     * For example, you can retrieve the result using:
-     * <code>
-     * T res = uni.await().indefinitely();
-     * </code>
-     * Or configure a timeout with:
-     * <code>
-     * T res = uni.await().atMost(Duration.ofMillis(1000));
-     * </code>
-     * You can also retrieve an {@link Optional} (empty on {@code null}) with:
-     * <code>
-     * Optional<T> res = uni.await().asOptional().indefinitely();
-     * </code>
+     * Awaits (blocking the caller thread) until the result or a failure is emitted by the observed {@link Uni}.
+     * If the observed uni fails, the failure is thrown. In the case of a checked exception, the exception is wrapped
+     * into a {@link java.util.concurrent.CompletionException}.
+     *
+     * <p>Examples:</p>
+     * <pre><code>
+     * Uni&lt;T&gt; uni = ...;
+     * T res = uni.await().indefinitely(); // Await indefinitely until it get the result.
+     * T res = uni.await().atMost(Duration.ofMillis(1000)); // Awaits at most 1s. After that, a TimeoutException is thrown
+     * Optional<T> res = uni.await().asOptional().indefinitely(); // Retrieves the result as an Optional, empty if the result is null
+     * </code></pre>
      *
      * @return the object to configure the retrieval.
      */
     UniAwaitGroup<T> await();
 
+    /**
+     * Adds behavior when various signals (result and failure) are emitted and events (subscription and cancellation) are
+     * received.
+     *
+     * <p>Examples:</p>
+     * <pre><code>
+     *     Uni&lt;T&gt; upstream = ...;
+     *     Uni&lt;T&gt; uni = upstream
+     *      .on().result(result-> {}) // called when the observed uni emits a result
+     *      .on().failure(failure -> {}) // called when the observed uni emits a failure
+     *      .on().terminate((result, failure) -> {}) // called when the observed uni emits a result or failure
+     *      .on().subscription(sub -> {}) // called when a subscriber subscribes to the Uni
+     *      .on().cancellation(() -> {}) // called when a subscriber cancels a subscription
+     * </code></pre>
+     *
+     * @return the object to configure the actions.
+     */
     UniPeekGroup<T> on();
 
-    // Operators
+    /**
+     * Add specific behavior when the observed {@link Uni} emits a {@code null} result. While {@code null} is a valid
+     * value, it may require specific processing. This group of operators allows implementing this specific behavior.
+     *
+     * <p>Examples:</p>
+     * <pre><code>
+     *     Uni&lt;T&gt; upstream = ...;
+     *     Uni&lt;T&gt; uni = ...;
+     *     uni = upstream.on().onNull().continueWith(anotherValue) // use the fallback value if upstream emits null
+     *     uni = upstream.on().onNull().fail() // propagate a NullPointerException if upstream emits null
+     *     uni = upstream.on().onNull().failWith(exception) // propagate the given exception if upstream emits null
+     *     uni = upstream.on().onNull().switchTo(another) // switch to another uni if upstream emits null
+     * </code></pre>
+     *
+     * @return the object to configure the behavior when receiving {@code null}
+     */
+    UniNullGroup<T> onNull();
+
+    /**
+     * Transforms the results and failures emitted by this {@link Uni} by applying synchronous function to them.
+     *
+     * <p>Examples:</p>
+     * <pre><code>
+     *     Uni&lt;T&gt; upstream = ...;
+     *     Uni&lt;T&gt; uni = ...;
+     *     uni = upstream.map().result(t -> ...); // transforms the result using the given function
+     *     uni = upstream.map().to(MyOtherClass.class); // cast the result to the given class
+     *     uni = upstream.map().toBoolean(predicate); // test the result using the given predicate and emits the result as a boolean
+     *     uni = upstream.map().failure(failure -> ...); // transforms the failure using the given function
+     *     uni = upstream.map().toFailure(t -> ...) // transforms the result into a failure
+     * </code></pre>
+     *
+     * Transforming failure is not a recovery action. See {@link #recover()} to handle failure gracefully.
+     *
+     * @return the object to configure the functions to apply.
+     * @see #map(Function) as a shorter version for {@code map().result(...)}
+     * @see #flatMap(Function) for asynchronous operations
+     */
+    UniMapGroup<T> map();
 
     /**
      * Transforms the result (potentially null) emitted by this {@link Uni} by applying a (synchronous) function to it.
+     * This method is equivalent to {@code uni.map().onResult(x -> ...)}
      * For asynchronous composition, look at flatMap.
      *
      * @param mapper the mapper function, must not be {@code null}
@@ -125,6 +198,7 @@ public interface Uni<T> {
      * @return a new {@link Uni} computing a result of type {@code <O>}.
      */
     <O> Uni<O> map(Function<T, O> mapper);
+
 
     /**
      * Runs {@link UniSubscriber#onResult(Object)}  and {@link UniSubscriber#onFailure(Throwable)} on the supplied
@@ -146,13 +220,16 @@ public interface Uni<T> {
      */
     Uni<T> cache();
 
+
     /**
-     * Joins the completion of this {@link Uni} and another {@link Uni} into the resulting {@link Uni}
+     * // TODO Rewrite me.
+     * Combines the result of this {@link Uni} with the result of {@code other} into a {@link Pair}.
+     * If {@code this} or {@code other} fails, the other resolution is cancelled.
      *
-     * @param other
-     * @return
+     * @param other the other {@link Uni}, must not be {@code null}
+     * @return the combination of the 2 results.
      */
-    Uni<Void> and(Uni<?> other);
+    AndGroup<T> and();
 
     /**
      * Transforms this {@link Uni} into an instance of {@code O} using the given {@code transformer} function.
@@ -208,260 +285,123 @@ public interface Uni<T> {
         return UniAdaptFrom.adaptFrom(instance);
     }
 
-    /**
-     * Casts the item produced by this {@link Uni} to the given type.
-     * The returned {@link Uni} fails if the cast fails.
-     *
-     * @param clazz
-     * @param <O>
-     * @return
-     */
-    <O> Uni<O> cast(Class<O> clazz);
-
-    /**
-     * Concatenates the result of this {@link Uni} with the result from the passed {@link Uni}.
-     * If this or the other {@link Uni} fails, the resulting {@link Uni} propagates the failure.
-     *
-     * @param other
-     * @param <O>
-     * @return
-     */
-    <O> Uni<Pair<T, O>> concat(Uni<? extends O> other);
 
     /**
      * Delays the completion of this {@link Uni} by the given duration.
      * The downstream signals are sent on the default executor.
+     * <p>
+     * // TODO
      *
-     * @param duration
      * @return
      */
-    Uni<T> delay(Duration duration);
+
+    UniDelayGroup<T> delay();
 
     /**
-     * Delays the completion of this {@link Uni} by the given duration.
-     * The downstream signals are sent on the passed executor.
+     * Transform the result resolved by this {@link Uni} asynchronously, returning the signals emitted by another
+     * {@link Uni} produced by the given {@code mapper}.
+     * <p>
+     * The mapper is called with the result of this {@link Uni} and returns an {@link Uni}, possibly using another
+     * result type. The signals of the produced {@link Uni} are forwarded to the {@link Uni} returned by this method.
      *
-     * @param duration
-     * @param scheduler
-     * @return
-     */
-    Uni<T> delay(Duration duration, ScheduledExecutorService scheduler);
-
-    /**
-     * Returns a new {@link Uni} completed with the value resolved by this {@link Uni} if it passes the check, or
-     * completed with {@code null} if not.
-     *
-     * @param filter
-     * @return
-     */
-    Uni<T> filter(Predicate<? super T> filter);
-
-    /**
-     * Transform the result resolved by this {@link Uni} asynchronously, returning the value emitted the the produced
-     * mapper function.
-     *
-     * @param mapper
-     * @param <O>
-     * @return
+     * @param mapper the function called with the result of the this {@link Uni} and producing the {@link Uni}
+     * @param <O>    the type of result
+     * @return a new {@link Uni} with an asynchronously mapped result or failure
      */
     <O> Uni<O> flatMap(Function<? super T, ? extends Uni<? extends O>> mapper);
 
     /**
-     * @return a {@link Uni} propagating the same signal as this {@link Uni}. If this {@link Uni} resolves with a
-     * {@code non-null} value, the returned {@link Uni} produces {@code null}.
-     */
-    Uni<Void> ignore();
-
-    /**
-     * Produces a new {@link Uni} propagating the first signals emitted by either this {@link Uni} or the other {@link Uni}.
+     * Transforms the result resolved by this {@link Uni} asynchronously, returning a {@link Uni} emitting the signals
+     * instructed by the passed {@link UniEmitter}.
      *
-     * @param other
-     * @return
+     * @param consumer the consumer called with the result of the this {@link Uni} and with an {@link UniEmitter} used
+     *                 to emit the signals from the resulting {@link Uni}. Must not be {@code null}.
+     * @param <O>      the type of result
+     * @return this {@link Uni}
      */
-    Uni<T> or(Uni<? extends T> other);
+    <O> Uni<O> flatMap(BiConsumer<? super T, UniEmitter<? super O>> consumer);
 
     /**
-     * Provides a default value if this {@link Uni} is completed with {@code null}.
-     * Note that if this {@link Uni} fails, the default value is not used.
+     * Creates a {@link Uni} ignoring the result of the current {@link Uni} and continuing with either
+     * {@link UniIgnoreGroup#andContinueWith(Object) another result}, {@link UniIgnoreGroup#andFail() a failure},
+     * or {@link UniIgnoreGroup#andSwitchTo(Uni) another Uni}. The produced {@link Uni} propagates the failure
+     * signal as this {@link Uni}.
      *
-     * @param defaultValue the default value
-     * @return
+     * @return the {@link UniIgnoreGroup} to configure the action.
      */
-    Uni<T> orElse(T defaultValue);
+    UniIgnoreGroup<T> ignore();
 
     /**
-     * Provides a default value if this {@link Uni} is completed with {@code null}.
+     * Composes this {@link Uni} with a set of {@link Uni} passed to {@link UniOrGroup#unis(Uni[])} to produce a new
+     * {@link Uni} forwarding the first signal (value, {@code null} or failure). It behaves like the fastest
+     * of these competing unis.
      *
-     * @param supplier
-     * @return
-     */
-    Uni<T> orElse(Supplier<T> supplier);
-
-    /**
-     * If this {@link Uni} resolves with {@code null}, the produced {@link Uni} throws the passed failure.
+     * The process subscribes to the set of {@link Uni}. When one of the {@link Uni} resolves successfully or with
+     * a failure, the signals is propagated to the returned {@link Uni}. Also the other subscriptions are cancelled.
+     * Note that the callback from the subscriber are called on the thread used to resolve the winning {@link Uni}.
+     * Use {@link #publishOn(Executor)} to change the thread.
      *
-     * @param e the exception to propagate if this {@link Uni} is resolved with {@code null}.
-     * @return the new {@link Uni}
-     */
-    Uni<T> orElseThrow(Throwable e);
-
-    /**
-     * If this {@link Uni} resolves with {@code null}, the produced {@link Uni} throws the exception returned
-     * by the passed supplier.
+     * If the subscription to the returned {@link Uni} is cancelled, the subscription to the {@link Uni unis} from the
+     * {@code iterable} are also cancelled.
      *
-     * @param supplier the producer of the exception to propagate if this {@link Uni} is resolved with {@code null}.
-     * @return the new {@link Uni}
+     * @return the object to enlist the participants
+     * @see #any(Iterable) for a static version of this operator
      */
-    Uni<T> orElseThrow(Supplier<? extends Throwable> supplier);
+    UniOrGroup or();
+
 
     /**
-     * Produces a {@link Uni} sending a {@link TimeoutException} if this {@link Uni} does not resolve successfully (with
-     * a value or {@code null}) before the passed duration.
-     * The downstream processing are going to be called on the default executor.
-     *
-     * @param duration the duration
-     * @return the new {@link Uni}
-     */
-    Uni<T> timeout(Duration duration);
-
-    /**
-     * Produces a {@link Uni} sending a {@link TimeoutException} if this {@link Uni} does not resolve successfully (with
-     * a value or {@code null}) before the passed duration.
+     * Produces a {@link Uni} reacting when a time out is reached.
+     * This {@link Uni} detects if this  {@link Uni }does not resolve successfully (with a value or {@code null})
+     * before the configured timeout.
      * <p>
-     * The downstream processing are going to be called on the passed executor.
+     * Examples:
+     * <code>
+     * uni.onTimeout().of(Duration.ofMillis(1000).fail() // Propagate a TimeOutException
+     * uni.onTimeout().of(Duration.ofMillis(1000).recover().withValue("fallback") // Inject a fallback result on timeout
+     * uni.onTimeout().of(Duration.ofMillis(1000).on(myExecutor)... // Configure the executor calling on timeout actions
+     * uni.onTimeout().of(Duration.ofMillis(1000).recover().withRetry().atMost(5) // Retry five times
+     * </code>
      *
-     * @param duration the duration
-     * @param executor the executor to use, {@code null} to use the default executor
-     * @return the new {@link Uni}
+     * @return the on timeout group
      */
-    Uni<T> timeout(Duration duration, ScheduledExecutorService executor);
+    UniOnTimeoutGroup<T> onTimeout();
+    //TODO CES - thinking about renaming it to uni.onNoResult().after(duration).[continueWith(...), fail...]
+
+    UniRecoveryGroup<T> recover();
 
     /**
-     * Aggregates two given {@link Uni Unis} into a new {@link Uni} that will be fulfilled when both {@link Uni} are
-     * resolved successfully aggregating their values into a {@link Pair}.
+     * Creates a {@link Uni} forwarding the first signal (value, {@code null} or failure). It behaves like the fastest
+     * of these competing unis. If the passed iterable is empty, the resulting {@link Uni} gets a {@code null} result
+     * just after subscription.
      * <p>
-     * The produced {@link Uni} forwards the failure if one of the two {@link Uni Unis} produces a failure. This will
-     * cause the other {@link Uni} to be cancelled.
+     * This method subscribes to the set of {@link Uni}. When one of the {@link Uni} resolves successfully or with
+     * a failure, the signals is propagated to the returned {@link Uni}. Also the other subscriptions are cancelled.
+     * Note that the callback from the subscriber are called on the thread used to resolve the winning {@link Uni}.
+     * Use {@link #publishOn(Executor)} to change the thread.
+     * <p>
+     * If the subscription to the returned {@link Uni} is cancelled, the subscription to the {@link Uni unis} from the
+     * {@code iterable} are also cancelled.
      *
-     * @param left  the first participant
-     * @param right the second participant
-     * @param <L>   the type produced by the first participant
-     * @param <R>   the type produced by the second participant
-     * @return the new {@link Uni}
+     * @param iterable a set of {@link Uni}, must not be {@code null}.
+     * @param <T>      the type of item
+     * @return the produced {@link Uni}
      */
-    static <L, R> Uni<Pair<L, R>> zip(Uni<? extends L> left, Uni<? extends R> right) {
-        throw new UnsupportedOperationException("Not implemented yet");
+    static<T> Uni<T> any(Iterable<? extends Uni<? super T>> iterable) {
+        return new UniAny<>(iterable);
     }
 
     /**
-     * Aggregates the given {@link Uni Unis} into a new {@link Uni} that will be fulfilled when <strong>all</strong>
-     * {@link Uni Unis} are resolved successfully aggregating their values into a {@link Tuple}.
-     * <p>
-     * The produced {@link Uni} forwards the failure if one of the {@link Uni Unis} produces a failure. This will cause
-     * the other {@link Uni} to be cancelled.
+     * Like {@link #any(Iterable)} but with an array of {@link Uni} as parameter
      *
-     * @param iterable the set of participants
-     * @param <O>      the type produced by the participants
-     * @return the new {@link Uni}
+     * @param unis the array, must not be {@code null}, must not contain @{code null}
+     * @param <T>  the type of result
+     * @return the produced {@link Uni}
      */
-    static <O> Uni<Tuple<O>> zip(Iterable<Uni<? extends O>> iterable) {
-        throw new UnsupportedOperationException("Not implemented yet");
+    @SafeVarargs
+    static<T> Uni<T> any(Uni<? super T>... unis) {
+        return new UniAny<>(unis);
     }
-
-    /**
-     * Aggregates this {@link Uni} with another one. It results into a new {@link Uni} that will be fulfilled when both
-     * {@link Uni} are resolved successfully aggregating their values into a {@link Pair}.
-     * <p>
-     * The produced {@link Uni} forwards the failure if one of the two {@link Uni Unis} produces a failure. This will
-     * cause the other {@link Uni} to be cancelled.
-     *
-     * @param other the other participant
-     * @param <O>   the type produced by the second participant
-     * @return the new {@link Uni}
-     */
-    <O> Uni<Pair<? extends T, ? extends O>> zipWith(Uni<? extends O> other);
-
-    /**
-     * Aggregates the given {@link Uni Unis} into a new {@link Uni} that will be fulfilled when <strong>all</strong>
-     * {@link Uni Unis} are resolved successfully aggregating their values into a {@link Tuple}.
-     * <p>
-     * The produced {@link Uni} forwards the failure if one of the {@link Uni Unis} produces a failure. This will
-     * cause the other {@link Uni} to be cancelled.
-     *
-     * @param iterable the other participants
-     * @return the new {@link Uni}
-     */
-    Uni<Tuple<? extends T>> zipWith(Iterable<Uni<? extends T>> iterable);
-
-
-    // Error Management
-
-    /**
-     * Produces a new {@link Uni} invoking the given function when this {@link Uni} propagates a failure. The function
-     * can transform the received failure into another exception.
-     *
-     * @param mapper the mapper function, must not be {@code null}
-     * @return the new {@link Uni}
-     */
-    Uni<T> onFailureMap(Function<? super Throwable, ? extends Throwable> mapper);
-
-    /**
-     * Produces a new {@link Uni} invoking the given function when this {@link Uni} propagates a failure. The function
-     * produces a result (potentially {@code null}) used as result by the produced {@link Uni}. Note that if the
-     * mapper throws an exception, the produced {@link Uni} propagates the failure.
-     *
-     * @param mapper the mapper function, must not be {@code null}
-     * @return the new {@link Uni}
-     */
-    Uni<T> onFailureResume(Function<? super Throwable, ? extends T> mapper);
-
-    /**
-     * Produces a new {@link Uni} invoking the given function when this {@link Uni} propagates a failure. The function
-     * produces a fallback {@link Uni}. Note that if the mapper throws an exception, the produced {@link Uni} propagates
-     * the failure.
-     *
-     * @param mapper the mapper function, must not be {@code null}
-     * @return the new {@link Uni}
-     */
-    Uni<T> onFailureSwitch(Function<? super Throwable, Uni<? extends T>> mapper);
-
-    /**
-     * Produces a new {@link Uni} producing the given value (potentially {@code null}) when this {@link Uni} propagates
-     * a failure.
-     *
-     * @param defaultValue the value replacing the failure, can be {@code null}
-     * @return the new {@link Uni}
-     */
-    Uni<T> onFailureReturn(T defaultValue);
-
-    /**
-     * Produces a new {@link Uni} producing a value (potentially {@code null}) using the given supplier when
-     * this {@link Uni} propagates a failure.
-     *
-     * @param supplier the supplier producing the value, must not be {@code null} but the returned value can be
-     *                 {@code null}. If the supplier throws an exception, this exception is propagated into the
-     *                 returned {@code Uni}.
-     * @return the new {@link Uni}
-     */
-    Uni<T> onFailureReturn(Supplier<? extends T> supplier);
-
-    /**
-     * Retries the resolution of this {@link Uni} indefinitely. The process of retrying uses a re-subscription.
-     *
-     * @return a new {@link Uni} retrying indefinitely to subscribe to this {@link Uni} until it gets a success.
-     */
-    Uni<T> retry();
-
-    /**
-     * Retries the resolution of this {@link Uni} at most {@code count} times. The process of retrying uses a
-     * re-subscription.
-     *
-     * @param count the number of attempts, must be greater than 0.
-     * @return a new {@link Uni} retrying at most {@code count} time to subscribe to this {@link Uni} until it gets a
-     * success. When the count is reached, the last failure is propagated.
-     */
-    Uni<T> retry(int count);
-
 
     // Exports
 
@@ -481,4 +421,5 @@ public interface Uni<T> {
     Publisher<T> toPublisher();
 
 
+    <T2> Uni<Pair<T, T2>> and(Uni<T2> other);
 }
