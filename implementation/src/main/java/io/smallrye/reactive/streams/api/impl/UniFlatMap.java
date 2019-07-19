@@ -32,29 +32,7 @@ public class UniFlatMap<I, O> extends UniOperator<I, O> {
 
             @Override
             public void onResult(I result) {
-                Uni<? extends O> outcome;
-                try {
-                     outcome  = mapper.apply(result);
-                    // We cannot call onResult here, as if onResult would throw an exception
-                    // it would be caught and onFailure would be called. This would be illegal.
-                } catch (Exception e) {
-                    subscriber.onFailure(e);
-                    return;
-                }
-
-                if (outcome == null) {
-                    subscriber.onFailure(new NullPointerException("The mapper returned `null`"));
-                } else {
-                    @SuppressWarnings("unchecked")
-                    DelegatingUniSubscriber<? super O> delegate = new DelegatingUniSubscriber(subscriber) {
-                        @Override
-                        public void onSubscribe(UniSubscription secondSubscription) {
-                            flatMapSubscription.replace(secondSubscription);
-                        }
-                    };
-
-                    outcome.subscribe().withSubscriber(delegate);
-                }
+                invokeAndSubstitute(mapper, result, subscriber, flatMapSubscription);
             }
 
             @Override
@@ -64,7 +42,35 @@ public class UniFlatMap<I, O> extends UniOperator<I, O> {
         });
     }
 
-    private class FlatMapSubscription implements UniSubscription {
+    static <I, O> void invokeAndSubstitute(Function<? super I, ? extends Uni<? extends O>> mapper, I input,
+                                           WrapperUniSubscriber<? super O> subscriber,
+                                           FlatMapSubscription flatMapSubscription) {
+        Uni<? extends O> outcome;
+        try {
+            outcome  = mapper.apply(input);
+            // We cannot call onResult here, as if onResult would throw an exception
+            // it would be caught and onFailure would be called. This would be illegal.
+        } catch (Exception e) {
+            subscriber.onFailure(e);
+            return;
+        }
+
+        if (outcome == null) {
+            subscriber.onFailure(new NullPointerException("The mapper returned `null`"));
+        } else {
+            @SuppressWarnings("unchecked")
+            DelegatingUniSubscriber<? super O> delegate = new DelegatingUniSubscriber(subscriber) {
+                @Override
+                public void onSubscribe(UniSubscription secondSubscription) {
+                    flatMapSubscription.replace(secondSubscription);
+                }
+            };
+
+            outcome.subscribe().withSubscriber(delegate);
+        }
+    }
+
+    protected static class FlatMapSubscription implements UniSubscription {
 
         private final AtomicReference<Subscription> upstream = new AtomicReference<>();
 

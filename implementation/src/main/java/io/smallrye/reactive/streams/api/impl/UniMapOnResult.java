@@ -7,11 +7,11 @@ import io.smallrye.reactive.streams.api.UniSubscription;
 import java.util.Objects;
 import java.util.function.Function;
 
-public class UniMap<I, O> extends UniOperator<I, O> {
+public class UniMapOnResult<I, O> extends UniOperator<I, O> {
 
     private final Function<? super I, ? extends O> mapper;
 
-    UniMap(Uni<I> source, Function<I, O> mapper) {
+    public UniMapOnResult(Uni<I> source, Function<? super I, ? extends O> mapper) {
         super(Objects.requireNonNull(source, "`source` must not be `null`"));
         this.mapper = Objects.requireNonNull(mapper, "`mapper` must not be `null`");
     }
