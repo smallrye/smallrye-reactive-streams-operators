@@ -1,6 +1,6 @@
 package io.smallrye.reactive.streams.api.impl;
 
-import io.smallrye.reactive.streams.api.UniSubscribeGroup;
+import io.smallrye.reactive.streams.api.groups.UniSubscribeGroup;
 import io.smallrye.reactive.streams.api.UniSubscriber;
 import io.smallrye.reactive.streams.api.UniSubscription;
 

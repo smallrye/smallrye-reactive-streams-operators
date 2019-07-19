@@ -1,7 +1,7 @@
 package io.smallrye.reactive.streams.api.impl;
 
-import io.smallrye.reactive.streams.api.UniAwaitGroup;
-import io.smallrye.reactive.streams.api.UniAwaitOptionalGroup;
+import io.smallrye.reactive.streams.api.groups.UniAwaitGroup;
+import io.smallrye.reactive.streams.api.groups.UniAwaitOptionalGroup;
 
 import java.time.Duration;
 import java.util.Optional;

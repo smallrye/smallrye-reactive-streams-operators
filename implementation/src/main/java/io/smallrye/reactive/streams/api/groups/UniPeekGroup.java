@@ -1,4 +1,7 @@
-package io.smallrye.reactive.streams.api;
+package io.smallrye.reactive.streams.api.groups;
+
+import io.smallrye.reactive.streams.api.Uni;
+import io.smallrye.reactive.streams.api.UniSubscription;
 
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;

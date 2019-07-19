@@ -1,7 +1,7 @@
 package io.smallrye.reactive.streams.api.impl;
 
 import io.smallrye.reactive.streams.api.Uni;
-import io.smallrye.reactive.streams.api.UniPeekGroup;
+import io.smallrye.reactive.streams.api.groups.UniPeekGroup;
 import io.smallrye.reactive.streams.api.UniSubscription;
 
 import java.util.Objects;

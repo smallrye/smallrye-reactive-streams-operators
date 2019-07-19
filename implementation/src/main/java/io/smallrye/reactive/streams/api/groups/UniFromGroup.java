@@ -1,5 +1,8 @@
-package io.smallrye.reactive.streams.api;
+package io.smallrye.reactive.streams.api.groups;
 
+import io.smallrye.reactive.streams.api.Uni;
+import io.smallrye.reactive.streams.api.UniEmitter;
+import io.smallrye.reactive.streams.api.UniSubscriber;
 import org.reactivestreams.Publisher;
 
 import java.time.Duration;
@@ -81,7 +84,7 @@ public interface UniFromGroup {
     /**
      * Creates a new {@link Uni} that completes immediately after being subscribed to with the specified (potentially
      * {@code null}) value. The value is retrieved, at subscription time, using the passed {@link Supplier}. Unlike
-     * {@link #deferredUni(Supplier)}, the supplier produces a value (result) and not an {@link Uni}.
+     * {@link #deferred(Supplier)}, the supplier produces a value (result) and not an {@link Uni}.
      * <p>
      * If the supplier produces {@code null}, {@code null} is used as value.
      * If the supplier throws an exception, this exception is propagated as failure.
@@ -123,6 +126,7 @@ public interface UniFromGroup {
      */
     <T> Uni<T> optional(Supplier<Optional<T>> optional);
 
+    //TODO Javadoc
     Uni<Void> delay(Duration duration, ScheduledExecutorService executor);
 
     /**
@@ -159,7 +163,7 @@ public interface UniFromGroup {
      * @param <T>      the type of item
      * @return the produced {@link Uni}
      */
-    <T> Uni<T> deferredUni(Supplier<? extends Uni<? extends T>> supplier);
+    <T> Uni<T> deferred(Supplier<? extends Uni<? extends T>> supplier);
 
     /**
      * Creates a {@link Uni} that emits the passed failure immediately after being subscribed to.

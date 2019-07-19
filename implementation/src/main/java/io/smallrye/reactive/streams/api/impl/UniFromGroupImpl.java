@@ -2,7 +2,7 @@ package io.smallrye.reactive.streams.api.impl;
 
 import io.smallrye.reactive.streams.api.Uni;
 import io.smallrye.reactive.streams.api.UniEmitter;
-import io.smallrye.reactive.streams.api.UniFromGroup;
+import io.smallrye.reactive.streams.api.groups.UniFromGroup;
 import org.reactivestreams.Publisher;
 
 import java.time.Duration;
@@ -93,7 +93,7 @@ public class UniFromGroupImpl implements UniFromGroup {
     }
 
     @Override
-    public <T> Uni<T> deferredUni(Supplier<? extends Uni<? extends T>> supplier) {
+    public <T> Uni<T> deferred(Supplier<? extends Uni<? extends T>> supplier) {
         return new UniDefer<>(Objects.requireNonNull(supplier, "`supplier` must not be `null`"));
     }
 

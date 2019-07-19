@@ -14,7 +14,7 @@ import static org.awaitility.Awaitility.await;
 
 public class UniAwaitGroupTest {
 
-    @Test(timeout = 100)
+    @Test(timeout = 1000)
     public void testAwaitingOnAnAlreadyResolvedUni() {
         assertThat(Uni.of(1).await().indefinitely()).isEqualTo(1);
     }
@@ -34,7 +34,7 @@ public class UniAwaitGroupTest {
         }
     }
 
-    // Uni.from().failure before timeout
+    // Uni.from().failure before onTimeout
 
     @Test(timeout = 1000)
     public void testAwaitingOnAnAsyncUni() {

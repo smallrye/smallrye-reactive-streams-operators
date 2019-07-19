@@ -1,5 +1,9 @@
-package io.smallrye.reactive.streams.api;
+package io.smallrye.reactive.streams.api.groups;
 
+
+import io.smallrye.reactive.streams.api.Uni;
+import io.smallrye.reactive.streams.api.UniSubscriber;
+import io.smallrye.reactive.streams.api.UniSubscription;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
