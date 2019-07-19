@@ -1,15 +1,16 @@
 package io.smallrye.reactive.streams.api.impl;
 
 import io.smallrye.reactive.streams.api.*;
+import io.smallrye.reactive.streams.api.groups.*;
+import io.smallrye.reactive.streams.api.tuples.Pair;
 import org.reactivestreams.Publisher;
 
-import java.time.Duration;
 import java.util.Objects;
 import java.util.concurrent.Executor;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.*;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 public abstract class DefaultUni<T> implements Uni<T> {
 
@@ -30,7 +31,7 @@ public abstract class DefaultUni<T> implements Uni<T> {
     // Operator
     @Override
     public <O> Uni<O> map(Function<T, O> mapper) {
-        return new UniMap<>(this, mapper);
+        return map().result(mapper);
     }
 
     @Override
@@ -119,11 +120,6 @@ public abstract class DefaultUni<T> implements Uni<T> {
     }
 
     @Override
-    public Uni<Void> and(Uni<?> other) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
     public <O> O to(Function<? super Uni<T>, O> transformer) {
         return Objects.requireNonNull(transformer, "`transformer` must not be `null`").apply(this);
     }
@@ -134,83 +130,54 @@ public abstract class DefaultUni<T> implements Uni<T> {
     }
 
     @Override
-    public <O> Uni<O> cast(Class<O> clazz) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
-    public <O> Uni<Pair<T, O>> concat(Uni<? extends O> other) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
-    public Uni<T> delay(Duration duration) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
-    public Uni<T> delay(Duration duration, ScheduledExecutorService scheduler) {
-        return new UnyDelay<>(this, duration, scheduler);
-    }
-
-    @Override
-    public Uni<T> filter(Predicate<? super T> filter) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
     public <O> Uni<O> flatMap(Function<? super T, ? extends Uni<? extends O>> transformer) {
         return new UniFlatMap<>(this, transformer);
     }
 
     @Override
-    public Uni<Void> ignore() {
-        return this.map(x -> null);
+    public <O> Uni<O> flatMap(BiConsumer<? super T, UniEmitter<? super O>> consumer) {
+        Objects.requireNonNull(consumer, "`consumer` must not be `null`");
+        return this.flatMap(x ->
+                Uni.from().emitter(emitter -> consumer.accept(x, emitter)));
+    }
+
+    public UniDelayGroup<T> delay() {
+        return new UniDelayGroup<>(this, null);
     }
 
     @Override
-    public Uni<T> or(Uni<? extends T> other) {
-        throw new UnsupportedOperationException("Not implemented yet");
+    public UniIgnoreGroup<T> ignore() {
+        return new UniIgnoreGroup<>(this);
     }
 
     @Override
-    public Uni<T> orElse(T defaultValue) {
-        throw new UnsupportedOperationException("Not implemented yet");
+    public UniNullGroup<T> onNull() {
+        return new UniNullGroup<>(this);
     }
 
     @Override
-    public Uni<T> orElse(Supplier<T> supplier) {
-        throw new UnsupportedOperationException("Not implemented yet");
+    public UniOrGroup<T> or() {
+        return new UniOrGroup<>(this);
     }
 
     @Override
-    public Uni<T> orElseThrow(Throwable e) {
-        throw new UnsupportedOperationException("Not implemented yet");
+    public UniOnTimeoutGroup<T> onTimeout() {
+        return new UniOnTimeoutGroup<>(this, null, null);
     }
 
     @Override
-    public Uni<T> orElseThrow(Supplier<? extends Throwable> supplier) {
-        throw new UnsupportedOperationException("Not implemented yet");
+    public UniRecoveryGroup<T> recover() {
+        return new UniRecoveryGroupImpl<>(this, null);
     }
 
     @Override
-    public Uni<T> timeout(Duration duration) {
-        throw new UnsupportedOperationException("Not implemented yet");
+    public UniMapGroup<T> map() {
+        return new DefaultUniMapGroup<>(this);
     }
 
     @Override
-    public Uni<T> timeout(Duration duration, ScheduledExecutorService executor) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
-    public <O> Uni<Pair<? extends T, ? extends O>> zipWith(Uni<? extends O> other) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
-    public Uni<Tuple<? extends T>> zipWith(Iterable<Uni<? extends T>> other) {
-        throw new UnsupportedOperationException("Not implemented yet");
+    public AndGroup<T> and() {
+        return new AndGroup<>(this);
     }
 
     @Override
@@ -218,44 +185,13 @@ public abstract class DefaultUni<T> implements Uni<T> {
         return new UniPeekGroupImpl<>(this);
     }
 
-
-    @Override
-    public Uni<T> onFailureMap(Function<? super Throwable, ? extends Throwable> mapper) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
-    public Uni<T> onFailureResume(Function<? super Throwable, ? extends T> mapper) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
-    public Uni<T> onFailureSwitch(Function<? super Throwable, Uni<? extends T>> mapper) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
-    public Uni<T> onFailureReturn(T defaultValue) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
-    public Uni<T> onFailureReturn(Supplier<? extends T> supplier) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
-    public Uni<T> retry() {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
-    public Uni<T> retry(int count) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
     @Override
     public <O> Multi<O> toMulti() {
         throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
+    public <T2> Uni<Pair<T, T2>> and(Uni<T2> other) {
+        return this.and().uni(other).asPair();
     }
 }
