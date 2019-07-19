@@ -9,9 +9,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-/**
- * @author <a href="http://escoffier.me">Clement Escoffier</a>
- */
+
+@SuppressWarnings("SubscriberImplementation")
 public class WrappedSubscriber<T> implements Subscriber<T> {
 
     private final CompletableFuture<Void> future = new CompletableFuture<>();

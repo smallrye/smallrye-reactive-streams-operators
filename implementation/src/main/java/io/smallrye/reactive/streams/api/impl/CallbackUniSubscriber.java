@@ -16,7 +16,7 @@ import static io.smallrye.reactive.streams.api.impl.EmptySubscription.CANCELLED;
  *
  * @param <T>
  */
-final class CallbackUniSubscriber<T> implements UniSubscriber<T>, UniSubscription {
+class CallbackUniSubscriber<T> implements UniSubscriber<T>, UniSubscription {
 
     private final Consumer<? super T> onResultCallback;
     private final Consumer<? super Throwable> onFailureCallback;
