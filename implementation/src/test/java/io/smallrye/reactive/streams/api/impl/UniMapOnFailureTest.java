@@ -4,6 +4,7 @@ import io.smallrye.reactive.streams.api.AssertSubscriber;
 import io.smallrye.reactive.streams.api.Uni;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -13,30 +14,35 @@ import java.util.function.Function;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class UniMapTest {
-
+public class UniMapOnFailureTest {
 
     @Test(expected = NullPointerException.class)
     public void testThatMapperMustNotBeNull() {
-        Uni.of(1).map(null);
+        Uni.of(1).map().failure(null);
     }
 
     @Test(expected = NullPointerException.class)
     public void testThatSourceMustNotBeNull() {
-        new UniMap<>(null, Function.identity());
+        new UniMapOnFailure<>(null, Function.identity());
     }
 
-    private Uni<Integer> one = Uni.of(1);
+    private Uni<Integer> failure = Uni.from().failure(new IOException("boom"));
+
+    private class BoomException extends Exception {
+        BoomException() {
+            super("BoomException");
+        }
+
+        BoomException(int count) {
+            super(Integer.toString(count));
+        }
+    }
 
     @Test
     public void testSimpleMapping() {
-        AssertSubscriber<Integer> ts = AssertSubscriber.create();
-
-
-        one.map(v -> v + 1).subscribe().withSubscriber(ts);
-
-        ts.assertCompletedSuccessfully()
-                .assertResult(2);
+        AssertSubscriber<Integer> subscriber = failure.map().failure(t -> new BoomException()).subscribe().withSubscriber(AssertSubscriber.create());
+        subscriber.assertCompletedWithFailure()
+                .assertFailure(BoomException.class, "BoomException");
     }
 
     @Test
@@ -46,21 +52,21 @@ public class UniMapTest {
 
 
         AtomicInteger count = new AtomicInteger();
-        Uni<Integer> uni = one.map(v -> v + count.incrementAndGet());
+        Uni<Integer> uni = failure.map().failure(t -> new BoomException(count.incrementAndGet()));
         uni.subscribe().withSubscriber(ts1);
         uni.subscribe().withSubscriber(ts2);
 
-        ts1.assertCompletedSuccessfully()
-                .assertResult(2);
-        ts2.assertCompletedSuccessfully()
-                .assertResult(3);
+        ts1.assertCompletedWithFailure()
+                .assertFailure(BoomException.class, "1");
+        ts2.assertCompletedWithFailure()
+                .assertFailure(BoomException.class, "2");
     }
 
     @Test
     public void testWhenTheMapperThrowsAnException() {
         AssertSubscriber<Object> ts = AssertSubscriber.create();
 
-        one.map(v -> {
+        failure.map().failure(t -> {
             throw new RuntimeException("failure");
         }).subscribe().withSubscriber(ts);
 
@@ -68,19 +74,12 @@ public class UniMapTest {
     }
 
     @Test
-    public void testThatMapperCanReturnNull() {
+    public void testThatMapperCanNotReturnNull() {
         AssertSubscriber<Object> ts = AssertSubscriber.create();
 
-        one.map(v -> null).subscribe().withSubscriber(ts);
+        failure.map().failure(t -> null).subscribe().withSubscriber(ts);
 
-        ts.assertCompletedSuccessfully().assertResult(null);
-    }
-
-    @Test
-    public void testThatMapperIsCalledWithNull() {
-        AssertSubscriber<String> ts = AssertSubscriber.create();
-        Uni.of(null).map(x -> "foo").subscribe().withSubscriber(ts);
-        ts.assertCompletedSuccessfully().assertResult("foo");
+        ts.assertFailure(NullPointerException.class, "null");
     }
 
     @Test
@@ -89,33 +88,33 @@ public class UniMapTest {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         try {
             AtomicReference<String> threadName = new AtomicReference<>();
-            Uni.of(1)
+            failure
                     .publishOn(executor)
-                    .map(i -> {
-                        threadName.set(Thread.currentThread().getName());
-                        return i + 1;
-                    })
+                    .map().failure(fail -> {
+                threadName.set(Thread.currentThread().getName());
+                return new BoomException();
+            })
                     .subscribe().withSubscriber(ts);
 
-            ts.await().assertCompletedSuccessfully().assertResult(2);
+            ts.await().assertFailure(BoomException.class, "BoomException");
             assertThat(threadName).isNotNull().doesNotHaveValue("main");
-            assertThat(ts.getOnResultThreadName()).isEqualTo(threadName.get());
+            assertThat(ts.getOnFailureThreadName()).isEqualTo(threadName.get());
         } finally {
             executor.shutdown();
         }
     }
 
     @Test
-    public void testThatMapperIsNotCalledIfPreviousStageFailed() {
+    public void testThatMapperIsNotCallOnResult() {
         AssertSubscriber<Integer> ts = AssertSubscriber.create();
         AtomicBoolean called = new AtomicBoolean();
-        Uni.from().<Integer>failure(new Exception("boom"))
-                .map(x -> {
-                    called.set(true);
-                    return x + 1;
-                }).subscribe().withSubscriber(ts);
-
-        ts.assertFailure(Exception.class, "boom");
+        Uni.from().value(1)
+                .map().failure(f -> {
+            called.set(true);
+            return f;
+        })
+                .subscribe().withSubscriber(ts);
+        ts.assertResult(1);
         assertThat(called).isFalse();
     }
 }

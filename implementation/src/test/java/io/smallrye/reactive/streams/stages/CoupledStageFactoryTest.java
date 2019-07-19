@@ -54,7 +54,7 @@ public class CoupledStageFactoryTest {
     }
 
     /**
-     * Wait for the given future to complete and return its value, using the configured timeout.
+     * Wait for the given future to complete and return its value, using the configured onTimeout.
      */
     private <T> T await(CompletionStage<T> future) {
         try {

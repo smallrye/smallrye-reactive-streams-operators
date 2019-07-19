@@ -57,7 +57,7 @@ public class UniToCompletionStageTest {
     @Test
     public void testThatSubscriptionsAreNotShared() {
         AtomicInteger count = new AtomicInteger(1);
-        Uni<Integer> deferred =  Uni.from().deferredUni(() -> Uni.of(count.getAndIncrement()));
+        Uni<Integer> deferred =  Uni.from().deferred(() -> Uni.of(count.getAndIncrement()));
         CompletionStage<Integer> cs1 = deferred.subscribe().asCompletionStage();
         CompletionStage<Integer> cs2 = deferred.subscribe().asCompletionStage();
         assertThat(cs1).isNotNull();
@@ -70,7 +70,7 @@ public class UniToCompletionStageTest {
     @Test
     public void testThatTwoSubscribersWithCache() {
         AtomicInteger count = new AtomicInteger(1);
-        Uni<Integer> cached =  Uni.from().deferredUni(() -> Uni.of(count.getAndIncrement())).cache();
+        Uni<Integer> cached =  Uni.from().deferred(() -> Uni.of(count.getAndIncrement())).cache();
         CompletionStage<Integer> cs1 = cached.subscribe().asCompletionStage();
         CompletionStage<Integer> cs2 = cached.subscribe().asCompletionStage();
         assertThat(cs1).isNotNull();

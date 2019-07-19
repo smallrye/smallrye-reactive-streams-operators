@@ -13,7 +13,7 @@ public class UniDeferTest {
     @Test
     public void testWithMultipleSubscriptions() {
         AtomicInteger counter = new AtomicInteger();
-        Uni<Integer> s =  Uni.from().deferredUni(() -> Uni.of(counter.incrementAndGet()));
+        Uni<Integer> s =  Uni.from().deferred(() -> Uni.of(counter.incrementAndGet()));
 
         for (int i = 1; i < 100; i++) {
             assertThat(s.await().indefinitely()).isEqualTo(i);
@@ -22,12 +22,12 @@ public class UniDeferTest {
 
     @Test(expected = NullPointerException.class)
     public void testWithNull() {
-         Uni.from().deferredUni(null);
+         Uni.from().deferred(null);
     }
 
     @Test
     public void testWithASupplierProducingNull() {
-        Uni<Integer> s =  Uni.from().deferredUni(() -> null);
+        Uni<Integer> s =  Uni.from().deferred(() -> null);
         AssertSubscriber<Integer> subscriber = AssertSubscriber.create();
         s.subscribe().withSubscriber(subscriber);
         subscriber.assertFailure(NullPointerException.class, "");
@@ -35,7 +35,7 @@ public class UniDeferTest {
 
     @Test
     public void testWithASupplierThrowingAnException() {
-        Uni<Integer> s =  Uni.from().deferredUni(() -> {
+        Uni<Integer> s =  Uni.from().deferred(() -> {
             throw new IllegalStateException("boom");
         });
         AssertSubscriber<Integer> subscriber = AssertSubscriber.create();

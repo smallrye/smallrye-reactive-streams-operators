@@ -88,34 +88,36 @@ public class UniAnyTest {
     @Test
     public void testWithADelayedUni() {
         AssertSubscriber<String> subscriber1 = AssertSubscriber.create();
-        Uni.any(Uni.of("foo").delay(Duration.ofMillis(10), executor), Uni.of("bar"))
+        Uni.any(Uni.of("foo")
+                .delay().onExecutor(executor).of(Duration.ofMillis(10)), Uni.of("bar"))
                 .subscribe().withSubscriber(subscriber1);
         subscriber1.assertCompletedSuccessfully().assertResult("bar");
 
         AssertSubscriber<String> subscriber2 = AssertSubscriber.create();
-        Uni.any(Uni.of("foo").delay(Duration.ofMillis(10), executor), Uni.of("bar").delay(Duration.ofMillis(100), executor))
+        Uni.any(Uni.of("foo").delay().onExecutor(executor).of(Duration.ofMillis(10)),
+                Uni.of("bar").delay().onExecutor(executor).of(Duration.ofMillis(100)))
                 .subscribe().withSubscriber(subscriber2);
         subscriber2.await().assertCompletedSuccessfully().assertResult("foo");
     }
 
     @Test(timeout = 1000)
     public void testBlockingWithDelay() {
-        Uni<Integer> uni1 = Uni.from().nullValue().delay(Duration.ofMillis(100), executor).map(x -> 1);
-        Uni<Integer> uni2 = Uni.from().nullValue().delay(Duration.ofMillis(50), executor).map(x -> 2);
+        Uni<Integer> uni1 = Uni.from().nullValue().delay().onExecutor(executor).of(Duration.ofMillis(100)).map(x -> 1);
+        Uni<Integer> uni2 = Uni.from().nullValue().delay().onExecutor(executor).of(Duration.ofMillis(50)).map(x -> 2);
         assertThat(Uni.any(uni1, uni2).await().indefinitely()).isEqualTo(2);
     }
 
     @Test(timeout = 1000)
     public void testCompletingAgainstEmpty() {
         Uni<Integer> uni1 = Uni.from().nullValue().map(x -> 1);
-        Uni<Integer> uni2 = Uni.from().nullValue().delay(Duration.ofMillis(50), executor).map(x -> 2);
+        Uni<Integer> uni2 = Uni.from().nullValue().delay().onExecutor(executor).of(Duration.ofMillis(50)).map(x -> 2);
         assertThat(Uni.any(uni1, uni2).await().indefinitely()).isEqualTo(1);
     }
 
     @Test(timeout = 1000)
     public void testCompletingAgainstNever() {
         Uni<Integer> uni1 = Uni.from().nothing().map(x -> 1);
-        Uni<Integer> uni2 = Uni.from().nullValue().delay(Duration.ofMillis(50), executor).map(x -> 2);
+        Uni<Integer> uni2 = Uni.from().nullValue().delay().onExecutor(executor).of(Duration.ofMillis(50)).map(x -> 2);
         assertThat(Uni.any(uni1, uni2).await().asOptional().indefinitely()).contains(2);
     }
 

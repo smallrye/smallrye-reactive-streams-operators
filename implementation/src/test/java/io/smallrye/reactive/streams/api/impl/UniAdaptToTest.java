@@ -29,7 +29,7 @@ public class UniAdaptToTest {
     @Test
     public void testThatSubscriptionOnCompletableProducesTheValue() {
         AtomicBoolean called = new AtomicBoolean();
-        Completable completable =  Uni.from().deferredUni(() -> {
+        Completable completable =  Uni.from().deferred(() -> {
             called.set(true);
             return Uni.of(2);
         }).to(Completable.class);
@@ -166,7 +166,7 @@ public class UniAdaptToTest {
     @Test
     public void testCreatingAFlowableWithRequest() {
         AtomicBoolean called = new AtomicBoolean();
-        Flowable<Integer> flowable =  Uni.from().deferredUni(() -> {
+        Flowable<Integer> flowable =  Uni.from().deferred(() -> {
             called.set(true);
             return Uni.of(1);
         }).to(Flowable.class);
@@ -215,7 +215,7 @@ public class UniAdaptToTest {
     @Test
     public void testCreatingAPublisherBuilderWithRequest() {
         AtomicBoolean called = new AtomicBoolean();
-        PublisherBuilder<Integer> builder =  Uni.from().deferredUni(() -> {
+        PublisherBuilder<Integer> builder =  Uni.from().deferred(() -> {
             called.set(true);
             return Uni.of(1);
         }).to(PublisherBuilder.class);
