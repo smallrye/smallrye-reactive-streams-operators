@@ -3,6 +3,7 @@ package io.smallrye.reactive.streams.api.groups;
 import io.smallrye.reactive.streams.api.Uni;
 import io.smallrye.reactive.streams.api.UniEmitter;
 import io.smallrye.reactive.streams.api.UniSubscriber;
+import io.smallrye.reactive.streams.api.impl.UniAdaptFrom;
 import org.reactivestreams.Publisher;
 
 import java.time.Duration;
@@ -127,6 +128,7 @@ public interface UniFromGroup {
     <T> Uni<T> optional(Supplier<Optional<T>> optional);
 
     //TODO Javadoc
+
     Uni<Void> delay(Duration duration, ScheduledExecutorService executor);
 
     /**
@@ -204,4 +206,17 @@ public interface UniFromGroup {
      */
     Uni<Void> nullValue();
 
+
+    /**
+     * Creates a new instance of {@link Uni} instance the given instance.
+     * // TODO Explain it
+     *
+     * @param instance
+     * @param <T>
+     * @param <I>
+     * @return
+     */
+    static <T, I> Uni<T> instance(I instance) {
+        return UniAdaptFrom.adaptFrom(instance);
+    }
 }

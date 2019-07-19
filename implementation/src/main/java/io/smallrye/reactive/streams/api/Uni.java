@@ -1,7 +1,6 @@
 package io.smallrye.reactive.streams.api;
 
 import io.smallrye.reactive.streams.api.groups.*;
-import io.smallrye.reactive.streams.api.impl.UniAdaptFrom;
 import io.smallrye.reactive.streams.api.impl.UniAny;
 import io.smallrye.reactive.streams.api.impl.UniFromGroupImpl;
 import io.smallrye.reactive.streams.api.tuples.Pair;
@@ -84,18 +83,6 @@ public interface Uni<T> {
      */
     static <T> Uni<T> of(T value) {
         return from().value(value);
-    }
-
-    /**
-     * Creates a new instance of {@link Uni} from the given instance.
-     *
-     * @param instance
-     * @param <T>
-     * @param <I>
-     * @return
-     */
-    static <T, I> Uni<T> from(I instance) {
-        return UniAdaptFrom.adaptFrom(instance);
     }
 
     /**
@@ -245,8 +232,8 @@ public interface Uni<T> {
     <O> Uni<O> map(Function<T, O> mapper);
 
     /**
-     * Runs {@link UniSubscriber#onResult(Object)}  and {@link UniSubscriber#onFailure(Throwable)} on the supplied
-     * {@link Executor}.
+     * Produces a new {@link Uni} invoking the {@link UniSubscriber#onResult(Object)}  and
+     * {@link UniSubscriber#onFailure(Throwable)} on the supplied {@link Executor}.
      * <p>
      * This operator influences the threading context where the rest of the operators in the downstream chain it will
      * execute, up to a new occurrence of {@code publishOn(Executor)}.
@@ -265,66 +252,37 @@ public interface Uni<T> {
     Uni<T> cache();
 
     /**
-     * // TODO Rewrite me.
+     * Combines a set of {@link Uni} into a joined result. This result can be a {@code Tuple} or the result of a
+     * combinator function.
+     * <p>
+     * If one of the combine {@link Uni} propagates a failure, the other sources are cancelled, and the resulting
+     * {@link Uni} propagates the failure. If {@link AndGroup2#awaitCompletion()}  is called, it waits for the
+     * completion of all the {@link Uni unis} before propagating the failure. If more than one {@link Uni} failed,
+     * a {@link CompositeException} is propagated, wrapping the different failures.
+     * <p>
+     * Depending on the number of participant, the produced {@link io.smallrye.reactive.streams.api.tuples.Tuple} is
+     * different from {@link Pair} to {@link io.smallrye.reactive.streams.api.tuples.Tuple5}. For more participants,
+     * use {@link AndGroup#unis(Uni[])} or {@link AndGroup#unis(Iterable)}.
+     *
+     * @return the object to configure the join
+     */
+    AndGroup<T> and();
+
+    /**
      * Combines the result of this {@link Uni} with the result of {@code other} into a {@link Pair}.
      * If {@code this} or {@code other} fails, the other resolution is cancelled.
      *
      * @param other the other {@link Uni}, must not be {@code null}
      * @return the combination of the 2 results.
+     * @see #and() for more options on the combination of results
      */
-    AndGroup<T> and();
+    <T2> Uni<Pair<T, T2>> and(Uni<T2> other);
 
     /**
-     * Transforms this {@link Uni} into an instance of {@code O} using the given {@code transformer} function.
+     * Delays the completion (result or failure) of the {@link Uni} by a given duration.
      *
-     * @param transformer
-     * @param <O>
+     * @return the object to configure the delay and executor.
      */
-    <O> O to(Function<? super Uni<T>, O> transformer);
-
-    /**
-     * Transforms this {@link Uni} into an instance of {@link Multi}.
-     * <p>
-     * If this {@link Uni} resolves with a non-null value, this value is emitted in the {@link Multi}, followed by
-     * completion.
-     * If this {@link Uni} resolves with a @{code null} value, the returned {@link Multi} would be completed empty.
-     * If this {@link Uni} receives a failure, the failure is propagated to the {@link Multi}.
-     *
-     * @param <O> the type of item
-     * @return the produced {@link Multi}, never {@code null}
-     * @see #toPublisher()
-     * @see UniFromGroup#publisher(Publisher)
-     */
-    <O> Multi<O> toMulti();
-
-    /**
-     * Transforms this {@link Uni} into an instance of the given class. The transformations acts as follows:
-     * <ol>
-     * <li>If this is an instance of O - return this</li>
-     * <li>If there is on the classpath, an implementation of {@link io.smallrye.reactive.streams.api.adapter.UniAdapter}
-     * for the type O, the adapter is used (invoking {@link io.smallrye.reactive.streams.api.adapter.UniAdapter#adaptTo(Uni)})</li>
-     * <li>If O has a {@code fromPublisher} method, this method is called with a {@link Publisher} produced
-     * using {@link #toPublisher()}</li>
-     * <li>If O has a {@code from} method, this method is called with a {@link Publisher} produced
-     * using {@link #toPublisher()}</li>
-     * </ol>
-     *
-     * @param clazz the output class
-     * @param <O>   the produced type
-     * @return an instance of O
-     * @throws RuntimeException if the transformation fails.
-     */
-    <O> O to(Class<O> clazz);
-
-    /**
-     * Delays the completion of this {@link Uni} by the given duration.
-     * The downstream signals are sent on the default executor.
-     * <p>
-     * // TODO
-     *
-     * @return
-     */
-
     UniDelayGroup<T> delay();
 
     /**
@@ -357,10 +315,16 @@ public interface Uni<T> {
      * or {@link UniIgnoreGroup#andSwitchTo(Uni) another Uni}. The produced {@link Uni} propagates the failure
      * signal as this {@link Uni}.
      *
+     * <p>Examples:</p>
+     * <pre><code>
+     *     Uni&lt;T&gt; upstream = ...;
+     *     uni = upstream.ignore().andSwitchTo(other) // Ignore the result of upstream and switch to another uni
+     *     uni = upstream.ignore().andContinueWith(value) // Ignore the result of upstream and emit `value` as result
+     * </code></pre>
+     *
      * @return the {@link UniIgnoreGroup} to configure the action.
      */
     UniIgnoreGroup<T> ignore();
-    //TODO CES - thinking about renaming it to uni.onNoResult().after(duration).[continueWith(...), fail...]
 
     /**
      * Composes this {@link Uni} with a set of {@link Uni} passed to {@link UniOrGroup#unis(Uni[])} to produce a new
@@ -396,10 +360,26 @@ public interface Uni<T> {
      * @return the on timeout group
      */
     UniOnTimeoutGroup<T> onTimeout();
+    //TODO CES - thinking about renaming it to uni.onNoResult().after(duration).[continueWith(...), fail...]
 
+
+    /**
+     * Produces a {@link Uni} handling failures propagated by the upstream {@link Uni}.
+     * This {@link Uni} receives the failure and allow handling it gracefully.
+     * <p>
+     * Examples:
+     * <code>
+     * uni.recover().withResult(x) // use a fallback result on failure
+     * uni.recover().fromFailure(IOException.class).withResult(x) // use a fallback in case of an IOException
+     * uni.recover().withUni(other) // switch to the given uni on failure
+     * uni.recover().withRetry().atMost(5) // retry at most 5 times
+     * </code>
+     *
+     * @return the object to configure the recovery policy
+     */
     UniRecoveryGroup<T> recover();
 
-    // Exports
+    // TODO Create a group for the to()
 
     /**
      * Creates a {@link Publisher} for the current {@link Uni}. The created {@link Publisher} emits:
@@ -416,6 +396,48 @@ public interface Uni<T> {
      */
     Publisher<T> toPublisher();
 
+    /**
+     * Transforms this {@link Uni} into an instance of the given class. The transformations acts as follows:
+     * <ol>
+     * <li>If this is an instance of O - return this</li>
+     * <li>If there is on the classpath, an implementation of {@link io.smallrye.reactive.streams.api.adapter.UniAdapter}
+     * for the type O, the adapter is used (invoking {@link io.smallrye.reactive.streams.api.adapter.UniAdapter#adaptTo(Uni)})</li>
+     * <li>If O has a {@code fromPublisher} method, this method is called with a {@link Publisher} produced
+     * using {@link #toPublisher()}</li>
+     * <li>If O has a {@code instance} method, this method is called with a {@link Publisher} produced
+     * using {@link #toPublisher()}</li>
+     * </ol>
+     *
+     * @param clazz the output class
+     * @param <O>   the produced type
+     * @return an instance of O
+     * @throws RuntimeException if the transformation fails.
+     */
+    <O> O to(Class<O> clazz);
 
-    <T2> Uni<Pair<T, T2>> and(Uni<T2> other);
+    /**
+     * Transforms this {@link Uni} into an instance of {@code O} using the given {@code transformer} function.
+     *
+     * @param transformer
+     * @param <O>
+     */
+    <O> O to(Function<? super Uni<T>, O> transformer);
+
+    /**
+     * Transforms this {@link Uni} into an instance of {@link Multi}.
+     * <p>
+     * If this {@link Uni} resolves with a non-null value, this value is emitted in the {@link Multi}, followed by
+     * completion.
+     * If this {@link Uni} resolves with a @{code null} value, the returned {@link Multi} would be completed empty.
+     * If this {@link Uni} receives a failure, the failure is propagated to the {@link Multi}.
+     *
+     * @param <O> the type of item
+     * @return the produced {@link Multi}, never {@code null}
+     * @see #toPublisher()
+     * @see UniFromGroup#publisher(Publisher)
+     */
+    <O> Multi<O> toMulti();
+
+
+
 }
