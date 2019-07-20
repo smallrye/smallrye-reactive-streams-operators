@@ -12,17 +12,21 @@ import static io.smallrye.reactive.streams.api.impl.ParameterValidation.nonNull;
 
 public class AndGroupIterable<T1> {
 
-    private final Uni<T1> source;
+    private final Uni<? extends T1> source;
     private final List<? extends Uni<?>> unis;
 
     private boolean awaitCompletion;
 
-    public AndGroupIterable(Uni<T1> source, Iterable<? extends Uni<?>> iterable) {
+    public AndGroupIterable(Iterable<? extends Uni<?>> iterable) {
+        this(null, iterable, false);
+    }
+
+    public AndGroupIterable(Uni<? extends T1> source, Iterable<? extends Uni<?>> iterable) {
         this(source, iterable, false);
     }
 
     @SuppressWarnings("unchecked")
-    public AndGroupIterable(Uni<T1> source, Iterable<? extends Uni<?>> iterable, boolean awaitCompletion) {
+    public AndGroupIterable(Uni<? extends T1> source, Iterable<? extends Uni<?>> iterable, boolean awaitCompletion) {
         this.source = source;
         List<? extends Uni<?>> others;
         if (iterable instanceof List) {

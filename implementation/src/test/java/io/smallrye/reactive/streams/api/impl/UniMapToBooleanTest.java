@@ -21,22 +21,22 @@ public class UniMapToBooleanTest {
 
     @Test
     public void testPassingThePredicate() {
-        one.map().toBoolean(i -> i == 1).subscribe().<AssertSubscriber<Boolean>>withSubscriber(AssertSubscriber.create())
+        one.map().toBoolean(i -> i == 1).subscribe().withSubscriber(AssertSubscriber.create())
                 .assertCompletedSuccessfully().assertResult(true);
     }
 
     @Test
     public void testNotPassingThePredicate() {
-        one.map().toBoolean(i -> i == -1).subscribe().<AssertSubscriber<Boolean>>withSubscriber(AssertSubscriber.create())
+        one.map().toBoolean(i -> i == -1).subscribe().withSubscriber(AssertSubscriber.create())
                 .assertCompletedSuccessfully().assertResult(false);
     }
 
     @Test
     public void testCalledWithNull() {
-        Uni.from().nullValue().map().toBoolean(Objects::nonNull).subscribe().<AssertSubscriber<Boolean>>withSubscriber(AssertSubscriber.create())
+        Uni.from().nullValue().map().toBoolean(Objects::nonNull).subscribe().withSubscriber(AssertSubscriber.create())
                 .assertCompletedSuccessfully().assertResult(false);
 
-        Uni.from().nullValue().map().toBoolean(Objects::isNull).subscribe().<AssertSubscriber<Boolean>>withSubscriber(AssertSubscriber.create())
+        Uni.from().nullValue().map().toBoolean(Objects::isNull).subscribe().withSubscriber(AssertSubscriber.create())
                 .assertCompletedSuccessfully().assertResult(true);
     }
 
@@ -44,7 +44,7 @@ public class UniMapToBooleanTest {
     public void testWithPredicateThrowingException() {
         one.map().toBoolean(x -> {
             throw new IllegalArgumentException("boom");
-        }).subscribe().<AssertSubscriber<Boolean>>withSubscriber(AssertSubscriber.create())
+        }).subscribe().withSubscriber(AssertSubscriber.create())
                 .assertCompletedWithFailure()
                 .assertFailure(IllegalArgumentException.class, "boom");
     }
@@ -59,7 +59,7 @@ public class UniMapToBooleanTest {
                 .map().toBoolean(i -> {
                     called.set(true);
                     return true;
-        }).subscribe().<AssertSubscriber<Boolean>>withSubscriber(AssertSubscriber.create())
+        }).subscribe().withSubscriber(AssertSubscriber.create())
                 .assertCompletedWithFailure()
                 .assertFailure(IllegalArgumentException.class, "boom");
 

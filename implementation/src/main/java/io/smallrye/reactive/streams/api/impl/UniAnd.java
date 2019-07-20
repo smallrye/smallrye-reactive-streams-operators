@@ -26,7 +26,9 @@ public class UniAnd<I, O> extends UniOperator<I, O> {
         super(source);
 
         this.unis = new ArrayList<>();
-        this.unis.add(source);
+        if (source != null) {
+            this.unis.add(source);
+        }
         this.unis.addAll(others);
 
         this.combinator = combinator;

@@ -15,7 +15,7 @@ import java.time.Duration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class AndUniTest {
+public class UniAndTest {
 
     @Test
     public void testWithTwoSimpleUnis() {
@@ -73,7 +73,7 @@ public class AndUniTest {
     public void testTerminationJoin() {
         Uni<Void> uni = Uni.of(1).and(Uni.of("hello")).ignore().andContinueWithNull();
 
-        uni.subscribe().<AssertSubscriber<Void>>withSubscriber(AssertSubscriber.create())
+        uni.subscribe().withSubscriber(AssertSubscriber.create())
                 .assertCompletedSuccessfully()
                 .assertResult(null);
     }

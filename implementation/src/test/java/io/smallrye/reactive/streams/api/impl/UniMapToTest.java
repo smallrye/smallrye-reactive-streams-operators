@@ -16,13 +16,13 @@ public class UniMapToTest {
 
     @Test
     public void testOkCast() {
-        one.map().to(Number.class).subscribe().<AssertSubscriber<Number>>withSubscriber(AssertSubscriber.create())
+        one.map().to(Number.class).subscribe().withSubscriber(AssertSubscriber.create())
                 .assertCompletedSuccessfully().assertResult(1);
     }
 
     @Test
     public void testFailingCast() {
-        one.map().to(String.class).subscribe().<AssertSubscriber<String>>withSubscriber(AssertSubscriber.create())
+        one.map().to(String.class).subscribe().withSubscriber(AssertSubscriber.create())
                 .assertCompletedWithFailure()
                 .assertFailure(ClassCastException.class, "String");
     }

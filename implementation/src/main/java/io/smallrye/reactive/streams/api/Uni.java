@@ -98,9 +98,25 @@ public interface Uni<T> {
      * {@code iterable} are also cancelled.
      *
      * @return the object to enlist the candidates
+     * @see Uni#or <code>Uni.or()</code> for the equivalent operator on Uni instances
      */
     static UniAnyGroup any() {
         return UniAnyGroup.INSTANCE;
+    }
+
+    /**
+     * Combines several {@link Uni} into a new {@link Uni} that will be fulfilled when all {@link Uni} are
+     * resolved successfully aggregating their values into a {@link io.smallrye.reactive.streams.api.tuples.Tuple},
+     * or using a combinator function.
+     * <p>
+     * The produced {@link Uni} forwards the failure if one of the {@link Uni Unis} produces a failure. This will
+     * cause the other {@link Uni} to be cancelled, expect if {@code awaitCompletion()} is invoked, which delay the failure
+     * propagation when all {@link Uni}s have completed or failed.
+     *
+     * @see Uni#and <code>Uni.and()</code> for the equivalent operator on Uni instances
+     */
+    static UniZipGroup zip() {
+        return UniZipGroup.INSTANCE;
     }
 
     /**
@@ -125,7 +141,7 @@ public interface Uni<T> {
      * </code></pre>
      *
      * @return the object to configure the subscription.
-     * @see #await() for waiting (blocking the caller thread) until the resolution of the observed Uni.
+     * @see #await() <code>uni.await() </code>for waiting (blocking the caller thread) until the resolution of the observed Uni.
      */
     UniSubscribeGroup<T> subscribe();
 
@@ -200,8 +216,8 @@ public interface Uni<T> {
      * Transforming failure is not a recovery action. See {@link #recover()} to handle failure gracefully.
      *
      * @return the object to configure the functions to apply.
-     * @see #map(Function) as a shorter version for {@code map().result(...)}
-     * @see #flatMap(Function) for asynchronous operations
+     * @see #map(Function) <code>uni.map(function)</code>as a shorter version for {@code map().result(...)}
+     * @see #flatMap(Function) <code>uni.flatMap(function)</code> for asynchronous operations
      */
     UniMapGroup<T> map();
 
@@ -258,6 +274,7 @@ public interface Uni<T> {
      * use {@link AndGroup#unis(Uni[])} or {@link AndGroup#unis(Iterable)}.
      *
      * @return the object to configure the join
+     * @see Uni#zip() <code>Uni.zip()</code> for the equivalent static operator
      */
     AndGroup<T> and();
 
@@ -267,7 +284,8 @@ public interface Uni<T> {
      *
      * @param other the other {@link Uni}, must not be {@code null}
      * @return the combination of the 2 results.
-     * @see #and() for more options on the combination of results
+     * @see #and() <code>and</code> for more options on the combination of results
+     * @see Uni#zip() <code>Uni.zip()</code> for the equivalent static operator
      */
     <T2> Uni<Pair<T, T2>> and(Uni<T2> other);
 
@@ -333,7 +351,7 @@ public interface Uni<T> {
      * {@code iterable} are also cancelled.
      *
      * @return the object to enlist the participants
-     * @see #any() for a static version of this operator, like <code>Uni first = Uni.any().of(uni1, uni2);</code>
+     * @see #any() <code>Uni.any</code> for a static version of this operator, like <code>Uni first = Uni.any().of(uni1, uni2);</code>
      */
     UniOrGroup or();
 

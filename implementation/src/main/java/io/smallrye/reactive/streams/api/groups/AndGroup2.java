@@ -18,7 +18,7 @@ import java.util.function.Function;
 public class AndGroup2<T1, T2> extends AndGroupIterable<T1> {
 
 
-    public AndGroup2(Uni<T1> source, Uni<? extends T2> other) {
+    public AndGroup2(Uni<? extends T1> source, Uni<? extends T2> other) {
         super(source, Collections.singletonList(other), false);
     }
 

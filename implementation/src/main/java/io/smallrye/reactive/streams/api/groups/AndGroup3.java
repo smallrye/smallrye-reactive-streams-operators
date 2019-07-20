@@ -11,7 +11,7 @@ import java.util.function.Function;
 
 public class AndGroup3<T1, T2, T3> extends AndGroupIterable<T1> {
 
-    public AndGroup3(Uni<T1> source, Uni<? extends T2> o1, Uni<? extends T3> o2) {
+    public AndGroup3(Uni<? extends T1> source, Uni<? extends T2> o1, Uni<? extends T3> o2) {
         super(source, Arrays.asList(o1, o2));
     }
 

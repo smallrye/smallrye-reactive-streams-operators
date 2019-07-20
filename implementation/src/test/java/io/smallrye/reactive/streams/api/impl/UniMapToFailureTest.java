@@ -22,10 +22,10 @@ public class UniMapToFailureTest {
         AtomicInteger count = new AtomicInteger();
         Uni<Integer> uni = one.map().toFailure(s -> new IOException(Integer.toString(s + count.getAndIncrement())));
         uni
-                .subscribe().<AssertSubscriber<Number>>withSubscriber(AssertSubscriber.create())
+                .subscribe().withSubscriber(AssertSubscriber.<Number>create())
                 .assertFailure(IOException.class, "1");
         uni
-                .subscribe().<AssertSubscriber<Number>>withSubscriber(AssertSubscriber.create())
+                .subscribe().withSubscriber(AssertSubscriber.<Number>create())
                 .assertFailure(IOException.class, "2");
     }
 

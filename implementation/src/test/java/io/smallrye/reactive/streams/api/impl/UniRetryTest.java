@@ -78,7 +78,7 @@ public class UniRetryTest {
                     }
                 })
                 .recover().withRetry().atMost(2)
-                .subscribe().<AssertSubscriber<Integer>>withSubscriber(AssertSubscriber.create())
+                .subscribe().withSubscriber(AssertSubscriber.create())
                 .assertResult(1);
     }
 }
