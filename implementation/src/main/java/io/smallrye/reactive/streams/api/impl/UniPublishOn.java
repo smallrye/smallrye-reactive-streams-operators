@@ -8,10 +8,10 @@ import java.util.concurrent.Executor;
 
 import static io.smallrye.reactive.streams.api.impl.ParameterValidation.nonNull;
 
-public class OnPublishUniOperator<I> extends UniOperator<I, I> {
+public class UniPublishOn<I> extends UniOperator<I, I> {
     private final Executor executor;
 
-    OnPublishUniOperator(Uni<I> source, Executor executor) {
+    UniPublishOn(Uni<I> source, Executor executor) {
         super(source);
         this.executor = nonNull(executor, "executor");
     }

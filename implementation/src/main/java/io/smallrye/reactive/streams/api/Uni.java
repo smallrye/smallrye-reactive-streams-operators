@@ -244,6 +244,14 @@ public interface Uni<T> {
     Uni<T> publishOn(Executor executor);
 
     /**
+     * Run {@code subscribe} (on the upstream), {@code onSubscribe} (on the subscriber) on the specified {@link Executor}.
+     *
+     * @param executor the executor to use, must not be {@code null}
+     * @return a new {@link Uni}
+     */
+    Uni<T> subscribeOn(Executor executor);
+
+    /**
      * Caches the completion (result or failure) of this {@link Uni} and replays it for all further {@link UniSubscriber}.
      *
      * @return the new {@link Uni}. Unlike regular {@link Uni}, re-subscribing to this {@link Uni} does not re-compute

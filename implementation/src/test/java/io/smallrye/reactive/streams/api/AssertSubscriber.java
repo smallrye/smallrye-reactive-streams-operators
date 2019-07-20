@@ -8,9 +8,10 @@ public class AssertSubscriber<T> implements UniSubscriber<T> {
     private boolean gotSignal;
     private T result;
     private Throwable failure;
-    private CompletableFuture<T> future;
+    private CompletableFuture<T> future = new CompletableFuture<>();
     private String onResultThreadName;
     private String onErrorThreadName;
+    private String onSubscribeThreadName;
 
     public AssertSubscriber(boolean cancelled) {
         this.cancelImmediatelyOnSubscription = cancelled;
@@ -27,15 +28,14 @@ public class AssertSubscriber<T> implements UniSubscriber<T> {
 
     @Override
     public synchronized void onSubscribe(UniSubscription subscription) {
+        onSubscribeThreadName = Thread.currentThread().getName();
         if (this.cancelImmediatelyOnSubscription) {
             this.subscription = subscription;
-            this.future = new CompletableFuture<>();
             subscription.cancel();
             future.cancel(false);
             return;
         }
         this.subscription = subscription;
-        this.future = new CompletableFuture<>();
     }
 
     @Override
@@ -162,6 +162,10 @@ public class AssertSubscriber<T> implements UniSubscriber<T> {
 
     public String getOnFailureThreadName() {
         return onErrorThreadName;
+    }
+
+    public String getOnSubscribeThreadName() {
+        return onSubscribeThreadName;
     }
 
     public void cancel() {

@@ -37,7 +37,12 @@ public abstract class DefaultUni<T> implements Uni<T> {
 
     @Override
     public Uni<T> publishOn(Executor executor) {
-        return new OnPublishUniOperator<>(this, executor);
+        return new UniPublishOn<>(this, executor);
+    }
+
+    @Override
+    public Uni<T> subscribeOn(Executor executor) {
+        return new UniSubscribeOn<>(this, executor);
     }
 
     @Override
