@@ -19,10 +19,10 @@ public class UniSubscribeGroupImpl<T> implements UniSubscribeGroup<T> {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <S extends UniSubscriber<? super T>> S withSubscriber(UniSubscriber<? super T> subscriber) {
+    public <S extends UniSubscriber<? super T>> S withSubscriber(S subscriber) {
         WrapperUniSubscriber.subscribing(source,
                 nonNull(subscriber, "subscriber"));
-        return (S) subscriber;
+        return subscriber;
     }
 
     @Override
