@@ -96,7 +96,11 @@ public class UniAnd<I, O> extends UniOperator<I, O> {
                     List<Throwable> throwables = results.stream()
                             .filter(u -> u.failure != null).map(u -> u.failure)
                             .collect(Collectors.toList());
-                    subscriber.onFailure(new CompositeException(throwables));
+                    if (throwables.size() == 1) {
+                        subscriber.onFailure(throwables.get(0));
+                    } else {
+                        subscriber.onFailure(new CompositeException(throwables));
+                    }
                 }
                 return;
             }
