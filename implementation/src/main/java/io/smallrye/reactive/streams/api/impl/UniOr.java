@@ -10,18 +10,18 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import static io.smallrye.reactive.streams.api.impl.ParameterValidation.nonNull;
 
-public class UniAny<T> extends UniOperator<Void, T> {
+public class UniOr<T> extends UniOperator<Void, T> {
 
     private final List<Uni<? super T>> challengers;
 
-    public UniAny(Iterable<? extends Uni<? super T>> iterable) {
+    public UniOr(Iterable<? extends Uni<? super T>> iterable) {
         super(null);
         nonNull(iterable, "iterable");
         this.challengers = new ArrayList<>();
         iterable.forEach(u -> challengers.add(nonNull(u, "iterable` must not contain a `null` value")));
     }
 
-    public UniAny(Uni<? super T>[] array) {
+    public UniOr(Uni<? super T>[] array) {
         super(null);
         nonNull(array, "array");
         this.challengers = new ArrayList<>();

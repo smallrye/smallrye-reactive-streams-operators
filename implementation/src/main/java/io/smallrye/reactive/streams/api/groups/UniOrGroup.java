@@ -1,6 +1,7 @@
 package io.smallrye.reactive.streams.api.groups;
 
 import io.smallrye.reactive.streams.api.Uni;
+import io.smallrye.reactive.streams.api.impl.UniOr;
 
 import java.util.Arrays;
 import java.util.List;
@@ -21,7 +22,7 @@ public class UniOrGroup<T> {
 
     public Uni<T> unis(Uni<T>... other) {
         List<Uni<T>> list = Arrays.asList(other);
-        return Uni.any(list);
+        return new UniOr<>(list);
     }
 
 }

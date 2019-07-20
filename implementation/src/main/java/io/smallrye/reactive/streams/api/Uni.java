@@ -1,7 +1,6 @@
 package io.smallrye.reactive.streams.api;
 
 import io.smallrye.reactive.streams.api.groups.*;
-import io.smallrye.reactive.streams.api.impl.UniAny;
 import io.smallrye.reactive.streams.api.impl.UniFromGroupImpl;
 import io.smallrye.reactive.streams.api.tuples.Pair;
 import org.reactivestreams.Publisher;
@@ -87,8 +86,8 @@ public interface Uni<T> {
 
     /**
      * Creates a {@link Uni} forwarding the first signal (value, {@code null} or failure). It behaves like the fastest
-     * of these competing unis. If the passed iterable is empty, the resulting {@link Uni} gets a {@code null} result
-     * just after subscription.
+     * of these competing unis. If the set of competing unis is empty, the resulting {@link Uni} gets a {@code null}
+     * result just after subscription.
      * <p>
      * This method subscribes to the set of {@link Uni}. When one of the {@link Uni} resolves successfully or with
      * a failure, the signals is propagated to the returned {@link Uni}. Also the other subscriptions are cancelled.
@@ -98,24 +97,10 @@ public interface Uni<T> {
      * If the subscription to the returned {@link Uni} is cancelled, the subscription to the {@link Uni unis} from the
      * {@code iterable} are also cancelled.
      *
-     * @param iterable a set of {@link Uni}, must not be {@code null}.
-     * @param <T>      the type of item
-     * @return the produced {@link Uni}
+     * @return the object to enlist the candidates
      */
-    static <T> Uni<T> any(Iterable<? extends Uni<? super T>> iterable) {
-        return new UniAny<>(iterable);
-    }
-
-    /**
-     * Like {@link #any(Iterable)} but with an array of {@link Uni} as parameter
-     *
-     * @param unis the array, must not be {@code null}, must not contain @{code null}
-     * @param <T>  the type of result
-     * @return the produced {@link Uni}
-     */
-    @SafeVarargs
-    static <T> Uni<T> any(Uni<? super T>... unis) {
-        return new UniAny<>(unis);
+    static UniAnyGroup any() {
+        return UniAnyGroup.INSTANCE;
     }
 
     /**
@@ -348,7 +333,7 @@ public interface Uni<T> {
      * {@code iterable} are also cancelled.
      *
      * @return the object to enlist the participants
-     * @see #any(Iterable) for a static version of this operator
+     * @see #any() for a static version of this operator, like <code>Uni first = Uni.any().of(uni1, uni2);</code>
      */
     UniOrGroup or();
 
@@ -445,7 +430,6 @@ public interface Uni<T> {
      * @see UniFromGroup#publisher(Publisher)
      */
     <O> Multi<O> toMulti();
-
 
 
 }
