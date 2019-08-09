@@ -4,16 +4,16 @@
 
     <parent>
         <groupId>io.smallrye.reactive</groupId>
-        <artifactId>smallrye-reactive-streams-operators-project-1.0</artifactId>
+        <artifactId>smallrye-reactive-streams-operators-project</artifactId>
         <version>1.0.7-SNAPSHOT</version>
     </parent>
 
-    <artifactId>smallrye-reactive-streams-operators-cdi-1.0</artifactId>
+    <artifactId>smallrye-reactive-streams-operators-cdi</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>smallrye-reactive-streams-operators-1.0</artifactId>
+            <artifactId>smallrye-reactive-streams-operators</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

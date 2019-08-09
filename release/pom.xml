@@ -4,11 +4,11 @@
 
     <parent>
         <groupId>io.smallrye.reactive</groupId>
-        <artifactId>smallrye-reactive-streams-operators-project-1.0</artifactId>
+        <artifactId>smallrye-reactive-streams-operators-project</artifactId>
         <version>1.0.7-SNAPSHOT</version>
     </parent>
 
-    <artifactId>smallrye-reactive-streams-operators-1.0-release</artifactId>
+    <artifactId>smallrye-reactive-streams-operators-release</artifactId>
 
     <name>Empty Release Project to Avoid Maven Bug</name>
     <description>Empty Release Project to Avoid Maven Bug</description>
