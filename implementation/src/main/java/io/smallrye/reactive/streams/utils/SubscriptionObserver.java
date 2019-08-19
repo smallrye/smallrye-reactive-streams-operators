@@ -1,15 +1,16 @@
 package io.smallrye.reactive.streams.utils;
 
-import org.reactivestreams.Publisher;
-import org.reactivestreams.Subscriber;
-import org.reactivestreams.Subscription;
-
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
+import org.reactivestreams.Publisher;
+import org.reactivestreams.Subscriber;
+import org.reactivestreams.Subscription;
+
 /**
- * Represents a subscription between a source and a sink. Inform another {@link SubscriptionObserver} on cancellation, completion and error. This
+ * Represents a subscription between a source and a sink. Inform another {@link SubscriptionObserver} on cancellation,
+ * completion and error. This
  * class is used to coupled 2 flows (Coupled operator).
  *
  * @param <X> the type of data transiting in the stream
@@ -37,7 +38,6 @@ class SubscriptionObserver<X> {
          */
         FAILED
     }
-
 
     /**
      * The source.
@@ -86,7 +86,7 @@ class SubscriptionObserver<X> {
         upstream.subscribe(new Subscriber<X>() {
             @Override
             public synchronized void onSubscribe(Subscription sub) {
-                if (manageCompletionOrErrorFromBeforeSubscription(sub)  || manageAlreadySubscribed(sub)) {
+                if (manageCompletionOrErrorFromBeforeSubscription(sub) || manageAlreadySubscribed(sub)) {
                     return;
                 }
                 if (downstream.get() == null) {
@@ -132,8 +132,7 @@ class SubscriptionObserver<X> {
                     }
                     downstream.set(null);
                     apply(observer, SubscriptionObserver::complete);
-                })
-        );
+                }));
     }
 
     private boolean manageAlreadySubscribed(Subscription sub) {

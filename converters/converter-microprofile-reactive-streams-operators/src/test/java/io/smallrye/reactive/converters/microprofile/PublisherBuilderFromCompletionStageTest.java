@@ -1,17 +1,17 @@
 package io.smallrye.reactive.converters.microprofile;
 
-import io.smallrye.reactive.converters.ReactiveTypeConverter;
-import io.smallrye.reactive.converters.Registry;
-import io.smallrye.reactive.converters.tck.FromCompletionStageTCK;
-import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
-import org.junit.Before;
-
 import java.util.Optional;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class PublisherBuilderFromCompletionStageTest extends FromCompletionStageTCK<PublisherBuilder> {
+import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
+import org.junit.Before;
 
+import io.smallrye.reactive.converters.ReactiveTypeConverter;
+import io.smallrye.reactive.converters.Registry;
+import io.smallrye.reactive.converters.tck.FromCompletionStageTCK;
+
+public class PublisherBuilderFromCompletionStageTest extends FromCompletionStageTCK<PublisherBuilder> {
 
     @Before
     public void lookup() {

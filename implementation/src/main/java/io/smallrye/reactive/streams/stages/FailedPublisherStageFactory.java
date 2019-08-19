@@ -1,12 +1,13 @@
 package io.smallrye.reactive.streams.stages;
 
+import java.util.Objects;
+
+import org.eclipse.microprofile.reactive.streams.operators.spi.Stage;
+
 import io.reactivex.Flowable;
 import io.smallrye.reactive.streams.Engine;
 import io.smallrye.reactive.streams.operators.PublisherStage;
 import io.smallrye.reactive.streams.operators.PublisherStageFactory;
-import org.eclipse.microprofile.reactive.streams.operators.spi.Stage;
-
-import java.util.Objects;
 
 /**
  * Implementation of the {@link Stage.Failed} stage. It just returns a flowable marked as failed.

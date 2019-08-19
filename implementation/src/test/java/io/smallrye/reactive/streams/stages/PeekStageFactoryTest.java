@@ -1,17 +1,17 @@
 package io.smallrye.reactive.streams.stages;
 
-import io.reactivex.Flowable;
-import io.reactivex.schedulers.Schedulers;
-import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
-import org.eclipse.microprofile.reactive.streams.operators.spi.Stage;
-import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
+import org.junit.Test;
+
+import io.reactivex.Flowable;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Checks the behavior of the {@link PeekStageFactory}.

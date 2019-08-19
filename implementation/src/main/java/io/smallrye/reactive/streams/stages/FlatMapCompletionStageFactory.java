@@ -1,17 +1,18 @@
 package io.smallrye.reactive.streams.stages;
 
-import io.reactivex.Flowable;
-import io.smallrye.reactive.streams.Engine;
-import io.smallrye.reactive.streams.operators.ProcessingStage;
-import io.smallrye.reactive.streams.operators.ProcessingStageFactory;
-import io.smallrye.reactive.streams.utils.Casts;
-import org.eclipse.microprofile.reactive.streams.operators.spi.Stage;
+import static io.smallrye.reactive.streams.utils.CompletionStageToPublisher.fromCompletionStage;
 
 import java.util.Objects;
 import java.util.concurrent.CompletionStage;
 import java.util.function.Function;
 
-import static io.smallrye.reactive.streams.utils.CompletionStageToPublisher.fromCompletionStage;
+import org.eclipse.microprofile.reactive.streams.operators.spi.Stage;
+
+import io.reactivex.Flowable;
+import io.smallrye.reactive.streams.Engine;
+import io.smallrye.reactive.streams.operators.ProcessingStage;
+import io.smallrye.reactive.streams.operators.ProcessingStageFactory;
+import io.smallrye.reactive.streams.utils.Casts;
 
 /**
  * Implementation of the {@link Stage.FlatMapCompletionStage} stage.
@@ -23,7 +24,7 @@ public class FlatMapCompletionStageFactory
 
     @Override
     public <I, O> ProcessingStage<I, O> create(Engine engine,
-                                               Stage.FlatMapCompletionStage stage) {
+            Stage.FlatMapCompletionStage stage) {
         Function<I, CompletionStage<O>> mapper = Casts.cast(
                 Objects.requireNonNull(stage).getMapper());
         return new FlatMapCompletionStage<>(mapper);
@@ -52,6 +53,5 @@ public class FlatMapCompletionStageFactory
             }, 1);
         }
     }
-
 
 }

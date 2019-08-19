@@ -1,12 +1,13 @@
 package io.smallrye.reactive.streams.utils.recovery;
 
-import io.reactivex.Flowable;
-import io.reactivex.internal.fuseable.HasUpstreamPublisher;
+import java.util.Objects;
+import java.util.function.Function;
+
 import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscriber;
 
-import java.util.Objects;
-import java.util.function.Function;
+import io.reactivex.Flowable;
+import io.reactivex.internal.fuseable.HasUpstreamPublisher;
 
 public class OnErrorResumeWith<T> extends Flowable<T> implements HasUpstreamPublisher<T> {
 
@@ -18,7 +19,7 @@ public class OnErrorResumeWith<T> extends Flowable<T> implements HasUpstreamPubl
     private final Function<? super Throwable, ? extends Publisher<? extends T>> nextSupplier;
 
     public OnErrorResumeWith(Flowable<T> source,
-                             Function<? super Throwable, ? extends Publisher<? extends T>> nextSupplier) {
+            Function<? super Throwable, ? extends Publisher<? extends T>> nextSupplier) {
         this.source = Objects.requireNonNull(source, "source is null");
         this.nextSupplier = nextSupplier;
     }

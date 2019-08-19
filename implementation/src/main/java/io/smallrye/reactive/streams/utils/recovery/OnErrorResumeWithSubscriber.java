@@ -1,15 +1,15 @@
 package io.smallrye.reactive.streams.utils.recovery;
 
-import io.reactivex.FlowableSubscriber;
-import io.reactivex.exceptions.Exceptions;
-import io.reactivex.internal.subscriptions.EmptySubscription;
-import io.reactivex.internal.subscriptions.SubscriptionArbiter;
-import io.reactivex.plugins.RxJavaPlugins;
+import java.util.function.Function;
+
 import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
-import java.util.function.Function;
+import io.reactivex.FlowableSubscriber;
+import io.reactivex.internal.subscriptions.EmptySubscription;
+import io.reactivex.internal.subscriptions.SubscriptionArbiter;
+import io.reactivex.plugins.RxJavaPlugins;
 
 public class OnErrorResumeWithSubscriber<T> implements FlowableSubscriber<T> {
     private final Subscriber<? super T> actual;
@@ -21,7 +21,7 @@ public class OnErrorResumeWithSubscriber<T> implements FlowableSubscriber<T> {
     private boolean done;
 
     OnErrorResumeWithSubscriber(Subscriber<? super T> actual,
-                                Function<? super Throwable, ? extends Publisher<? extends T>> nextSupplier) {
+            Function<? super Throwable, ? extends Publisher<? extends T>> nextSupplier) {
         this.actual = actual;
         this.nextSupplier = nextSupplier;
         this.arbiter = new SubscriptionArbiter(false);

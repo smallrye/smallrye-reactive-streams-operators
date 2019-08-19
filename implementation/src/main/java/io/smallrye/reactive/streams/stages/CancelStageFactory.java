@@ -1,15 +1,16 @@
 package io.smallrye.reactive.streams.stages;
 
-import io.reactivex.Flowable;
-import io.smallrye.reactive.streams.Engine;
-import io.smallrye.reactive.streams.operators.TerminalStage;
-import io.smallrye.reactive.streams.operators.TerminalStageFactory;
+import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+
 import org.eclipse.microprofile.reactive.streams.operators.spi.Stage;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
-import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
+import io.reactivex.Flowable;
+import io.smallrye.reactive.streams.Engine;
+import io.smallrye.reactive.streams.operators.TerminalStage;
+import io.smallrye.reactive.streams.operators.TerminalStageFactory;
 
 /**
  * Implementation of {@link Stage.Cancel}. It subscribes and disposes the stream immediately.

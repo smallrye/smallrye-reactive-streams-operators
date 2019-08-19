@@ -1,11 +1,12 @@
 package io.smallrye.reactive.streams.utils.recovery;
 
-import io.reactivex.Flowable;
-import io.reactivex.internal.fuseable.HasUpstreamPublisher;
+import java.util.function.Function;
+
 import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscriber;
 
-import java.util.function.Function;
+import io.reactivex.Flowable;
+import io.reactivex.internal.fuseable.HasUpstreamPublisher;
 
 public class OnErrorReturn<T> extends Flowable<T> implements HasUpstreamPublisher<T> {
 

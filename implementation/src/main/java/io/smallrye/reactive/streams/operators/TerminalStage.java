@@ -1,9 +1,9 @@
 package io.smallrye.reactive.streams.operators;
 
-import io.reactivex.Flowable;
-
 import java.util.concurrent.CompletionStage;
 import java.util.function.Function;
+
+import io.reactivex.Flowable;
 
 /**
  * Defines a terminal stage - so a stream subscription and observation.

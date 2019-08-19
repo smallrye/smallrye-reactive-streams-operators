@@ -1,12 +1,12 @@
 package io.smallrye.reactive.streams.stages;
 
-import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
-import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
-import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.concurrent.*;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
+import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
+import org.junit.Test;
 
 public class CoupledStageFactoryTest {
 
@@ -25,8 +25,8 @@ public class CoupledStageFactoryTest {
                                 idlePublisher()
                                         .onTerminate(() -> {
                                             publisherCancelled.complete(null);
-                                        }).buildRs())
-                ).onComplete(() -> downstreamCompleted.complete(null))
+                                        }).buildRs()))
+                .onComplete(() -> downstreamCompleted.complete(null))
                 .ignore()
                 .run();
         await(publisherCancelled);

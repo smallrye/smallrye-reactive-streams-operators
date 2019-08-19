@@ -1,13 +1,14 @@
 package io.smallrye.reactive.converters.rxjava2;
 
+import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
+
+import org.junit.Before;
+
 import io.reactivex.Flowable;
 import io.smallrye.reactive.converters.ReactiveTypeConverter;
 import io.smallrye.reactive.converters.Registry;
 import io.smallrye.reactive.converters.tck.FromRSPublisherTCK;
-import org.junit.Before;
-
-import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class FlowableFromRSPublisherTest extends FromRSPublisherTCK<Flowable> {
 

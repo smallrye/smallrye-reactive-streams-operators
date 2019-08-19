@@ -1,14 +1,15 @@
 package io.smallrye.reactive.converters.rxjava1;
 
-import io.smallrye.reactive.converters.ReactiveTypeConverter;
-import io.smallrye.reactive.converters.Registry;
-import io.smallrye.reactive.converters.tck.FromRSPublisherTCK;
-import org.junit.Before;
-import rx.Single;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
+
+import org.junit.Before;
+
+import io.smallrye.reactive.converters.ReactiveTypeConverter;
+import io.smallrye.reactive.converters.Registry;
+import io.smallrye.reactive.converters.tck.FromRSPublisherTCK;
+import rx.Single;
 
 public class SingleFromRSPublisherTest extends FromRSPublisherTCK<Single> {
 

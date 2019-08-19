@@ -1,18 +1,18 @@
 package io.smallrye.reactive.converters.rxjava1;
 
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+
+import org.junit.Before;
+
 import io.smallrye.reactive.converters.ReactiveTypeConverter;
 import io.smallrye.reactive.converters.Registry;
 import io.smallrye.reactive.converters.tck.ToRSPublisherTCK;
-import org.junit.Before;
 import rx.Completable;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
-import java.util.Optional;
-import java.util.concurrent.TimeUnit;
-
 public class CompletableToRSPublisherTest extends ToRSPublisherTCK<Completable> {
-
 
     private static final int DELAY = 10;
     private ReactiveTypeConverter<Completable> converter;
@@ -63,7 +63,7 @@ public class CompletableToRSPublisherTest extends ToRSPublisherTCK<Completable> 
 
     @Override
     protected Optional<Completable> createInstanceEmittingAMultipleValuesAndFailure(String v1, String v2,
-                                                                                    RuntimeException e) {
+            RuntimeException e) {
         return Optional.empty();
     }
 
@@ -78,8 +78,7 @@ public class CompletableToRSPublisherTest extends ToRSPublisherTCK<Completable> 
                 .complete()
                 .delay(10, TimeUnit.MILLISECONDS)
                 .observeOn(Schedulers.computation())
-                .andThen(Completable.complete())
-        );
+                .andThen(Completable.complete()));
     }
 
     @Override

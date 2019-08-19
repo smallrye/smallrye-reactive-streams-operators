@@ -1,17 +1,16 @@
 package io.smallrye.reactive.streams.utils;
 
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.reactivestreams.Processor;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
-
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * A processor forwarding to a subscriber. This is used to connect a "next to be" producer.
  */
 public class ConnectableProcessor<T> implements Processor<T, T> {
-
 
     /**
      * Reference of the subscriber if any.
@@ -73,8 +72,7 @@ public class ConnectableProcessor<T> implements Processor<T, T> {
         // However, we could complete of failed in the meantime.
         subscriber.onSubscribe(
                 new WrappedSubscription(subscription.get(),
-                        () -> this.subscriber.set(new CancellationSubscriber<>()))
-        );
+                        () -> this.subscriber.set(new CancellationSubscriber<>())));
         if (!state.compareAndSet(State.HAS_SUBSCRIPTION, State.PROCESSING)) {
             if (state.get() == State.FAILED) {
                 subscriber.onError(failure.get());
@@ -159,6 +157,5 @@ public class ConnectableProcessor<T> implements Processor<T, T> {
         FAILED, // Caught an error, final state
         COMPLETE // Completed, final state
     }
-
 
 }

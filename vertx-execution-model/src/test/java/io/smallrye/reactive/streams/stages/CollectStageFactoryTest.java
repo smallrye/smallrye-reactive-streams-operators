@@ -1,13 +1,14 @@
 package io.smallrye.reactive.streams.stages;
 
-import io.reactivex.Flowable;
-import io.reactivex.schedulers.Schedulers;
-import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
-import org.junit.Test;
-
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletionStage;
 import java.util.stream.Collectors;
+
+import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
+import org.junit.Test;
+
+import io.reactivex.Flowable;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Checks the behavior of the {@link CollectStageFactory} when running from a Vert.x context

@@ -1,13 +1,14 @@
 package io.smallrye.reactive.streams.stages;
 
+import java.util.Objects;
+import java.util.function.Consumer;
+
+import org.eclipse.microprofile.reactive.streams.operators.spi.Stage;
+
 import io.reactivex.Flowable;
 import io.smallrye.reactive.streams.Engine;
 import io.smallrye.reactive.streams.operators.ProcessingStage;
 import io.smallrye.reactive.streams.operators.ProcessingStageFactory;
-import org.eclipse.microprofile.reactive.streams.operators.spi.Stage;
-
-import java.util.Objects;
-import java.util.function.Consumer;
 
 /**
  * Implementation of the {@link Stage.Peek} stage.

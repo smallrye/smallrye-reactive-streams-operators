@@ -1,11 +1,8 @@
 package io.smallrye.reactive.streams.stages;
 
-import io.reactivex.Flowable;
-import io.reactivex.schedulers.Schedulers;
-import io.smallrye.reactive.streams.Engine;
-import io.smallrye.reactive.streams.operators.TerminalStage;
-import org.eclipse.microprofile.reactive.streams.operators.tck.spi.QuietRuntimeException;
-import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+import static org.awaitility.Awaitility.await;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,9 +14,13 @@ import java.util.function.ToIntFunction;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
-import static org.awaitility.Awaitility.await;
+import org.eclipse.microprofile.reactive.streams.operators.tck.spi.QuietRuntimeException;
+import org.junit.Test;
+
+import io.reactivex.Flowable;
+import io.reactivex.schedulers.Schedulers;
+import io.smallrye.reactive.streams.Engine;
+import io.smallrye.reactive.streams.operators.TerminalStage;
 
 /**
  * Checks the behavior of the {@link CollectStageFactory}.
@@ -61,7 +62,7 @@ public class CollectStageFactoryTest extends StageTestBase {
         CompletableFuture<Void> cancelled = new CompletableFuture<>();
         CompletionStage<Integer> result = infiniteStream()
                 .onTerminate(() -> cancelled.complete(null))
-                .collect(Collector.<Integer, Integer, Integer>of(() -> {
+                .collect(Collector.<Integer, Integer, Integer> of(() -> {
                     throw new QuietRuntimeException("failed");
                 }, (a, b) -> {
                 }, (a, b) -> a + b, Function.identity()))

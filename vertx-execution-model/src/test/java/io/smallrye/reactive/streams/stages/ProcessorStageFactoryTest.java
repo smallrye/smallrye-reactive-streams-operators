@@ -1,13 +1,14 @@
 package io.smallrye.reactive.streams.stages;
 
-import io.reactivex.Flowable;
-import io.reactivex.schedulers.Schedulers;
+import java.util.Arrays;
+
 import org.eclipse.microprofile.reactive.streams.operators.ProcessorBuilder;
 import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
 import org.junit.Test;
 import org.reactivestreams.Processor;
 
-import java.util.Arrays;
+import io.reactivex.Flowable;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Checks the behavior of the {@link ProcessorStageFactory} when running from the Vert.x Context.
@@ -21,14 +22,12 @@ public class ProcessorStageFactoryTest extends StageTestBase {
         Flowable<Integer> flowable = Flowable.fromArray(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
                 .subscribeOn(Schedulers.computation());
 
-        executeOnEventLoop(() ->
-                ReactiveStreams.fromPublisher(flowable)
-                        .filter(i -> i < 4)
-                        .via(duplicateProcessor())
-                        .via(asStringProcessor())
-                        .toList()
-                        .run()
-        ).assertSuccess(Arrays.asList("1", "1", "2", "2", "3", "3"));
+        executeOnEventLoop(() -> ReactiveStreams.fromPublisher(flowable)
+                .filter(i -> i < 4)
+                .via(duplicateProcessor())
+                .via(asStringProcessor())
+                .toList()
+                .run()).assertSuccess(Arrays.asList("1", "1", "2", "2", "3", "3"));
     }
 
     @Test
@@ -36,18 +35,16 @@ public class ProcessorStageFactoryTest extends StageTestBase {
         Flowable<Integer> flowable = Flowable.fromArray(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
                 .subscribeOn(Schedulers.computation());
 
-        executeOnEventLoop(() ->
-                ReactiveStreams.fromPublisher(flowable)
-                        .filter(i -> i < 4)
-                        .via(duplicateProcessorBuilder())
-                        .via(asStringProcessorBuilder())
-                        .toList()
-                        .run()
-        ).assertSuccess(Arrays.asList("1", "1", "2", "2", "3", "3"));
+        executeOnEventLoop(() -> ReactiveStreams.fromPublisher(flowable)
+                .filter(i -> i < 4)
+                .via(duplicateProcessorBuilder())
+                .via(asStringProcessorBuilder())
+                .toList()
+                .run()).assertSuccess(Arrays.asList("1", "1", "2", "2", "3", "3"));
     }
 
     private ProcessorBuilder<Integer, Integer> duplicateProcessorBuilder() {
-        return ReactiveStreams.<Integer>builder().flatMapIterable(i -> Arrays.asList(i, i));
+        return ReactiveStreams.<Integer> builder().flatMapIterable(i -> Arrays.asList(i, i));
     }
 
     private Processor<Integer, Integer> duplicateProcessor() {
@@ -55,7 +52,7 @@ public class ProcessorStageFactoryTest extends StageTestBase {
     }
 
     private ProcessorBuilder<Integer, String> asStringProcessorBuilder() {
-        return ReactiveStreams.<Integer>builder().map(Object::toString);
+        return ReactiveStreams.<Integer> builder().map(Object::toString);
     }
 
     private Processor<Integer, String> asStringProcessor() {

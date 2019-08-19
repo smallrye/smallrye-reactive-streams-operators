@@ -1,5 +1,13 @@
 package io.smallrye.reactive.converters.rxjava2;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+
+import org.junit.Before;
+import org.junit.Test;
+
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
@@ -8,13 +16,6 @@ import io.reactivex.schedulers.Schedulers;
 import io.smallrye.reactive.converters.ReactiveTypeConverter;
 import io.smallrye.reactive.converters.Registry;
 import io.smallrye.reactive.converters.tck.ToRSPublisherTCK;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.util.Optional;
-import java.util.concurrent.TimeUnit;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class CompletableToRSPublisherTest extends ToRSPublisherTCK<Completable> {
 
@@ -67,7 +68,7 @@ public class CompletableToRSPublisherTest extends ToRSPublisherTCK<Completable> 
 
     @Override
     protected Optional<Completable> createInstanceEmittingAMultipleValuesAndFailure(String v1, String v2,
-                                                                                    RuntimeException e) {
+            RuntimeException e) {
         return Optional.empty();
     }
 
@@ -82,8 +83,7 @@ public class CompletableToRSPublisherTest extends ToRSPublisherTCK<Completable> 
                 .complete()
                 .delay(10, TimeUnit.MILLISECONDS)
                 .observeOn(Schedulers.io())
-                .andThen(Completable.complete())
-        );
+                .andThen(Completable.complete()));
     }
 
     @Override

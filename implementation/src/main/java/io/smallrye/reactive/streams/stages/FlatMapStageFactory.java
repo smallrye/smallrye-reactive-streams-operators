@@ -1,17 +1,18 @@
 package io.smallrye.reactive.streams.stages;
 
+import java.util.Objects;
+import java.util.function.Function;
+
+import org.eclipse.microprofile.reactive.streams.operators.spi.Graph;
+import org.eclipse.microprofile.reactive.streams.operators.spi.Stage;
+import org.reactivestreams.Subscriber;
+
 import io.reactivex.Flowable;
 import io.smallrye.reactive.streams.Engine;
 import io.smallrye.reactive.streams.operators.ProcessingStage;
 import io.smallrye.reactive.streams.operators.ProcessingStageFactory;
 import io.smallrye.reactive.streams.utils.Casts;
 import io.smallrye.reactive.streams.utils.DelegatingSubscriber;
-import org.eclipse.microprofile.reactive.streams.operators.spi.Graph;
-import org.eclipse.microprofile.reactive.streams.operators.spi.Stage;
-import org.reactivestreams.Subscriber;
-
-import java.util.Objects;
-import java.util.function.Function;
 
 /**
  * Implementation of the {@link Stage.FlatMap} stage. Be aware it behaves as a RX `concatMap`.

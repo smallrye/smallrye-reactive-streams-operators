@@ -1,13 +1,13 @@
 package io.smallrye.reactive.streams.utils;
 
-import org.junit.Test;
-import org.reactivestreams.Subscriber;
-import org.reactivestreams.Subscription;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.Test;
+import org.reactivestreams.Subscriber;
+import org.reactivestreams.Subscription;
 
 public class WrappedSubscriberTest {
 
@@ -68,7 +68,6 @@ public class WrappedSubscriberTest {
         assertThat(cancellationReference1.get()).isFalse();
         assertThat(cancellationReference2.get()).isTrue();
         assertThat(subscriptionReference.get()).isNotNull();
-
 
     }
 

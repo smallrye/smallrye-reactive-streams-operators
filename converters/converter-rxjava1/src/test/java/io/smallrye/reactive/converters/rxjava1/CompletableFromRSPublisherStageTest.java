@@ -1,14 +1,15 @@
 package io.smallrye.reactive.converters.rxjava1;
 
-import io.smallrye.reactive.converters.ReactiveTypeConverter;
-import io.smallrye.reactive.converters.Registry;
-import io.smallrye.reactive.converters.tck.FromRSPublisherTCK;
-import org.junit.Before;
-import rx.Completable;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
+
+import org.junit.Before;
+
+import io.smallrye.reactive.converters.ReactiveTypeConverter;
+import io.smallrye.reactive.converters.Registry;
+import io.smallrye.reactive.converters.tck.FromRSPublisherTCK;
+import rx.Completable;
 
 public class CompletableFromRSPublisherStageTest extends FromRSPublisherTCK<Completable> {
 
@@ -53,6 +54,5 @@ public class CompletableFromRSPublisherStageTest extends FromRSPublisherTCK<Comp
     protected void consume(Completable instance) {
         instance.await();
     }
-
 
 }

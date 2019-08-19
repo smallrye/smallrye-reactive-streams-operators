@@ -1,9 +1,9 @@
 package io.smallrye.reactive.streams.utils;
 
+import java.util.Objects;
+
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
-
-import java.util.Objects;
 
 /**
  * A subscriber delegating to another subscriber and enforcing that parameters are not {@code null}

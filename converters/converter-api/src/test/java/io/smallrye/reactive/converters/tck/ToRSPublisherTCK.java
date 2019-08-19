@@ -1,9 +1,7 @@
 package io.smallrye.reactive.converters.tck;
 
-import io.reactivex.Flowable;
-import io.smallrye.reactive.converters.ReactiveTypeConverter;
-import org.junit.Test;
-import org.reactivestreams.Publisher;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,8 +11,11 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
+import org.junit.Test;
+import org.reactivestreams.Publisher;
+
+import io.reactivex.Flowable;
+import io.smallrye.reactive.converters.ReactiveTypeConverter;
 
 public abstract class ToRSPublisherTCK<T> {
 
@@ -112,7 +113,7 @@ public abstract class ToRSPublisherTCK<T> {
 
     @Test
     public void testWithImmediateNullValueInAStream() {
-        if (! converter().supportNullValue()) {
+        if (!converter().supportNullValue()) {
             return;
         }
         Optional<T> optional = createInstanceEmittingMultipleValues("a", "b", null, "c");
@@ -128,7 +129,6 @@ public abstract class ToRSPublisherTCK<T> {
             assertThat(e).isInstanceOf(NullPointerException.class);
         }
     }
-
 
     @Test
     public void testWithAsynchronousNullValue() {
@@ -178,7 +178,6 @@ public abstract class ToRSPublisherTCK<T> {
             assertThat(e).isInstanceOf(BoomException.class);
         }
     }
-
 
     @Test
     public void testWithNever() throws InterruptedException {
@@ -232,6 +231,5 @@ public abstract class ToRSPublisherTCK<T> {
         Publisher<String> publisher = converter().toRSPublisher(instance.get());
         assertThat(Flowable.fromPublisher(publisher).isEmpty().blockingGet()).isTrue();
     }
-
 
 }

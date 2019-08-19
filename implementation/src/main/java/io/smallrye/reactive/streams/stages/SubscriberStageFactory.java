@@ -1,15 +1,16 @@
 package io.smallrye.reactive.streams.stages;
 
+import java.util.Objects;
+import java.util.concurrent.CompletionStage;
+
+import org.eclipse.microprofile.reactive.streams.operators.spi.Stage;
+import org.reactivestreams.Subscriber;
+
 import io.reactivex.Flowable;
 import io.smallrye.reactive.streams.Engine;
 import io.smallrye.reactive.streams.operators.TerminalStage;
 import io.smallrye.reactive.streams.operators.TerminalStageFactory;
 import io.smallrye.reactive.streams.utils.WrappedSubscriber;
-import org.eclipse.microprofile.reactive.streams.operators.spi.Stage;
-import org.reactivestreams.Subscriber;
-
-import java.util.Objects;
-import java.util.concurrent.CompletionStage;
 
 /**
  * Implementation of the {@link Stage.SubscriberStage} stage.

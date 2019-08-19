@@ -1,12 +1,13 @@
 package io.smallrye.reactive.streams.stages;
 
+import java.util.Objects;
+
+import org.eclipse.microprofile.reactive.streams.operators.spi.Stage;
+
 import io.reactivex.Flowable;
 import io.smallrye.reactive.streams.Engine;
 import io.smallrye.reactive.streams.operators.ProcessingStage;
 import io.smallrye.reactive.streams.operators.ProcessingStageFactory;
-import org.eclipse.microprofile.reactive.streams.operators.spi.Stage;
-
-import java.util.Objects;
 
 /**
  * Implementation of the {@link Stage.OnComplete} stage.

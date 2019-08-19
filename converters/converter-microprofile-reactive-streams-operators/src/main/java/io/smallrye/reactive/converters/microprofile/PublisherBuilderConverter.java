@@ -1,14 +1,15 @@
 package io.smallrye.reactive.converters.microprofile;
 
-import io.reactivex.processors.AsyncProcessor;
-import io.smallrye.reactive.converters.ReactiveTypeConverter;
+import java.util.Optional;
+import java.util.concurrent.CompletionException;
+import java.util.concurrent.CompletionStage;
+
 import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
 import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
 import org.reactivestreams.Publisher;
 
-import java.util.Optional;
-import java.util.concurrent.CompletionException;
-import java.util.concurrent.CompletionStage;
+import io.reactivex.processors.AsyncProcessor;
+import io.smallrye.reactive.converters.ReactiveTypeConverter;
 
 public class PublisherBuilderConverter implements ReactiveTypeConverter<PublisherBuilder> {
     @SuppressWarnings("unchecked")

@@ -1,24 +1,24 @@
 package io.smallrye.reactive.converters;
 
-import org.reactivestreams.Publisher;
-
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
+
+import org.reactivestreams.Publisher;
 
 /**
  * Converts a specific reactive types from and to {@link CompletionStage} and {@code Publisher}.
  *
  * In addition to conversion operations, this class provides characteristics on the converted type:
  * <ul>
- *     <li>whether or not the converted type {@code <T>} may emit at most one item</li>
- *     <li>whether or not the converted type {@code <T>} may emit multiple items</li>
- *     <li>whether or not the converted type {@code <T>} may emit {@code null} values</li>
- *     <li>...</li>
+ * <li>whether or not the converted type {@code <T>} may emit at most one item</li>
+ * <li>whether or not the converted type {@code <T>} may emit multiple items</li>
+ * <li>whether or not the converted type {@code <T>} may emit {@code null} values</li>
+ * <li>...</li>
  * </ul>
  *
  * <p>
  * Implementations must be tested against the TCK by extending the test case from the
- *  {@code io.smallrye.reactive.converters.tck} packages.
+ * {@code io.smallrye.reactive.converters.tck} packages.
  * </p>
  *
  * @param <T> the converted type.
@@ -40,7 +40,8 @@ public interface ReactiveTypeConverter<T> {
      * completes with this failure.</li>
      * <li>If the passed {@code instance} does not emit any value and does not fail or complete, the returned
      * {@code CompletionStage} does not complete.</li>
-     * <li>If the passed {@code instance} completes <strong>before</strong><br> emitting a value, the
+     * <li>If the passed {@code instance} completes <strong>before</strong><br>
+     * emitting a value, the
      * {@link CompletionStage} is completed with a {@code null} value.</li>
      * <li>If the passed {@code instance} emits {@code null} as first value (if supported), the
      * {@link CompletionStage} is completed with {@code null}. As a consequence, there are no
@@ -50,8 +51,8 @@ public interface ReactiveTypeConverter<T> {
      * </ul>
      *
      * @param instance the instance to convert to a {@link CompletionStage}. Must not be {@code null}.
-     * @param <X>      the type used to complete the returned {@link CompletionStage}.
-     *                 It is generally the type of data emitted by the passed {@code instance}.
+     * @param <X> the type used to complete the returned {@link CompletionStage}.
+     *        It is generally the type of data emitted by the passed {@code instance}.
      * @return a {@code non-null} {@link CompletionStage}.
      */
     <X> CompletionStage<X> toCompletionStage(T instance);
@@ -68,7 +69,8 @@ public interface ReactiveTypeConverter<T> {
      * <li>If the {@code instance} completes, {@link Publisher} also completes.</li>
      * <li>If the passed {@code instance} does not emit any value and does not fail or complete, the returned
      * {@code Publisher} does not send any signals or values.</li>
-     * <li>If the passed {@code instance} completes <strong>before</strong><br> emitting a value, the {@link Publisher}
+     * <li>If the passed {@code instance} completes <strong>before</strong><br>
+     * emitting a value, the {@link Publisher}
      * also completes empty.</li>
      * <li>If the passed {@code instance} emits {@code null}, the {@link Publisher} must send a failure
      * ({@link NullPointerException}.</li>
@@ -80,8 +82,8 @@ public interface ReactiveTypeConverter<T> {
      * </ul>
      *
      * @param instance the instance to convert to a {@link Publisher}. Must not be {@code null}.
-     * @param <X>      the type emitted by the returned {@link Publisher}. It
-     *                 is generally the type of data emitted by the passed {@code instance}.
+     * @param <X> the type emitted by the returned {@link Publisher}. It
+     *        is generally the type of data emitted by the passed {@code instance}.
      * @return a {@code non-null} {@link Publisher}.
      */
     <X> Publisher<X> toRSPublisher(T instance);
@@ -112,7 +114,7 @@ public interface ReactiveTypeConverter<T> {
      * <p>
      * Implementations may decide to adapt the emitted result when receiving container object such as {@link Optional}.
      *
-     * @param cs  the instance of {@link CompletionStage}, must not be {@code null}
+     * @param cs the instance of {@link CompletionStage}, must not be {@code null}
      * @param <X> the type of result provided by the {@link CompletionStage}
      * @return the instance of T, generally emitting instances of {@code X}.
      */
@@ -138,14 +140,14 @@ public interface ReactiveTypeConverter<T> {
      * </ul>
      *
      * @param publisher the {@link Publisher} to convert. Must not be {@code null}.
-     * @param <X>       the type of data emitted by the passed {@link Publisher}.
+     * @param <X> the type of data emitted by the passed {@link Publisher}.
      * @return a {@code non-null} instance of {@code T}.
      */
     <X> T fromPublisher(Publisher<X> publisher);
 
     /**
      * @return the conversion type. Must not be {@code null}. Notice that sub-classes of the returned class are also
-     * managed by the same converter.
+     *         managed by the same converter.
      */
     Class<T> type();
 
@@ -156,8 +158,8 @@ public interface ReactiveTypeConverter<T> {
 
     /**
      * @return {@code true} if the type {@code T} may emit items at most one item, {@code false} otherwise. Returning
-     * {@code false} to this method means that the converted type only signals about completion or error. Returning
-     * {@code true} means that {@link #emitItems()} must also return {@code true}.
+     *         {@code false} to this method means that the converted type only signals about completion or error. Returning
+     *         {@code true} means that {@link #emitItems()} must also return {@code true}.
      */
     boolean emitAtMostOneItem();
 
@@ -168,7 +170,7 @@ public interface ReactiveTypeConverter<T> {
 
     /**
      * @return {@code true} if the type {@code T} require at least one item. Converting from a type not emitting a
-     * value item would fail.
+     *         value item would fail.
      */
     default boolean requireAtLeastOneItem() {
         return false;

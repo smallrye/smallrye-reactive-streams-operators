@@ -1,12 +1,8 @@
 package io.smallrye.reactive.streams;
 
-import org.eclipse.microprofile.reactive.streams.operators.*;
-import org.junit.After;
-import org.junit.Test;
-import org.reactivestreams.Processor;
-import org.reactivestreams.Publisher;
-import org.reactivestreams.Subscriber;
-import org.reactivestreams.Subscription;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
+import static org.hamcrest.core.Is.is;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -21,15 +17,18 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.awaitility.Awaitility.await;
-import static org.hamcrest.core.Is.is;
+import org.eclipse.microprofile.reactive.streams.operators.*;
+import org.junit.After;
+import org.junit.Test;
+import org.reactivestreams.Processor;
+import org.reactivestreams.Publisher;
+import org.reactivestreams.Subscriber;
+import org.reactivestreams.Subscription;
 
 /**
  * @author <a href="http://escoffier.me">Clement Escoffier</a>
  */
 public class APITest {
-
 
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
@@ -57,7 +56,7 @@ public class APITest {
 
     @Test
     public void testToStringProcessorFromSpec() throws ExecutionException, InterruptedException {
-        ProcessorBuilder<Integer, String> toStringProcessor = ReactiveStreams.<Integer>builder().map(Object::toString);
+        ProcessorBuilder<Integer, String> toStringProcessor = ReactiveStreams.<Integer> builder().map(Object::toString);
         SubscriberBuilder<Integer, List<String>> toList = toStringProcessor.toList();
 
         CompletionStage<List<String>> stage = ReactiveStreams.of(1, 2, 3, 4, 5).to(toList).run();
@@ -66,7 +65,8 @@ public class APITest {
 
     @Test
     public void testTrivialClosedGraphFromSpec() throws ExecutionException, InterruptedException {
-        CompletionStage<Optional<Integer>> result = ReactiveStreams.fromIterable(() -> IntStream.range(1, 1000).boxed().iterator())
+        CompletionStage<Optional<Integer>> result = ReactiveStreams
+                .fromIterable(() -> IntStream.range(1, 1000).boxed().iterator())
                 .filter(i -> (i & 1) == 1)
                 .map(i -> i + 2)
                 .collect(Collectors.reducing((i, j) -> i + j))
@@ -80,43 +80,42 @@ public class APITest {
         List<MyDomainObject> domainObjects = Arrays.asList(new MyDomainObject("Clement", "Neo"),
                 new MyDomainObject("Tintin", "Milou"));
 
-        Publisher<ByteBuffer> publisher = ReactiveStreams.fromIterable(domainObjects).map(obj -> String.format("%s,%s\n", obj
-                .field1, obj.field2))
+        Publisher<ByteBuffer> publisher = ReactiveStreams.fromIterable(domainObjects)
+                .map(obj -> String.format("%s,%s\n", obj.field1, obj.field2))
                 .map(line -> ByteBuffer.wrap(line.getBytes()))
                 .buildRs();
 
         List<String> list = new ArrayList<>();
         AtomicBoolean done = new AtomicBoolean();
 
-        executor.submit(() ->
-                publisher.subscribe(new Subscriber<ByteBuffer>() {
-                    @Override
-                    public void onSubscribe(Subscription s) {
-                        s.request(5);
-                    }
+        executor.submit(() -> publisher.subscribe(new Subscriber<ByteBuffer>() {
+            @Override
+            public void onSubscribe(Subscription s) {
+                s.request(5);
+            }
 
-                    @Override
-                    public void onNext(ByteBuffer byteBuffer) {
-                        list.add(new String(byteBuffer.array()));
-                    }
+            @Override
+            public void onNext(ByteBuffer byteBuffer) {
+                list.add(new String(byteBuffer.array()));
+            }
 
-                    @Override
-                    public void onError(Throwable t) {
+            @Override
+            public void onError(Throwable t) {
 
-                    }
+            }
 
-                    @Override
-                    public void onComplete() {
-                        done.set(true);
-                    }
-                }));
+            @Override
+            public void onComplete() {
+                done.set(true);
+            }
+        }));
 
         await().untilAtomic(done, is(true));
         assertThat(list).containsExactly("Clement,Neo\n", "Tintin,Milou\n");
     }
 
     private Processor<ByteBuffer, MyDomainObject> createParser() {
-        return ReactiveStreams.<ByteBuffer>builder()
+        return ReactiveStreams.<ByteBuffer> builder()
                 .map(buffer -> new String(buffer.array()))
                 .map(String::trim)
                 .map(line -> line.split(","))
@@ -128,18 +127,17 @@ public class APITest {
     public void testBuildingSubscriberFromSpec() throws ExecutionException, InterruptedException {
         Processor<ByteBuffer, MyDomainObject> parser = createParser();
 
-        CompletionSubscriber<ByteBuffer, List<MyDomainObject>> subscriber =
-                ReactiveStreams.<ByteBuffer>builder()
-                        .via(parser)
-                        .toList()
-                        .build();
+        CompletionSubscriber<ByteBuffer, List<MyDomainObject>> subscriber = ReactiveStreams.<ByteBuffer> builder()
+                .via(parser)
+                .toList()
+                .build();
 
         CompletionStage<List<MyDomainObject>> result = subscriber.getCompletion();
 
         List<MyDomainObject> domainObjects = Arrays.asList(new MyDomainObject("Clement", "Neo"),
                 new MyDomainObject("Tintin", "Milou"));
-        Publisher<ByteBuffer> publisher = ReactiveStreams.fromIterable(domainObjects).map(obj -> String.format("%s,%s\n", obj
-                .field1, obj.field2))
+        Publisher<ByteBuffer> publisher = ReactiveStreams.fromIterable(domainObjects)
+                .map(obj -> String.format("%s,%s\n", obj.field1, obj.field2))
                 .map(line -> ByteBuffer.wrap(line.getBytes()))
                 .buildRs();
 

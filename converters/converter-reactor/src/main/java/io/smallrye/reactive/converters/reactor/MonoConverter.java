@@ -1,11 +1,12 @@
 package io.smallrye.reactive.converters.reactor;
 
-import io.smallrye.reactive.converters.ReactiveTypeConverter;
-import org.reactivestreams.Publisher;
-import reactor.core.publisher.Mono;
-
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
+
+import org.reactivestreams.Publisher;
+
+import io.smallrye.reactive.converters.ReactiveTypeConverter;
+import reactor.core.publisher.Mono;
 
 public class MonoConverter implements ReactiveTypeConverter<Mono> {
 
@@ -23,16 +24,15 @@ public class MonoConverter implements ReactiveTypeConverter<Mono> {
 
     @Override
     public <X> Mono fromCompletionStage(CompletionStage<X> cs) {
-        return Mono.create(sink ->
-                cs.whenComplete((X v, Throwable e) -> {
-                    if (e != null) {
-                        sink.error(e instanceof CompletionException ? e.getCause() : e);
-                    } else if (v != null) {
-                        sink.success(v);
-                    } else {
-                        sink.success();
-                    }
-                }));
+        return Mono.create(sink -> cs.whenComplete((X v, Throwable e) -> {
+            if (e != null) {
+                sink.error(e instanceof CompletionException ? e.getCause() : e);
+            } else if (v != null) {
+                sink.success(v);
+            } else {
+                sink.success();
+            }
+        }));
     }
 
     @Override

@@ -1,18 +1,19 @@
 package io.smallrye.reactive.converters.rxjava2;
 
-import io.reactivex.Maybe;
-import io.smallrye.reactive.converters.ReactiveTypeConverter;
-import io.smallrye.reactive.converters.Registry;
-import io.smallrye.reactive.converters.tck.FromCompletionStageTCK;
-import org.junit.Before;
-import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.Before;
+import org.junit.Test;
+
+import io.reactivex.Maybe;
+import io.smallrye.reactive.converters.ReactiveTypeConverter;
+import io.smallrye.reactive.converters.Registry;
+import io.smallrye.reactive.converters.tck.FromCompletionStageTCK;
 
 public class MaybeFromCompletionStageTest extends FromCompletionStageTCK<Maybe> {
 
@@ -48,7 +49,6 @@ public class MaybeFromCompletionStageTest extends FromCompletionStageTCK<Maybe> 
     }
 
     // Optional tests
-
 
     @SuppressWarnings("unchecked")
     @Test

@@ -1,13 +1,7 @@
 package io.smallrye.reactive.streams.stages;
 
-import io.reactivex.Flowable;
-import io.reactivex.schedulers.Schedulers;
-import io.smallrye.reactive.streams.Engine;
-import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
-import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
-import org.eclipse.microprofile.reactive.streams.operators.spi.Graph;
-import org.eclipse.microprofile.reactive.streams.operators.spi.Stage;
-import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -16,8 +10,15 @@ import java.util.List;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.awaitility.Awaitility.await;
+import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
+import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
+import org.eclipse.microprofile.reactive.streams.operators.spi.Graph;
+import org.eclipse.microprofile.reactive.streams.operators.spi.Stage;
+import org.junit.Test;
+
+import io.reactivex.Flowable;
+import io.reactivex.schedulers.Schedulers;
+import io.smallrye.reactive.streams.Engine;
 
 /**
  * Checks the behavior of the {@link ConcatStageFactory} class, especially the thread handling.
@@ -77,8 +78,7 @@ public class ConcatStageFactoryTest extends StageTestBase {
         LinkedHashSet<String> threads = new LinkedHashSet<>();
         CompletionStage<List<Integer>> list = ReactiveStreams.concat(
                 ReactiveStreams.fromPublisher(firstStream),
-                ReactiveStreams.fromPublisher(secondStream)
-        )
+                ReactiveStreams.fromPublisher(secondStream))
                 .peek(i -> threads.add(Thread.currentThread().getName()))
                 .toList().run();
         await().until(() -> list.toCompletableFuture().isDone());

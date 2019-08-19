@@ -1,11 +1,12 @@
 package io.smallrye.reactive.converters.rxjava2;
 
-import io.reactivex.Flowable;
-import io.smallrye.reactive.converters.ReactiveTypeConverter;
-import org.reactivestreams.Publisher;
-
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+
+import org.reactivestreams.Publisher;
+
+import io.reactivex.Flowable;
+import io.smallrye.reactive.converters.ReactiveTypeConverter;
 
 /**
  * Converter handling the RX Java 2 {@link Flowable} type.
@@ -64,16 +65,13 @@ public class FlowableConverter implements ReactiveTypeConverter<Flowable> {
         ((Flowable<T>) instance).firstElement().subscribe(
                 future::complete,
                 future::completeExceptionally,
-                () -> future.complete(null)
-        );
+                () -> future.complete(null));
         return future;
     }
 
     @Override
     public <X> Flowable fromCompletionStage(CompletionStage<X> cs) {
-        return Flowable.generate(emitter ->
-                ObservableConverter.toStreamEvents(cs, emitter)
-        );
+        return Flowable.generate(emitter -> ObservableConverter.toStreamEvents(cs, emitter));
     }
 
     @Override

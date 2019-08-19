@@ -1,11 +1,12 @@
 package io.smallrye.reactive.streams.utils;
 
-import io.smallrye.reactive.streams.operators.ProcessingStage;
-import org.reactivestreams.Processor;
-
 import java.util.concurrent.CompletionStage;
 import java.util.function.Function;
 import java.util.function.Predicate;
+
+import org.reactivestreams.Processor;
+
+import io.smallrye.reactive.streams.operators.ProcessingStage;
 
 /**
  * Cosmetic cast / generic / erasure fixes.

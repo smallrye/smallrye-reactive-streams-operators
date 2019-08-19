@@ -1,12 +1,12 @@
 package io.smallrye.reactive.streams.utils;
 
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.reactivestreams.Processor;
 import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
-
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Processor wrapping a publisher and subscriber, and connect them

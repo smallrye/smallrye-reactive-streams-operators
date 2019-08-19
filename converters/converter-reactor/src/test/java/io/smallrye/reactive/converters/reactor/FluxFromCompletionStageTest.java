@@ -1,12 +1,13 @@
 package io.smallrye.reactive.converters.reactor;
 
+import java.util.concurrent.atomic.AtomicReference;
+
+import org.junit.Before;
+
 import io.smallrye.reactive.converters.ReactiveTypeConverter;
 import io.smallrye.reactive.converters.Registry;
 import io.smallrye.reactive.converters.tck.FromCompletionStageTCK;
-import org.junit.Before;
 import reactor.core.publisher.Flux;
-
-import java.util.concurrent.atomic.AtomicReference;
 
 public class FluxFromCompletionStageTest extends FromCompletionStageTCK<Flux> {
 
@@ -33,7 +34,8 @@ public class FluxFromCompletionStageTest extends FromCompletionStageTCK<Flux> {
     protected Exception getFailure(Flux instance) {
         AtomicReference<Exception> reference = new AtomicReference<>();
         try {
-            instance.toIterable().forEach(x -> {});
+            instance.toIterable().forEach(x -> {
+            });
         } catch (Exception e) {
             reference.set(e);
         }

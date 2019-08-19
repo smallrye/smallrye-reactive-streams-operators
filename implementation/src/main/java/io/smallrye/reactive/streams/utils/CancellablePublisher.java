@@ -1,10 +1,10 @@
 package io.smallrye.reactive.streams.utils;
 
-import org.reactivestreams.Publisher;
-import org.reactivestreams.Subscriber;
-
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.reactivestreams.Publisher;
+import org.reactivestreams.Subscriber;
 
 /**
  * Wrapped a source publisher and make it cancellable on demand. The cancellation happens if

@@ -1,8 +1,8 @@
 package io.smallrye.reactive.streams.operators;
 
-import io.reactivex.Flowable;
-
 import java.util.function.Supplier;
+
+import io.reactivex.Flowable;
 
 /**
  * Specialization of the {@link ProcessingStage} for data sources (publishers).

@@ -1,17 +1,18 @@
 package io.smallrye.reactive.streams.stages;
 
-import io.reactivex.Flowable;
-import io.reactivex.schedulers.Schedulers;
-import org.eclipse.microprofile.reactive.streams.operators.ProcessorBuilder;
-import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
-import org.junit.Test;
-import org.reactivestreams.Processor;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.eclipse.microprofile.reactive.streams.operators.ProcessorBuilder;
+import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
+import org.junit.Test;
+import org.reactivestreams.Processor;
+
+import io.reactivex.Flowable;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Checks the behavior of the {@link ProcessorStageFactory}.
@@ -53,7 +54,7 @@ public class ProcessorStageFactoryTest extends StageTestBase {
     }
 
     private ProcessorBuilder<Integer, Integer> duplicateProcessorBuilder() {
-        return ReactiveStreams.<Integer>builder().flatMapIterable(i -> Arrays.asList(i, i));
+        return ReactiveStreams.<Integer> builder().flatMapIterable(i -> Arrays.asList(i, i));
     }
 
     private Processor<Integer, Integer> duplicateProcessor() {
@@ -61,7 +62,7 @@ public class ProcessorStageFactoryTest extends StageTestBase {
     }
 
     private ProcessorBuilder<Integer, String> asStringProcessorBuilder() {
-        return ReactiveStreams.<Integer>builder().map(Object::toString);
+        return ReactiveStreams.<Integer> builder().map(Object::toString);
     }
 
     private Processor<Integer, String> asStringProcessor() {

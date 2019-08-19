@@ -1,14 +1,15 @@
 package io.smallrye.reactive.converters.rxjava2;
 
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
+import java.util.concurrent.CompletionStage;
+
+import org.reactivestreams.Publisher;
+
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Emitter;
 import io.reactivex.Observable;
 import io.smallrye.reactive.converters.ReactiveTypeConverter;
-import org.reactivestreams.Publisher;
-
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
-import java.util.concurrent.CompletionStage;
 
 /**
  * Converter handling the RX Java 2 {@link Observable} type.
@@ -81,8 +82,7 @@ public class ObservableConverter implements ReactiveTypeConverter<Observable> {
         ((Observable<T>) instance).firstElement().subscribe(
                 future::complete,
                 future::completeExceptionally,
-                () -> future.complete(null)
-        );
+                () -> future.complete(null));
         return future;
     }
 

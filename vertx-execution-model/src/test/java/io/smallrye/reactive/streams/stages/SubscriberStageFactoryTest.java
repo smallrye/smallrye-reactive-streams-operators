@@ -1,12 +1,13 @@
 package io.smallrye.reactive.streams.stages;
 
-import io.reactivex.Flowable;
-import io.reactivex.schedulers.Schedulers;
+import java.util.Optional;
+
 import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
 import org.eclipse.microprofile.reactive.streams.operators.SubscriberBuilder;
 import org.junit.Test;
 
-import java.util.Optional;
+import io.reactivex.Flowable;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Checks the behavior of the {@link SubscriberStageFactory} when running from the Vert.x Context.
@@ -20,7 +21,7 @@ public class SubscriberStageFactoryTest extends StageTestBase {
         Flowable<Integer> flowable = Flowable.fromArray(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
                 .subscribeOn(Schedulers.computation());
         executeOnEventLoop(() -> {
-            SubscriberBuilder<Integer, Optional<Integer>> builder = ReactiveStreams.<Integer>builder().findFirst();
+            SubscriberBuilder<Integer, Optional<Integer>> builder = ReactiveStreams.<Integer> builder().findFirst();
             return ReactiveStreams.fromPublisher(flowable).filter(i -> i > 5)
                     .to(builder).run();
         }).assertSuccess(Optional.of(6));

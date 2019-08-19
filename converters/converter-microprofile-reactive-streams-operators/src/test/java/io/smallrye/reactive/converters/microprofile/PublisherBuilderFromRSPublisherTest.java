@@ -1,18 +1,18 @@
 package io.smallrye.reactive.converters.microprofile;
 
-import io.smallrye.reactive.converters.ReactiveTypeConverter;
-import io.smallrye.reactive.converters.Registry;
-import io.smallrye.reactive.converters.tck.FromRSPublisherTCK;
-import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
-import org.junit.Before;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class PublisherBuilderFromRSPublisherTest extends FromRSPublisherTCK<PublisherBuilder> {
+import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
+import org.junit.Before;
 
+import io.smallrye.reactive.converters.ReactiveTypeConverter;
+import io.smallrye.reactive.converters.Registry;
+import io.smallrye.reactive.converters.tck.FromRSPublisherTCK;
+
+public class PublisherBuilderFromRSPublisherTest extends FromRSPublisherTCK<PublisherBuilder> {
 
     @Before
     public void lookup() {
@@ -76,6 +76,5 @@ public class PublisherBuilderFromRSPublisherTest extends FromRSPublisherTCK<Publ
             // Do nothing.
         }).run().toCompletableFuture().join();
     }
-
 
 }

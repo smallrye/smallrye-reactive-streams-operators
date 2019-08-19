@@ -1,12 +1,11 @@
 package io.smallrye.reactive.converters;
 
-import org.junit.Test;
-import org.reactivestreams.Publisher;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.Test;
+import org.reactivestreams.Publisher;
 
 public class RegistryTest {
 
@@ -59,6 +58,5 @@ public class RegistryTest {
             return false;
         }
     }
-
 
 }

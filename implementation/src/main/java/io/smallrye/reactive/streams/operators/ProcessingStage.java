@@ -1,8 +1,8 @@
 package io.smallrye.reactive.streams.operators;
 
-import io.reactivex.Flowable;
-
 import java.util.function.Function;
+
+import io.reactivex.Flowable;
 
 /**
  * Defines a processing stage - so a stream transformation.

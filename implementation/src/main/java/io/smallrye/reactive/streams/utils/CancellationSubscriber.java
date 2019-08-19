@@ -1,9 +1,9 @@
 package io.smallrye.reactive.streams.utils;
 
+import java.util.Objects;
+
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
-
-import java.util.Objects;
 
 /**
  * @author <a href="http://escoffier.me">Clement Escoffier</a>

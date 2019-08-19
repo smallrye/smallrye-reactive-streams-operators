@@ -1,13 +1,13 @@
 package io.smallrye.reactive.streams.utils;
 
-import org.reactivestreams.Subscriber;
-import org.reactivestreams.Subscription;
-
 import java.util.Objects;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.reactivestreams.Subscriber;
+import org.reactivestreams.Subscription;
 
 /**
  * @author <a href="http://escoffier.me">Clement Escoffier</a>
@@ -30,8 +30,8 @@ public class WrappedSubscriber<T> implements Subscriber<T> {
     public void onSubscribe(Subscription subscription) {
         Objects.requireNonNull(subscription);
         if (subscribed.compareAndSet(false, true)) {
-            source.onSubscribe(new WrappedSubscription(subscription, () ->
-                    future.completeExceptionally(new CancellationException())));
+            source.onSubscribe(
+                    new WrappedSubscription(subscription, () -> future.completeExceptionally(new CancellationException())));
         } else {
             subscription.cancel();
         }

@@ -1,12 +1,13 @@
 package io.smallrye.reactive.streams.cdi;
 
-import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
-import org.eclipse.microprofile.reactive.streams.operators.spi.ReactiveStreamsEngine;
+import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.util.concurrent.ExecutionException;
-import java.util.stream.Collectors;
+
+import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
+import org.eclipse.microprofile.reactive.streams.operators.spi.ReactiveStreamsEngine;
 
 @ApplicationScoped
 public class MyBean {

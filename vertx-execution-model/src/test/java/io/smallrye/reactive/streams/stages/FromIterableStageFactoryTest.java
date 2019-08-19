@@ -1,7 +1,6 @@
 package io.smallrye.reactive.streams.stages;
 
-import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
-import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -9,7 +8,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
+import org.junit.Test;
 
 /**
  * Checks the behavior of the {@link FromIterableStageFactory} class.
@@ -17,7 +17,6 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author <a href="http://escoffier.me">Clement Escoffier</a>
  */
 public class FromIterableStageFactoryTest extends StageTestBase {
-
 
     private final FromIterableStageFactory factory = new FromIterableStageFactory();
 
@@ -40,9 +39,9 @@ public class FromIterableStageFactoryTest extends StageTestBase {
 
         executeOnEventLoop(() -> ReactiveStreams.of(25).findFirst().run()).assertSuccess(Optional.of(25));
 
-        executeOnEventLoop(() -> ReactiveStreams.fromIterable(Collections.emptyList()).findFirst().run()).assertSuccess(Optional.empty());
+        executeOnEventLoop(() -> ReactiveStreams.fromIterable(Collections.emptyList()).findFirst().run())
+                .assertSuccess(Optional.empty());
     }
-
 
     @Test(expected = NullPointerException.class)
     public void createWithoutStage() {

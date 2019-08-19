@@ -1,14 +1,13 @@
 package io.smallrye.reactive.streams.utils;
 
-import org.junit.Test;
-import org.reactivestreams.Subscription;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.Test;
+import org.reactivestreams.Subscription;
 
 public class WrappedSubscriptionTest {
-
 
     @Test
     public void testWrappedSubscription() {

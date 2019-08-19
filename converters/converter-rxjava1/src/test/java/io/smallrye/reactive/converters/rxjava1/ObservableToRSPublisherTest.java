@@ -1,18 +1,18 @@
 package io.smallrye.reactive.converters.rxjava1;
 
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+
+import org.junit.Before;
+
 import io.smallrye.reactive.converters.ReactiveTypeConverter;
 import io.smallrye.reactive.converters.Registry;
 import io.smallrye.reactive.converters.tck.ToRSPublisherTCK;
-import org.junit.Before;
 import rx.Emitter;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
-import java.util.Optional;
-import java.util.concurrent.TimeUnit;
-
 public class ObservableToRSPublisherTest extends ToRSPublisherTCK<Observable> {
-
 
     private static final int DELAY = 10;
     private ReactiveTypeConverter<Observable> converter;
@@ -31,8 +31,7 @@ public class ObservableToRSPublisherTest extends ToRSPublisherTCK<Observable> {
     @Override
     protected Optional<Observable> createInstanceEmittingASingleValueAsynchronously(String value) {
         return Optional.of(
-                Observable.just(value).delay(DELAY, TimeUnit.MILLISECONDS).observeOn(Schedulers.computation())
-        );
+                Observable.just(value).delay(DELAY, TimeUnit.MILLISECONDS).observeOn(Schedulers.computation()));
     }
 
     @Override
@@ -69,7 +68,7 @@ public class ObservableToRSPublisherTest extends ToRSPublisherTCK<Observable> {
 
     @Override
     protected Optional<Observable> createInstanceEmittingAMultipleValuesAndFailure(String v1, String v2,
-                                                                                   RuntimeException e) {
+            RuntimeException e) {
         Observable<String> stream = Observable.create(emitter -> {
             emitter.onNext(v1);
             emitter.onNext(v2);
@@ -88,8 +87,7 @@ public class ObservableToRSPublisherTest extends ToRSPublisherTCK<Observable> {
         return Optional.of(Observable.just("X")
                 .delay(10, TimeUnit.MILLISECONDS)
                 .observeOn(Schedulers.computation())
-                .flatMap(x -> Observable.empty())
-        );
+                .flatMap(x -> Observable.empty()));
     }
 
     @Override

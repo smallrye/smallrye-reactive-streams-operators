@@ -1,20 +1,20 @@
 package io.smallrye.reactive.streams.stages;
 
-import io.reactivex.Flowable;
-import io.reactivex.schedulers.Schedulers;
-import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
-import org.eclipse.microprofile.reactive.streams.operators.spi.Stage;
-import org.junit.After;
-import org.junit.Test;
-import org.reactivestreams.Publisher;
-import org.reactivestreams.Subscriber;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
+import org.junit.After;
+import org.junit.Test;
+import org.reactivestreams.Publisher;
+import org.reactivestreams.Subscriber;
+
+import io.reactivex.Flowable;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Checks the behavior of the {@link FlatMapCompletionStageFactory}.
@@ -45,7 +45,6 @@ public class FlatMapCompletionStageFactoryTest extends StageTestBase {
 
         assertThat(list).containsExactly("1", "4", "9");
     }
-
 
     private CompletionStage<Integer> square(int i) {
         CompletableFuture<Integer> cf = new CompletableFuture<>();

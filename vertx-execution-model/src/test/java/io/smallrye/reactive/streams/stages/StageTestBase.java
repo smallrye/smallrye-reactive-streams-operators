@@ -1,10 +1,8 @@
 package io.smallrye.reactive.streams.stages;
 
-import io.vertx.reactivex.core.Vertx;
-import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
-import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
-import org.junit.After;
-import org.junit.Before;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
+import static org.hamcrest.Matchers.is;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletionStage;
@@ -13,9 +11,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.IntStream;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.awaitility.Awaitility.await;
-import static org.hamcrest.Matchers.is;
+import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
+import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
+import org.junit.After;
+import org.junit.Before;
+
+import io.vertx.reactivex.core.Vertx;
 
 /**
  * Creates and disposes the Vert.x instance.
@@ -75,7 +76,6 @@ public class StageTestBase {
         private T result;
         private Throwable error;
         private String callbackThread;
-
 
         synchronized void complete(T result, Throwable error) {
             if (hasCompletedOrFailed()) {

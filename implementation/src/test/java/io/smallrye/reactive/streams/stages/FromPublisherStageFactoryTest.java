@@ -1,17 +1,16 @@
 package io.smallrye.reactive.streams.stages;
 
-import io.reactivex.Flowable;
-import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
-import org.eclipse.microprofile.reactive.streams.operators.spi.Stage;
-import org.junit.Test;
-import org.reactivestreams.Publisher;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Fail.fail;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Fail.fail;
+import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
+import org.junit.Test;
+
+import io.reactivex.Flowable;
 
 /**
  * Checks the behavior of the {@link FromPublisherStageFactory} class.
@@ -24,7 +23,8 @@ public class FromPublisherStageFactoryTest extends StageTestBase {
 
     @Test
     public void create() throws ExecutionException, InterruptedException {
-        List<Integer> list = ReactiveStreams.fromPublisher(Flowable.fromArray(1, 2, 3)).toList().run().toCompletableFuture().get();
+        List<Integer> list = ReactiveStreams.fromPublisher(Flowable.fromArray(1, 2, 3)).toList().run().toCompletableFuture()
+                .get();
         assertThat(list).containsExactly(1, 2, 3);
 
         Optional<Integer> res = ReactiveStreams.fromPublisher(Flowable.just(25)).findFirst().run().toCompletableFuture().get();

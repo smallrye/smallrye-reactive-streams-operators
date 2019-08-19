@@ -1,20 +1,19 @@
 package io.smallrye.reactive.streams.cdi;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.concurrent.ExecutionException;
+
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.concurrent.ExecutionException;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
 /**
  * Check that beans can access the engine.
  */
 public class ReactiveEngineProviderTest {
-
 
     private Weld weld;
     private WeldContainer container;

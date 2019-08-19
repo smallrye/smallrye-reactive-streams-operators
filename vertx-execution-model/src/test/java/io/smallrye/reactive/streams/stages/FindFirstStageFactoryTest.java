@@ -1,11 +1,12 @@
 package io.smallrye.reactive.streams.stages;
 
-import io.reactivex.Flowable;
-import io.reactivex.schedulers.Schedulers;
+import java.util.Optional;
+
 import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
 import org.junit.Test;
 
-import java.util.Optional;
+import io.reactivex.Flowable;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Checks the behavior of the {@link FindFirstStageFactory} when running from the Vert.x Context.
@@ -18,9 +19,8 @@ public class FindFirstStageFactoryTest extends StageTestBase {
     public void createFromContext() {
         Flowable<Integer> flowable = Flowable.fromArray(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
                 .subscribeOn(Schedulers.computation());
-        executeOnEventLoop(() ->
-                ReactiveStreams.fromPublisher(flowable).filter(i -> i > 5)
-                        .findFirst().run()).assertSuccess(Optional.of(6));
+        executeOnEventLoop(() -> ReactiveStreams.fromPublisher(flowable).filter(i -> i > 5)
+                .findFirst().run()).assertSuccess(Optional.of(6));
     }
 
 }

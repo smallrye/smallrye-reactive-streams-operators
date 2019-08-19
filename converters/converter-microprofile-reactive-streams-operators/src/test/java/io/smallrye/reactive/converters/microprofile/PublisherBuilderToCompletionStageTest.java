@@ -1,20 +1,20 @@
 package io.smallrye.reactive.converters.microprofile;
 
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+
+import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
+import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
+import org.junit.Before;
+
 import io.reactivex.Flowable;
 import io.reactivex.Single;
 import io.reactivex.schedulers.Schedulers;
 import io.smallrye.reactive.converters.ReactiveTypeConverter;
 import io.smallrye.reactive.converters.Registry;
 import io.smallrye.reactive.converters.tck.ToCompletionStageTCK;
-import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
-import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
-import org.junit.Before;
-
-import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 public class PublisherBuilderToCompletionStageTest extends ToCompletionStageTCK<PublisherBuilder> {
-
 
     @Before
     public void lookup() {
@@ -68,7 +68,8 @@ public class PublisherBuilderToCompletionStageTest extends ToCompletionStageTCK<
     }
 
     @Override
-    protected Optional<PublisherBuilder> createInstanceEmittingAMultipleValuesAndFailure(String v1, String v2, RuntimeException e) {
+    protected Optional<PublisherBuilder> createInstanceEmittingAMultipleValuesAndFailure(String v1, String v2,
+            RuntimeException e) {
         PublisherBuilder<String> builder = ReactiveStreams.of(v1, v2, "SENTINEL")
                 .map(s -> {
                     if ("SENTINEL".equalsIgnoreCase(s)) {

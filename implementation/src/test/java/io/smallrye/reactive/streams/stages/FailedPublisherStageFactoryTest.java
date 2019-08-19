@@ -1,9 +1,9 @@
 package io.smallrye.reactive.streams.stages;
 
-import io.reactivex.subscribers.TestSubscriber;
-import io.smallrye.reactive.streams.operators.PublisherStage;
 import org.junit.Test;
 
+import io.reactivex.subscribers.TestSubscriber;
+import io.smallrye.reactive.streams.operators.PublisherStage;
 
 /**
  * Checks the behavior of {@link FailedPublisherStageFactory}.

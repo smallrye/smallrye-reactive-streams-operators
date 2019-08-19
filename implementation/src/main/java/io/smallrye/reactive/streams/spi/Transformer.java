@@ -1,9 +1,9 @@
 package io.smallrye.reactive.streams.spi;
 
-import io.reactivex.Flowable;
-
 import java.util.Iterator;
 import java.util.ServiceLoader;
+
+import io.reactivex.Flowable;
 
 public class Transformer {
 
@@ -29,7 +29,7 @@ public class Transformer {
      * Calls the model.
      *
      * @param flowable the flowable
-     * @param <T>      the type of data
+     * @param <T> the type of data
      * @return the decorated flowable if needed
      */
     @SuppressWarnings("unchecked")

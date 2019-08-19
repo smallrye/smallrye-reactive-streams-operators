@@ -1,11 +1,12 @@
 package io.smallrye.reactive.converters.reactor;
 
-import io.smallrye.reactive.converters.ReactiveTypeConverter;
-import org.reactivestreams.Publisher;
-import reactor.core.publisher.Flux;
-
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
+
+import org.reactivestreams.Publisher;
+
+import io.smallrye.reactive.converters.ReactiveTypeConverter;
+import reactor.core.publisher.Flux;
 
 public class FluxConverter implements ReactiveTypeConverter<Flux> {
 
@@ -23,17 +24,16 @@ public class FluxConverter implements ReactiveTypeConverter<Flux> {
 
     @Override
     public <X> Flux fromCompletionStage(CompletionStage<X> cs) {
-        return Flux.create(sink ->
-                cs.whenComplete((X v, Throwable e) -> {
-                    if (e != null) {
-                        sink.error(e instanceof CompletionException ? e.getCause() : e);
-                    } else if (v != null) {
-                        sink.next(v);
-                        sink.complete();
-                    } else {
-                        sink.complete();
-                    }
-                }));
+        return Flux.create(sink -> cs.whenComplete((X v, Throwable e) -> {
+            if (e != null) {
+                sink.error(e instanceof CompletionException ? e.getCause() : e);
+            } else if (v != null) {
+                sink.next(v);
+                sink.complete();
+            } else {
+                sink.complete();
+            }
+        }));
     }
 
     @Override

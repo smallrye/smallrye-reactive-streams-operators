@@ -1,10 +1,7 @@
 package io.smallrye.reactive.converters.tck;
 
-import io.reactivex.Flowable;
-import io.reactivex.schedulers.Schedulers;
-import io.smallrye.reactive.converters.ReactiveTypeConverter;
-import org.junit.Test;
-import org.reactivestreams.Publisher;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -14,8 +11,12 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
+import org.junit.Test;
+import org.reactivestreams.Publisher;
+
+import io.reactivex.Flowable;
+import io.reactivex.schedulers.Schedulers;
+import io.smallrye.reactive.converters.ReactiveTypeConverter;
 
 public abstract class FromRSPublisherTCK<T> {
 
@@ -145,7 +146,7 @@ public abstract class FromRSPublisherTCK<T> {
     public void testWithMultipleValues() {
         Publisher<String> count = Flowable.range(0, 10).map(i -> Integer.toString(i));
         T instance = converter().fromPublisher(count);
-        if (converter().emitItems()  && ! converter().emitAtMostOneItem()) {
+        if (converter().emitItems() && !converter().emitAtMostOneItem()) {
             List<String> list = getAll(instance);
             assertThat(list).containsExactly("0", "1", "2", "3", "4", "5", "6", "7", "8", "9");
         } else if (converter().emitAtMostOneItem()) {
@@ -186,6 +187,5 @@ public abstract class FromRSPublisherTCK<T> {
             }
         }
     }
-
 
 }

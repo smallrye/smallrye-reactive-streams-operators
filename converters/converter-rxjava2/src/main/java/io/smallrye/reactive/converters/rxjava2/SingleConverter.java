@@ -1,14 +1,15 @@
 package io.smallrye.reactive.converters.rxjava2;
 
-import io.reactivex.Flowable;
-import io.reactivex.Single;
-import io.smallrye.reactive.converters.ReactiveTypeConverter;
-import org.reactivestreams.Publisher;
-
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
+
+import org.reactivestreams.Publisher;
+
+import io.reactivex.Flowable;
+import io.reactivex.Single;
+import io.smallrye.reactive.converters.ReactiveTypeConverter;
 
 /**
  * Converter handling the RX Java 2 {@link Single} type.
@@ -46,8 +47,7 @@ public class SingleConverter implements ReactiveTypeConverter<Single> {
         //noinspection ResultOfMethodCallIgnored
         s.subscribe(
                 future::complete,
-                future::completeExceptionally
-        );
+                future::completeExceptionally);
         return future;
     }
 
@@ -61,16 +61,15 @@ public class SingleConverter implements ReactiveTypeConverter<Single> {
     public <X> Single<X> fromCompletionStage(CompletionStage<X> cs) {
         CompletionStage<X> future = Objects.requireNonNull(cs);
         return Single
-                .create(emitter ->
-                        future.<X>whenComplete((X res, Throwable err) -> {
-                            if (!emitter.isDisposed()) {
-                                if (err != null) {
-                                    emitter.onError(err instanceof CompletionException ? err.getCause() : err);
-                                } else {
-                                    emitter.onSuccess(res);
-                                }
-                            }
-                        }));
+                .create(emitter -> future.<X> whenComplete((X res, Throwable err) -> {
+                    if (!emitter.isDisposed()) {
+                        if (err != null) {
+                            emitter.onError(err instanceof CompletionException ? err.getCause() : err);
+                        } else {
+                            emitter.onSuccess(res);
+                        }
+                    }
+                }));
     }
 
     @Override

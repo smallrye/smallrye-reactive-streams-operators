@@ -1,18 +1,17 @@
 package io.smallrye.reactive.streams;
 
-import io.reactivex.Flowable;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.*;
+
 import org.eclipse.microprofile.reactive.streams.operators.CompletionSubscriber;
 import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
 import org.eclipse.microprofile.reactive.streams.operators.spi.Graph;
 import org.eclipse.microprofile.reactive.streams.operators.spi.Stage;
 import org.eclipse.microprofile.reactive.streams.operators.spi.UnsupportedStageException;
 import org.junit.Test;
-import org.reactivestreams.Publisher;
 
-import java.util.*;
-import java.util.function.Function;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import io.reactivex.Flowable;
 
 /**
  * Checks the behavior of the {@link Engine} class.
@@ -32,11 +31,10 @@ public class EngineTest {
     @Test
     public void testValidSubscriber() {
         engine = new Engine();
-        CompletionSubscriber<Integer, Optional<Integer>> built =
-                ReactiveStreams.<Integer>builder()
-                        .map(i -> i + 1)
-                        .findFirst()
-                        .build(engine);
+        CompletionSubscriber<Integer, Optional<Integer>> built = ReactiveStreams.<Integer> builder()
+                .map(i -> i + 1)
+                .findFirst()
+                .build(engine);
 
         assertThat(built).isNotNull();
 
@@ -73,7 +71,8 @@ public class EngineTest {
         List<Stage> stages = new ArrayList<>();
         stages.add((Stage.PublisherStage) Flowable::empty);
         stages.add((Stage.Map) () -> i -> (int) i + 1);
-        stages.add(new Stage.FindFirst() {});
+        stages.add(new Stage.FindFirst() {
+        });
         Graph graph = () -> stages;
         assertThat(engine.buildCompletion(graph)).isNotNull();
     }
@@ -96,9 +95,10 @@ public class EngineTest {
         stages.add((Stage.PublisherStage) Flowable::empty);
         stages.add((Stage.Map) () -> i -> (int) i + 1);
         stages.add(new Stage() {
-           // Unknown stage.
+            // Unknown stage.
         });
-        stages.add(new Stage.FindFirst() {});
+        stages.add(new Stage.FindFirst() {
+        });
         Graph graph = () -> stages;
         assertThat(engine.buildCompletion(graph)).isNotNull();
     }
@@ -118,7 +118,8 @@ public class EngineTest {
         engine = new Engine();
         List<Stage> stages = new ArrayList<>();
         stages.add((Stage.Map) () -> i -> (int) i + 1);
-        stages.add(new Stage.FindFirst() {});
+        stages.add(new Stage.FindFirst() {
+        });
         // This graph is closed, invalid as publisher
         Graph graph = () -> stages;
         engine.buildPublisher(graph);
@@ -135,6 +136,5 @@ public class EngineTest {
         Graph graph = () -> stages;
         engine.buildPublisher(graph);
     }
-
 
 }

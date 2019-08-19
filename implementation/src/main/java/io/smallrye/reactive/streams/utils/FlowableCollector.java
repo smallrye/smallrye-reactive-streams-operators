@@ -1,13 +1,14 @@
 package io.smallrye.reactive.streams.utils;
 
-import io.reactivex.Flowable;
-import io.reactivex.internal.subscriptions.EmptySubscription;
-import org.reactivestreams.Publisher;
-import org.reactivestreams.Subscriber;
-
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.stream.Collector;
+
+import org.reactivestreams.Publisher;
+import org.reactivestreams.Subscriber;
+
+import io.reactivex.Flowable;
+import io.reactivex.internal.subscriptions.EmptySubscription;
 
 /**
  * Collect elements of the upstream with the help of the Collector'subscription callback functions.

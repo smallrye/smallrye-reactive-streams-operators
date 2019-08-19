@@ -1,16 +1,17 @@
 package io.smallrye.reactive.streams.stages;
 
-import io.reactivex.Flowable;
-import io.smallrye.reactive.streams.Engine;
-import io.smallrye.reactive.streams.operators.ProcessingStage;
-import io.smallrye.reactive.streams.operators.ProcessingStageFactory;
-import io.smallrye.reactive.streams.utils.CouplingProcessor;
+import java.util.Objects;
+
 import org.eclipse.microprofile.reactive.streams.operators.spi.Graph;
 import org.eclipse.microprofile.reactive.streams.operators.spi.Stage;
 import org.eclipse.microprofile.reactive.streams.operators.spi.SubscriberWithCompletionStage;
 import org.reactivestreams.Publisher;
 
-import java.util.Objects;
+import io.reactivex.Flowable;
+import io.smallrye.reactive.streams.Engine;
+import io.smallrye.reactive.streams.operators.ProcessingStage;
+import io.smallrye.reactive.streams.operators.ProcessingStageFactory;
+import io.smallrye.reactive.streams.utils.CouplingProcessor;
 
 /**
  * Implementation of the {@link Stage.Coupled} stage.
@@ -26,9 +27,7 @@ public class CoupledStageFactory implements ProcessingStageFactory<Stage.Coupled
         Publisher<O> publisher = engine.buildPublisher(source);
         SubscriberWithCompletionStage<I, ?> subscriber = engine.buildSubscriber(sink);
 
-        return upstream ->
-                Flowable.fromPublisher(
-                        new CouplingProcessor<>(upstream, subscriber.getSubscriber(), publisher)
-                );
+        return upstream -> Flowable.fromPublisher(
+                new CouplingProcessor<>(upstream, subscriber.getSubscriber(), publisher));
     }
 }

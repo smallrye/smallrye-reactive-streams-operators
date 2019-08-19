@@ -1,10 +1,11 @@
 package io.smallrye.reactive.streams.tck;
 
-import io.smallrye.reactive.streams.cdi.ReactiveEngineProvider;
 import org.jboss.arquillian.container.test.spi.client.deployment.ApplicationArchiveProcessor;
 import org.jboss.arquillian.test.spi.TestClass;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+
+import io.smallrye.reactive.streams.cdi.ReactiveEngineProvider;
 
 /**
  * Just adding the {@link ReactiveEngineProvider} into the application deployment.

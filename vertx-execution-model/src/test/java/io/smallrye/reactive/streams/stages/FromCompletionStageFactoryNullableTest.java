@@ -1,12 +1,12 @@
 package io.smallrye.reactive.streams.stages;
 
-import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
-import org.eclipse.microprofile.reactive.streams.operators.spi.Stage;
-import org.junit.Test;
-
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+
+import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
+import org.eclipse.microprofile.reactive.streams.operators.spi.Stage;
+import org.junit.Test;
 
 /**
  * Checks the behavior of the {@link Stage.FromCompletionStageNullable} class when running from the Vert.x Context.

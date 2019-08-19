@@ -1,12 +1,8 @@
 package io.smallrye.reactive.streams.stages;
 
-import io.reactivex.Flowable;
-import io.reactivex.schedulers.Schedulers;
-import io.smallrye.reactive.streams.operators.TerminalStage;
-import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
-import org.eclipse.microprofile.reactive.streams.operators.spi.Stage;
-import org.junit.Test;
-import org.reactivestreams.Subscription;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
+import static org.hamcrest.Matchers.is;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,9 +12,14 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.awaitility.Awaitility.await;
-import static org.hamcrest.Matchers.is;
+import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
+import org.eclipse.microprofile.reactive.streams.operators.spi.Stage;
+import org.junit.Test;
+import org.reactivestreams.Subscription;
+
+import io.reactivex.Flowable;
+import io.reactivex.schedulers.Schedulers;
+import io.smallrye.reactive.streams.operators.TerminalStage;
 
 /**
  * Checks the behavior of {@link CancelStageFactory}
@@ -31,7 +32,8 @@ public class CancelStageFactoryTest extends StageTestBase {
 
     @Test
     public void create() throws ExecutionException, InterruptedException {
-        TerminalStage<Long, Void> terminal = factory.create(null, new Stage.Cancel() {});
+        TerminalStage<Long, Void> terminal = factory.create(null, new Stage.Cancel() {
+        });
         AtomicBoolean cancelled = new AtomicBoolean();
         List<Long> list = new ArrayList<>();
         Flowable<Long> flowable = Flowable.interval(1000, TimeUnit.MILLISECONDS)
@@ -59,11 +61,10 @@ public class CancelStageFactoryTest extends StageTestBase {
                 .filter(i -> i < 3)
                 .cancel()
                 .run().toCompletableFuture().whenComplete((res, err) -> {
-            done.set(true);
-        });
+                    done.set(true);
+                });
         assertThat(done).isTrue();
     }
-
 
     @Test
     public void cancelStageShouldCancelTheStage() {

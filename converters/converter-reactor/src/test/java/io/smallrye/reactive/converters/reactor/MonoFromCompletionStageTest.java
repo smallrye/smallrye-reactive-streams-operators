@@ -1,16 +1,13 @@
 package io.smallrye.reactive.converters.reactor;
 
+import java.util.concurrent.atomic.AtomicReference;
+
+import org.junit.Before;
+
 import io.smallrye.reactive.converters.ReactiveTypeConverter;
 import io.smallrye.reactive.converters.Registry;
 import io.smallrye.reactive.converters.tck.FromCompletionStageTCK;
-import io.smallrye.reactive.converters.tck.ToCompletionStageTCK;
-import org.junit.Before;
 import reactor.core.publisher.Mono;
-
-import java.time.Duration;
-import java.time.temporal.ChronoUnit;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class MonoFromCompletionStageTest extends FromCompletionStageTCK<Mono> {
 

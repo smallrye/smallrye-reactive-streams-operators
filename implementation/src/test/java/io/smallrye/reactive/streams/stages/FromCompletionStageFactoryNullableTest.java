@@ -1,8 +1,9 @@
 package io.smallrye.reactive.streams.stages;
 
-import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
-import org.eclipse.microprofile.reactive.streams.operators.spi.Stage;
-import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+import static org.awaitility.Awaitility.await;
+import static org.hamcrest.Matchers.is;
 
 import java.util.List;
 import java.util.Optional;
@@ -10,10 +11,9 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
-import static org.awaitility.Awaitility.await;
-import static org.hamcrest.Matchers.is;
+import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
+import org.eclipse.microprofile.reactive.streams.operators.spi.Stage;
+import org.junit.Test;
 
 /**
  * Checks the behavior of the {@link Stage.FromCompletionStageNullable} class.
@@ -21,7 +21,6 @@ import static org.hamcrest.Matchers.is;
  * @author <a href="http://escoffier.me">Clement Escoffier</a>
  */
 public class FromCompletionStageFactoryNullableTest extends StageTestBase {
-
 
     private final FromCompletionStageNullableFactory factory = new FromCompletionStageNullableFactory();
 
@@ -76,7 +75,6 @@ public class FromCompletionStageFactoryNullableTest extends StageTestBase {
         new Thread(() -> cf.completeExceptionally(new Exception("Expected"))).start();
         await().untilAtomic(done, is(true));
     }
-
 
     @Test
     public void createFromFutureCompletedWithNull() {

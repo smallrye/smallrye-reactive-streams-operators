@@ -1,14 +1,15 @@
 package io.smallrye.reactive.converters.reactor;
 
-import io.smallrye.reactive.converters.ReactiveTypeConverter;
-import io.smallrye.reactive.converters.Registry;
-import io.smallrye.reactive.converters.tck.ToCompletionStageTCK;
-import org.junit.Before;
-import reactor.core.publisher.Flux;
-
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
+
+import org.junit.Before;
+
+import io.smallrye.reactive.converters.ReactiveTypeConverter;
+import io.smallrye.reactive.converters.Registry;
+import io.smallrye.reactive.converters.tck.ToCompletionStageTCK;
+import reactor.core.publisher.Flux;
 
 public class FluxToCompletionStageTest extends ToCompletionStageTCK<Flux> {
 

@@ -1,13 +1,14 @@
 package io.smallrye.reactive.streams.stages;
 
-import io.smallrye.reactive.streams.Engine;
-import io.smallrye.reactive.streams.operators.TerminalStage;
-import io.smallrye.reactive.streams.operators.TerminalStageFactory;
-import org.eclipse.microprofile.reactive.streams.operators.spi.Stage;
-
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+
+import org.eclipse.microprofile.reactive.streams.operators.spi.Stage;
+
+import io.smallrye.reactive.streams.Engine;
+import io.smallrye.reactive.streams.operators.TerminalStage;
+import io.smallrye.reactive.streams.operators.TerminalStageFactory;
 
 /**
  * Implementation of the {@link Stage.FindFirst} stage.
@@ -16,14 +17,12 @@ import java.util.concurrent.CompletableFuture;
  */
 public class FindFirstStageFactory implements TerminalStageFactory<Stage.FindFirst> {
 
-    private static final TerminalStage<?, Optional<?>> INSTANCE
-            = source -> {
+    private static final TerminalStage<?, Optional<?>> INSTANCE = source -> {
         CompletableFuture<Optional<?>> future = new CompletableFuture<>();
         //noinspection ResultOfMethodCallIgnored
         source.map(Optional::of).first(Optional.empty())
                 .subscribe(
-                        future::complete, future::completeExceptionally
-                );
+                        future::complete, future::completeExceptionally);
         return future;
     };
 

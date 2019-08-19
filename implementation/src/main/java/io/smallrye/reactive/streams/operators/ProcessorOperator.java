@@ -1,7 +1,8 @@
 package io.smallrye.reactive.streams.operators;
 
-import io.smallrye.reactive.streams.Engine;
 import org.eclipse.microprofile.reactive.streams.operators.spi.Stage;
+
+import io.smallrye.reactive.streams.Engine;
 
 public class ProcessorOperator<T extends Stage> extends Operator<T> {
 

@@ -1,10 +1,11 @@
 package io.smallrye.reactive.streams.utils.recovery;
 
-import io.reactivex.internal.subscribers.SinglePostCompleteSubscriber;
-import org.reactivestreams.Subscriber;
-
 import java.util.Objects;
 import java.util.function.Function;
+
+import org.reactivestreams.Subscriber;
+
+import io.reactivex.internal.subscribers.SinglePostCompleteSubscriber;
 
 public class OnErrorReturnSubscriber<T> extends SinglePostCompleteSubscriber<T, T> {
 
@@ -12,7 +13,7 @@ public class OnErrorReturnSubscriber<T> extends SinglePostCompleteSubscriber<T, 
     private final transient Function<? super Throwable, ? extends T> valueSupplier;
 
     OnErrorReturnSubscriber(Subscriber<? super T> actual,
-                            Function<? super Throwable, ? extends T> valueSupplier) {
+            Function<? super Throwable, ? extends T> valueSupplier) {
         super(actual);
         this.valueSupplier = valueSupplier;
     }

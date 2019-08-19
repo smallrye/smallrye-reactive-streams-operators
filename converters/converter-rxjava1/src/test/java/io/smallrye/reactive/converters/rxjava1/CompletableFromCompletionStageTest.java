@@ -1,17 +1,18 @@
 package io.smallrye.reactive.converters.rxjava1;
 
-import io.smallrye.reactive.converters.ReactiveTypeConverter;
-import io.smallrye.reactive.converters.Registry;
-import io.smallrye.reactive.converters.tck.FromCompletionStageTCK;
-import org.junit.Before;
-import org.junit.Test;
-import rx.Completable;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.Before;
+import org.junit.Test;
+
+import io.smallrye.reactive.converters.ReactiveTypeConverter;
+import io.smallrye.reactive.converters.Registry;
+import io.smallrye.reactive.converters.tck.FromCompletionStageTCK;
+import rx.Completable;
 
 public class CompletableFromCompletionStageTest extends FromCompletionStageTCK<Completable> {
 
@@ -46,7 +47,6 @@ public class CompletableFromCompletionStageTest extends FromCompletionStageTCK<C
         return reference.get();
     }
 
-
     @Test
     public void testWithImmediateCompletion() {
         AtomicBoolean reference = new AtomicBoolean();
@@ -59,7 +59,6 @@ public class CompletableFromCompletionStageTest extends FromCompletionStageTCK<C
                 .await();
         assertThat(reference).isTrue();
     }
-
 
     @Test
     public void testWithAsynchronousCompletion() {

@@ -1,13 +1,14 @@
 package io.smallrye.reactive.converters.rxjava1;
 
+import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
+
+import org.junit.Before;
+
 import io.smallrye.reactive.converters.ReactiveTypeConverter;
 import io.smallrye.reactive.converters.Registry;
 import io.smallrye.reactive.converters.tck.FromRSPublisherTCK;
-import org.junit.Before;
 import rx.Observable;
-
-import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class ObservableFromRSPublisherTest extends FromRSPublisherTCK<Observable> {
 

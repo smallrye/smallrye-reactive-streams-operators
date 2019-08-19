@@ -1,18 +1,18 @@
 package io.smallrye.reactive.converters.rxjava2;
 
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+
+import org.junit.Before;
+
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
 import io.reactivex.schedulers.Schedulers;
 import io.smallrye.reactive.converters.ReactiveTypeConverter;
 import io.smallrye.reactive.converters.Registry;
 import io.smallrye.reactive.converters.tck.ToCompletionStageTCK;
-import org.junit.Before;
-
-import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 public class FlowableToCompletionStageTest extends ToCompletionStageTCK<Flowable> {
-
 
     private static final int DELAY = 10;
     private ReactiveTypeConverter<Flowable> converter;
@@ -31,8 +31,7 @@ public class FlowableToCompletionStageTest extends ToCompletionStageTCK<Flowable
     @Override
     protected Optional<Flowable> createInstanceEmittingASingleValueAsynchronously(String value) {
         return Optional.of(
-                Flowable.just(value).delay(DELAY, TimeUnit.MILLISECONDS).observeOn(Schedulers.io())
-        );
+                Flowable.just(value).delay(DELAY, TimeUnit.MILLISECONDS).observeOn(Schedulers.io()));
     }
 
     @Override
@@ -61,8 +60,7 @@ public class FlowableToCompletionStageTest extends ToCompletionStageTCK<Flowable
                 Flowable.just("X")
                         .delay(DELAY, TimeUnit.MILLISECONDS)
                         .observeOn(Schedulers.io())
-                        .map(s -> null)
-        );
+                        .map(s -> null));
     }
 
     @Override
@@ -72,7 +70,7 @@ public class FlowableToCompletionStageTest extends ToCompletionStageTCK<Flowable
 
     @Override
     protected Optional<Flowable> createInstanceEmittingAMultipleValuesAndFailure(String v1, String v2,
-                                                                                 RuntimeException e) {
+            RuntimeException e) {
         Flowable<String> stream = Flowable.create(emitter -> {
             emitter.onNext(v1);
             emitter.onNext(v2);
@@ -91,8 +89,7 @@ public class FlowableToCompletionStageTest extends ToCompletionStageTCK<Flowable
         return Optional.of(Flowable.just("X")
                 .delay(10, TimeUnit.MILLISECONDS)
                 .observeOn(Schedulers.io())
-                .flatMap(x -> Flowable.empty())
-        );
+                .flatMap(x -> Flowable.empty()));
     }
 
     @Override

@@ -1,14 +1,15 @@
 package io.smallrye.reactive.converters.tck;
 
-import io.smallrye.reactive.converters.ReactiveTypeConverter;
-import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.*;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
+import org.junit.Test;
+
+import io.smallrye.reactive.converters.ReactiveTypeConverter;
 
 public abstract class ToCompletionStageTCK<T> {
 
@@ -153,7 +154,6 @@ public abstract class ToCompletionStageTCK<T> {
         assertThat(res).contains(uuid);
     }
 
-
     @Test
     public void testThatTheCompletionStageIsNotCompletedIfTheInstanceDoesNotEmitSignals() throws InterruptedException {
         Optional<T> instance = never();
@@ -161,7 +161,7 @@ public abstract class ToCompletionStageTCK<T> {
             // Test ignored.
             return;
         }
-        CompletableFuture<String> stage = converter().<String>toCompletionStage(instance.get()).toCompletableFuture();
+        CompletableFuture<String> stage = converter().<String> toCompletionStage(instance.get()).toCompletableFuture();
         CountDownLatch latch = new CountDownLatch(1);
 
         new Thread(() -> {
@@ -210,6 +210,5 @@ public abstract class ToCompletionStageTCK<T> {
         String val = stage.toCompletableFuture().join();
         assertThat(val).isNull();
     }
-
 
 }

@@ -1,14 +1,15 @@
 package io.smallrye.reactive.converters.reactor;
 
-import io.smallrye.reactive.converters.ReactiveTypeConverter;
-import io.smallrye.reactive.converters.Registry;
-import io.smallrye.reactive.converters.tck.FromRSPublisherTCK;
-import org.junit.Before;
-import reactor.core.publisher.Mono;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
+
+import org.junit.Before;
+
+import io.smallrye.reactive.converters.ReactiveTypeConverter;
+import io.smallrye.reactive.converters.Registry;
+import io.smallrye.reactive.converters.tck.FromRSPublisherTCK;
+import reactor.core.publisher.Mono;
 
 public class MonoFromRSPublisherTest extends FromRSPublisherTCK<Mono> {
 

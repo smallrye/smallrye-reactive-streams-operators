@@ -1,14 +1,14 @@
 package io.smallrye.reactive.streams.stages;
 
-import io.reactivex.Flowable;
-import io.reactivex.schedulers.Schedulers;
-import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
-import org.junit.Test;
-
 import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletionStage;
 
+import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
+import org.junit.Test;
+
+import io.reactivex.Flowable;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Checks the behavior of {@link FailedPublisherStageFactory} when running on the Vert.x Context.
@@ -22,8 +22,8 @@ public class FailedPublisherStageFactoryTest extends StageTestBase {
         Exception failure = new Exception("Boom");
         Callable<CompletionStage<Optional<Integer>>> callable = () -> ReactiveStreams.fromPublisher(Flowable.just(1)
                 .observeOn(Schedulers.newThread()))
-                .<Integer>flatMap(x -> ReactiveStreams.failed(failure))
-                .to(ReactiveStreams.<Integer>builder().findFirst()).run();
+                .<Integer> flatMap(x -> ReactiveStreams.failed(failure))
+                .to(ReactiveStreams.<Integer> builder().findFirst()).run();
 
         executeOnEventLoop(callable).assertFailure("Boom");
     }

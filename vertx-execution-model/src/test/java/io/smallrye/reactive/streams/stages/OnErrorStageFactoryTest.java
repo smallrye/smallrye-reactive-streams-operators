@@ -1,9 +1,6 @@
 package io.smallrye.reactive.streams.stages;
 
-import io.reactivex.Flowable;
-import io.reactivex.schedulers.Schedulers;
-import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
-import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -13,7 +10,11 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
+import org.junit.Test;
+
+import io.reactivex.Flowable;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Checks the behavior of the {@link OnErrorStageFactory} when running from the Vert.x Context.
@@ -29,23 +30,21 @@ public class OnErrorStageFactoryTest extends StageTestBase {
 
         AtomicReference<Throwable> error = new AtomicReference<>();
         Set<String> threads = new LinkedHashSet<>();
-        Callable<CompletionStage<List<String>>> callable = () ->
-                ReactiveStreams.fromPublisher(flowable)
-                        .filter(i -> i < 4)
-                        .map(this::squareOrFailed)
-                        .onError(err -> {
-                            error.set(err);
-                            threads.add(Thread.currentThread().getName());
-                        })
-                        .map(this::asString)
-                        .toList()
-                        .run();
+        Callable<CompletionStage<List<String>>> callable = () -> ReactiveStreams.fromPublisher(flowable)
+                .filter(i -> i < 4)
+                .map(this::squareOrFailed)
+                .onError(err -> {
+                    error.set(err);
+                    threads.add(Thread.currentThread().getName());
+                })
+                .map(this::asString)
+                .toList()
+                .run();
 
         executeOnEventLoop(callable).assertFailure("failed");
         assertThat(error.get()).hasMessage("failed");
         assertThat(threads).hasSize(1).containsExactly(getCapturedThreadName());
     }
-
 
     private Integer squareOrFailed(int i) {
         if (i == 2) {

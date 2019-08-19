@@ -1,15 +1,16 @@
 package io.smallrye.reactive.streams.stages;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+import org.eclipse.microprofile.reactive.streams.operators.spi.Stage;
+import org.eclipse.microprofile.reactive.streams.operators.spi.UnsupportedStageException;
+
 import io.smallrye.reactive.streams.operators.Operator;
 import io.smallrye.reactive.streams.operators.ProcessorOperator;
 import io.smallrye.reactive.streams.operators.PublisherOperator;
 import io.smallrye.reactive.streams.operators.TerminalOperator;
-import org.eclipse.microprofile.reactive.streams.operators.spi.Stage;
-import org.eclipse.microprofile.reactive.streams.operators.spi.UnsupportedStageException;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 
 /**
  * Allows looking for the {@link Operator} for a given {@link Stage}.
@@ -64,6 +65,5 @@ public class Stages {
     private Stages() {
         // Avoid direct instantiation.
     }
-
 
 }

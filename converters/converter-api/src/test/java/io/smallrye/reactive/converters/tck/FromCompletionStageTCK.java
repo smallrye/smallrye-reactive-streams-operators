@@ -1,13 +1,14 @@
 package io.smallrye.reactive.converters.tck;
 
-import io.smallrye.reactive.converters.ReactiveTypeConverter;
-import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 import java.util.UUID;
 import java.util.concurrent.*;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
+import org.junit.Test;
+
+import io.smallrye.reactive.converters.ReactiveTypeConverter;
 
 public abstract class FromCompletionStageTCK<T> {
 
@@ -70,7 +71,7 @@ public abstract class FromCompletionStageTCK<T> {
     @Test
     public void testWithImmediateNullValue() {
         CompletionStage<Void> future = CompletableFuture.completedFuture(null);
-        if (converter().requireAtLeastOneItem()  && ! converter().supportNullValue()) {
+        if (converter().requireAtLeastOneItem() && !converter().supportNullValue()) {
             try {
                 T instance = converter().fromCompletionStage(future);
                 getOne(instance);
@@ -86,7 +87,7 @@ public abstract class FromCompletionStageTCK<T> {
     @Test
     public void testWithAsynchronousNullValue() {
         CompletionStage<Void> future = CompletableFuture.supplyAsync(() -> null);
-        if (converter().requireAtLeastOneItem()  && ! converter().supportNullValue()) {
+        if (converter().requireAtLeastOneItem() && !converter().supportNullValue()) {
             try {
                 getOne(converter().fromCompletionStage(future));
                 fail("Exception expected when completing with `null`");
@@ -122,6 +123,5 @@ public abstract class FromCompletionStageTCK<T> {
         future.cancel(true);
         assertThat(terminated).isFalse();
     }
-
 
 }

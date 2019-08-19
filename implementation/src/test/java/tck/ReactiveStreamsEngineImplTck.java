@@ -1,8 +1,9 @@
 package tck;
 
-import io.smallrye.reactive.streams.Engine;
 import org.eclipse.microprofile.reactive.streams.operators.tck.ReactiveStreamsTck;
 import org.reactivestreams.tck.TestEnvironment;
+
+import io.smallrye.reactive.streams.Engine;
 
 /**
  * Executes the TCK again the implementation.

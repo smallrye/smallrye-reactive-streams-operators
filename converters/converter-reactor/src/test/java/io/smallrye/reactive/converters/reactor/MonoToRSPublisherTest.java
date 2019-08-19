@@ -1,15 +1,15 @@
 package io.smallrye.reactive.converters.reactor;
 
-import io.smallrye.reactive.converters.ReactiveTypeConverter;
-import io.smallrye.reactive.converters.Registry;
-import io.smallrye.reactive.converters.tck.ToCompletionStageTCK;
-import io.smallrye.reactive.converters.tck.ToRSPublisherTCK;
-import org.junit.Before;
-import reactor.core.publisher.Mono;
-
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
+
+import org.junit.Before;
+
+import io.smallrye.reactive.converters.ReactiveTypeConverter;
+import io.smallrye.reactive.converters.Registry;
+import io.smallrye.reactive.converters.tck.ToRSPublisherTCK;
+import reactor.core.publisher.Mono;
 
 public class MonoToRSPublisherTest extends ToRSPublisherTCK<Mono> {
 

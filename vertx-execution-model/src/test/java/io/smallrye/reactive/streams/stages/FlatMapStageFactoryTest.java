@@ -1,15 +1,16 @@
 package io.smallrye.reactive.streams.stages;
 
-import io.reactivex.Flowable;
-import io.reactivex.schedulers.Schedulers;
-import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
-import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
-import org.junit.Test;
-
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+
+import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
+import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
+import org.junit.Test;
+
+import io.reactivex.Flowable;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Checks the behavior of the {@link FlatMapStageFactory} when running from the Vert.x Context.
@@ -23,14 +24,12 @@ public class FlatMapStageFactoryTest extends StageTestBase {
         Flowable<Integer> flowable = Flowable.fromArray(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
                 .subscribeOn(Schedulers.computation());
 
-        executeOnEventLoop(() ->
-                ReactiveStreams.fromPublisher(flowable)
-                        .filter(i -> i < 4)
-                        .flatMap(this::duplicate)
-                        .flatMapCompletionStage(this::asString)
-                        .toList()
-                        .run()
-        ).assertSuccess(Arrays.asList("1", "1", "2", "2", "3", "3"));
+        executeOnEventLoop(() -> ReactiveStreams.fromPublisher(flowable)
+                .filter(i -> i < 4)
+                .flatMap(this::duplicate)
+                .flatMapCompletionStage(this::asString)
+                .toList()
+                .run()).assertSuccess(Arrays.asList("1", "1", "2", "2", "3", "3"));
     }
 
     private PublisherBuilder<Integer> duplicate(int i) {

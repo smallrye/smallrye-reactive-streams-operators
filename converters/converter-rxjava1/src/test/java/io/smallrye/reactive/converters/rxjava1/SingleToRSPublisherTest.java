@@ -1,15 +1,16 @@
 package io.smallrye.reactive.converters.rxjava1;
 
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+
+import org.junit.Before;
+
 import io.smallrye.reactive.converters.ReactiveTypeConverter;
 import io.smallrye.reactive.converters.Registry;
 import io.smallrye.reactive.converters.tck.ToRSPublisherTCK;
-import org.junit.Before;
 import rx.Observable;
 import rx.Single;
 import rx.schedulers.Schedulers;
-
-import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 public class SingleToRSPublisherTest extends ToRSPublisherTCK<Single> {
 
@@ -66,7 +67,7 @@ public class SingleToRSPublisherTest extends ToRSPublisherTCK<Single> {
 
     @Override
     protected Optional<Single> createInstanceEmittingAMultipleValuesAndFailure(String v1, String v2,
-                                                                               RuntimeException e) {
+            RuntimeException e) {
         return Optional.empty();
     }
 

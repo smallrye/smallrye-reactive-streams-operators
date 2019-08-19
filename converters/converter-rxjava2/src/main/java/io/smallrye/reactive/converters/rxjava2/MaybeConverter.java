@@ -1,16 +1,17 @@
 package io.smallrye.reactive.converters.rxjava2;
 
-import io.reactivex.Flowable;
-import io.reactivex.Maybe;
-import io.reactivex.MaybeEmitter;
-import io.smallrye.reactive.converters.ReactiveTypeConverter;
-import org.reactivestreams.Publisher;
-
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
+
+import org.reactivestreams.Publisher;
+
+import io.reactivex.Flowable;
+import io.reactivex.Maybe;
+import io.reactivex.MaybeEmitter;
+import io.smallrye.reactive.converters.ReactiveTypeConverter;
 
 /**
  * Converter handling the RX Java 2 {@link Maybe} type.
@@ -54,8 +55,7 @@ public class MaybeConverter implements ReactiveTypeConverter<Maybe> {
         s.subscribe(
                 future::complete,
                 future::completeExceptionally,
-                () -> future.complete(null)
-        );
+                () -> future.complete(null));
         return future;
     }
 
@@ -64,24 +64,23 @@ public class MaybeConverter implements ReactiveTypeConverter<Maybe> {
     public Maybe fromCompletionStage(CompletionStage cs) {
         CompletionStage<?> future = Objects.requireNonNull(cs);
         return Maybe
-                .create(emitter ->
-                        future.<Void>whenComplete((Object res, Throwable err) -> {
-                            if (emitter.isDisposed()) {
-                                return;
-                            }
-                            if (err != null) {
-                                emitter.onError(err instanceof CompletionException ? err.getCause() : err);
-                            } else {
-                                if (res == null) {
-                                    emitter.onComplete();
-                                } else if (res instanceof Optional) {
-                                    manageOptional(emitter, (Optional) res);
-                                } else {
-                                    emitter.onSuccess(res);
-                                }
-                            }
+                .create(emitter -> future.<Void> whenComplete((Object res, Throwable err) -> {
+                    if (emitter.isDisposed()) {
+                        return;
+                    }
+                    if (err != null) {
+                        emitter.onError(err instanceof CompletionException ? err.getCause() : err);
+                    } else {
+                        if (res == null) {
+                            emitter.onComplete();
+                        } else if (res instanceof Optional) {
+                            manageOptional(emitter, (Optional) res);
+                        } else {
+                            emitter.onSuccess(res);
+                        }
+                    }
 
-                        }));
+                }));
     }
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")

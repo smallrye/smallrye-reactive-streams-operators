@@ -1,17 +1,18 @@
 package io.smallrye.reactive.streams.stages;
 
+import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+import java.util.stream.Collector;
+
+import org.eclipse.microprofile.reactive.streams.operators.spi.Stage;
+
 import io.reactivex.Flowable;
 import io.reactivex.plugins.RxJavaPlugins;
 import io.smallrye.reactive.streams.Engine;
 import io.smallrye.reactive.streams.operators.TerminalStage;
 import io.smallrye.reactive.streams.operators.TerminalStageFactory;
 import io.smallrye.reactive.streams.utils.FlowableCollector;
-import org.eclipse.microprofile.reactive.streams.operators.spi.Stage;
-
-import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
-import java.util.stream.Collector;
 
 /**
  * Implement the {@link Stage.Collect} stage. It accumulates the result in a {@link Collector} and
@@ -21,12 +22,10 @@ import java.util.stream.Collector;
  */
 public class CollectStageFactory implements TerminalStageFactory<Stage.Collect> {
 
-
     @SuppressWarnings("unchecked")
     @Override
     public <I, O> TerminalStage<I, O> create(Engine engine, Stage.Collect stage) {
-        Collector<I, Object, O> collector = (Collector<I, Object, O>)
-                Objects.requireNonNull(stage).getCollector();
+        Collector<I, Object, O> collector = (Collector<I, Object, O>) Objects.requireNonNull(stage).getCollector();
         Objects.requireNonNull(collector);
         return new CollectStage<>(collector);
     }
@@ -48,8 +47,7 @@ public class CollectStageFactory implements TerminalStageFactory<Stage.Collect> 
                     .firstElement()
                     .subscribe(
                             future::complete,
-                            future::completeExceptionally
-                    );
+                            future::completeExceptionally);
             return future;
         }
     }

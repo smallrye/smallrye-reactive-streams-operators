@@ -1,10 +1,10 @@
 package io.smallrye.reactive.streams.utils;
 
-import io.reactivex.Flowable;
-import io.reactivex.processors.AsyncProcessor;
-
 import java.util.Objects;
 import java.util.concurrent.CompletionStage;
+
+import io.reactivex.Flowable;
+import io.reactivex.processors.AsyncProcessor;
 
 public class CompletionStageToPublisher {
 

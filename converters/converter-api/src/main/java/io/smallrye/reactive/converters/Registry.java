@@ -25,10 +25,8 @@ public class Registry {
                 .findAny();
     }
 
-
     public static void register(ReactiveTypeConverter... fcs) {
         Collections.addAll(converters, fcs);
     }
-
 
 }

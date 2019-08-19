@@ -1,12 +1,13 @@
 package io.smallrye.reactive.converters.rxjava2;
 
+import java.util.concurrent.atomic.AtomicReference;
+
+import org.junit.Before;
+
 import io.reactivex.Single;
 import io.smallrye.reactive.converters.ReactiveTypeConverter;
 import io.smallrye.reactive.converters.Registry;
 import io.smallrye.reactive.converters.tck.FromCompletionStageTCK;
-import org.junit.Before;
-
-import java.util.concurrent.atomic.AtomicReference;
 
 public class SingleFromCompletionStageTest extends FromCompletionStageTCK<Single> {
 

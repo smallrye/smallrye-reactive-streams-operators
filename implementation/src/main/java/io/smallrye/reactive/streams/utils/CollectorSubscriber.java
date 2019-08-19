@@ -1,13 +1,14 @@
 package io.smallrye.reactive.streams.utils;
 
-import io.reactivex.internal.subscriptions.DeferredScalarSubscription;
-import io.reactivex.internal.subscriptions.SubscriptionHelper;
-import io.reactivex.plugins.RxJavaPlugins;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
-import java.util.function.BiConsumer;
-import java.util.function.Function;
+import io.reactivex.internal.subscriptions.DeferredScalarSubscription;
+import io.reactivex.internal.subscriptions.SubscriptionHelper;
+import io.reactivex.plugins.RxJavaPlugins;
 
 final class CollectorSubscriber<T, A, R> extends DeferredScalarSubscription<R>
         implements Subscriber<T> {
@@ -25,7 +26,7 @@ final class CollectorSubscriber<T, A, R> extends DeferredScalarSubscription<R>
     private boolean done;
 
     CollectorSubscriber(Subscriber<? super R> actual,
-                        A initialValue, BiConsumer<A, T> accumulator, Function<A, R> finisher) {
+            A initialValue, BiConsumer<A, T> accumulator, Function<A, R> finisher) {
         super(actual);
         this.intermediate = initialValue;
         this.accumulator = accumulator;

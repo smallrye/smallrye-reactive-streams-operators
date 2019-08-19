@@ -1,17 +1,18 @@
 package io.smallrye.reactive.streams.stages;
 
-import io.reactivex.Flowable;
-import io.reactivex.schedulers.Schedulers;
-import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
-import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
-import org.junit.After;
-import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.*;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
+import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
+import org.junit.After;
+import org.junit.Test;
+
+import io.reactivex.Flowable;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Checks the behavior of the {@link FlatMapStageFactory}.
@@ -21,7 +22,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class FlatMapStageFactoryTest extends StageTestBase {
 
     private final FlatMapStageFactory factory = new FlatMapStageFactory();
-
 
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
 

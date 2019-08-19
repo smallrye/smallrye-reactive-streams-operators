@@ -14,7 +14,6 @@ public class CouplingProcessor<I, O> implements Publisher<O> {
         controller.run();
     }
 
-
     @Override
     public synchronized void subscribe(Subscriber<? super O> subscriber) {
         SubscriptionObserver<O> observer = new SubscriptionObserver<>(this.publisher, subscriber);
@@ -22,6 +21,5 @@ public class CouplingProcessor<I, O> implements Publisher<O> {
         observer.setObserver(controller);
         observer.run();
     }
-
 
 }

@@ -1,12 +1,7 @@
 package io.smallrye.reactive.streams;
 
-import io.reactivex.Flowable;
-import io.smallrye.reactive.streams.operators.*;
-import io.smallrye.reactive.streams.spi.Transformer;
-import io.smallrye.reactive.streams.stages.Stages;
-import io.smallrye.reactive.streams.utils.ConnectableProcessor;
-import io.smallrye.reactive.streams.utils.DefaultSubscriberWithCompletionStage;
-import io.smallrye.reactive.streams.utils.WrappedProcessor;
+import java.util.concurrent.CompletionStage;
+
 import org.eclipse.microprofile.reactive.streams.operators.spi.Graph;
 import org.eclipse.microprofile.reactive.streams.operators.spi.ReactiveStreamsEngine;
 import org.eclipse.microprofile.reactive.streams.operators.spi.Stage;
@@ -15,7 +10,13 @@ import org.eclipse.microprofile.reactive.streams.operators.spi.UnsupportedStageE
 import org.reactivestreams.Processor;
 import org.reactivestreams.Publisher;
 
-import java.util.concurrent.CompletionStage;
+import io.reactivex.Flowable;
+import io.smallrye.reactive.streams.operators.*;
+import io.smallrye.reactive.streams.spi.Transformer;
+import io.smallrye.reactive.streams.stages.Stages;
+import io.smallrye.reactive.streams.utils.ConnectableProcessor;
+import io.smallrye.reactive.streams.utils.DefaultSubscriberWithCompletionStage;
+import io.smallrye.reactive.streams.utils.WrappedProcessor;
 
 public class Engine implements ReactiveStreamsEngine {
 
@@ -40,7 +41,6 @@ public class Engine implements ReactiveStreamsEngine {
         }
         return flowable;
     }
-
 
     @Override
     public <T, R> SubscriberWithCompletionStage<T, R> buildSubscriber(Graph graph) {
@@ -94,17 +94,20 @@ public class Engine implements ReactiveStreamsEngine {
     }
 
     private <I, O> Flowable<O> applyProcessors(Flowable<I> flowable, Stage stage, ProcessorOperator operator) {
-        @SuppressWarnings("unchecked") ProcessingStage<I, O> ps = operator.create(this, stage);
+        @SuppressWarnings("unchecked")
+        ProcessingStage<I, O> ps = operator.create(this, stage);
         return Transformer.apply(ps.apply(flowable));
     }
 
     private <T, R> CompletionStage<R> applySubscriber(Flowable<T> flowable, Stage stage, TerminalOperator operator) {
-        @SuppressWarnings("unchecked") TerminalStage<T, R> ps = operator.create(this, stage);
+        @SuppressWarnings("unchecked")
+        TerminalStage<T, R> ps = operator.create(this, stage);
         return ps.apply(Transformer.apply(flowable));
     }
 
     private <O> Flowable<O> createPublisher(Stage stage, PublisherOperator operator) {
-        @SuppressWarnings("unchecked") PublisherStage<O> ps = operator.create(this, stage);
+        @SuppressWarnings("unchecked")
+        PublisherStage<O> ps = operator.create(this, stage);
         return Transformer.apply(ps.get());
     }
 

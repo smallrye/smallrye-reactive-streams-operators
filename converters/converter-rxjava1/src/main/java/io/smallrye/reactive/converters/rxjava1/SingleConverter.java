@@ -1,14 +1,15 @@
 package io.smallrye.reactive.converters.rxjava1;
 
-import hu.akarnokd.rxjava.interop.RxJavaInterop;
-import io.smallrye.reactive.converters.ReactiveTypeConverter;
-import org.reactivestreams.Publisher;
-import rx.Single;
-
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
+
+import org.reactivestreams.Publisher;
+
+import hu.akarnokd.rxjava.interop.RxJavaInterop;
+import io.smallrye.reactive.converters.ReactiveTypeConverter;
+import rx.Single;
 
 /**
  * Converter handling the RX Java 1 {@link Single} type.
@@ -47,8 +48,7 @@ public class SingleConverter implements ReactiveTypeConverter<Single> {
         //noinspection ResultOfMethodCallIgnored
         s.subscribe(
                 future::complete,
-                future::completeExceptionally
-        );
+                future::completeExceptionally);
         return future;
     }
 
@@ -62,20 +62,19 @@ public class SingleConverter implements ReactiveTypeConverter<Single> {
     public <X> Single<X> fromCompletionStage(CompletionStage<X> cs) {
         CompletionStage<X> future = Objects.requireNonNull(cs);
         return Single
-                .create(emitter ->
-                        future.<X>whenComplete((X res, Throwable err) -> {
-                            if (!emitter.isUnsubscribed()) {
-                                if (err != null) {
-                                    if (err instanceof CompletionException) {
-                                        emitter.onError(err.getCause());
-                                    } else {
-                                        emitter.onError(err);
-                                    }
-                                } else {
-                                    emitter.onSuccess(res);
-                                }
+                .create(emitter -> future.<X> whenComplete((X res, Throwable err) -> {
+                    if (!emitter.isUnsubscribed()) {
+                        if (err != null) {
+                            if (err instanceof CompletionException) {
+                                emitter.onError(err.getCause());
+                            } else {
+                                emitter.onError(err);
                             }
-                        }));
+                        } else {
+                            emitter.onSuccess(res);
+                        }
+                    }
+                }));
     }
 
     @Override

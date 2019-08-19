@@ -1,15 +1,16 @@
 package io.smallrye.reactive.converters.rxjava2;
 
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+
+import org.junit.Before;
+
 import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.reactivex.schedulers.Schedulers;
 import io.smallrye.reactive.converters.ReactiveTypeConverter;
 import io.smallrye.reactive.converters.Registry;
 import io.smallrye.reactive.converters.tck.ToCompletionStageTCK;
-import org.junit.Before;
-
-import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 public class SingleToCompletionStageTest extends ToCompletionStageTCK<Single> {
 
@@ -67,7 +68,7 @@ public class SingleToCompletionStageTest extends ToCompletionStageTCK<Single> {
 
     @Override
     protected Optional<Single> createInstanceEmittingAMultipleValuesAndFailure(String v1, String v2,
-                                                                               RuntimeException e) {
+            RuntimeException e) {
         return Optional.empty();
     }
 
