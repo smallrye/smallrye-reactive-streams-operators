@@ -68,6 +68,7 @@
         <module>converters/converter-rxjava2</module>
         <module>converters/converter-rxjava1</module>
         <module>converters/converter-reactor</module>
+        <module>converters/converter-mutiny</module>
         <module>converters/converter-microprofile-reactive-streams-operators</module>
     </modules>
 
@@ -79,6 +80,7 @@
         <rxjava2.version>2.2.18</rxjava2.version>
         <rxjava1.version>1.3.8</rxjava1.version>
         <reactor-core.version>3.3.3.RELEASE</reactor-core.version>
+        <mutiny.version>0.4.0</mutiny.version>
 
         <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/tck/target/site/jacoco-aggregate/jacoco.xml,${project.basedir}/../tck/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     </properties>
@@ -104,6 +106,11 @@
                 <groupId>io.projectreactor</groupId>
                 <artifactId>reactor-core</artifactId>
                 <version>${reactor-core.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.smallrye.reactive</groupId>
+                <artifactId>mutiny</artifactId>
+                <version>${mutiny.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
