@@ -18,6 +18,10 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <groupId>io.reactivex.rxjava2</groupId>
+            <artifactId>rxjava</artifactId>
+        </dependency>
+        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>smallrye-reactive-converter-api</artifactId>
             <version>${project.version}</version>

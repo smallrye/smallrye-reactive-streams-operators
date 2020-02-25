@@ -127,11 +127,6 @@
             <version>${microprofile-reactive-streams.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>io.reactivex.rxjava2</groupId>
-            <artifactId>rxjava</artifactId>
-        </dependency>
-
         <!-- testing -->
         <dependency>
             <groupId>junit</groupId>
