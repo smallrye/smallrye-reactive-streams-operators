@@ -11,7 +11,7 @@
         <relativePath>../..</relativePath>
     </parent>
 
-    <artifactId>converter-mutiny</artifactId>
+    <artifactId>smallrye-reactive-converter-mutiny</artifactId>
 
     <dependencies>
         <dependency>
