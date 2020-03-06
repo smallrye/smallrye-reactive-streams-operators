@@ -5,13 +5,13 @@
 
     <groupId>io.smallrye.reactive</groupId>
     <artifactId>smallrye-reactive-streams-operators-quickstart-camel</artifactId>
-    <version>1.0.11-SNAPSHOT</version>
+    <version>1.0.12-SNAPSHOT</version>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
 
-        <camel.version>3.0.1</camel.version>
+        <camel.version>3.1.0</camel.version>
 
         <sonar.skip>true</sonar.skip>
     </properties>
@@ -20,7 +20,7 @@
         <dependency>
             <groupId>io.smallrye.reactive</groupId>
             <artifactId>smallrye-reactive-streams-operators</artifactId>
-            <version>1.0.11-SNAPSHOT</version>
+            <version>1.0.12-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.camel</groupId>
