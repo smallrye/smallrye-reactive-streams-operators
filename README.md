@@ -23,7 +23,7 @@ You can also look at the:
 ## Built With
 
 * RX Java 2
-* Apache Vert.x (optional)
+* Eclipse Vert.x (optional)
 
 
 ## How to build
