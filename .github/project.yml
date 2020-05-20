@@ -1,0 +1,4 @@
+name: SmallRye Reactive Streams Operators
+release:
+  current-version: 1.0.14-SNAPSHOT
+  next-version: 1.0.15-SNAPSHOT
