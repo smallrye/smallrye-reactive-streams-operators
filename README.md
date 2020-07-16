@@ -1,5 +1,18 @@
 # Implementation of the MicroProfile Reactive Streams Operator specification
 
+-----
+
+**IMPORTANT**: This repository is in _maintenance_ mode. 
+No new features will be implemented. 
+               
+Another implementation of MicroProfile Reactive Streams Operators is available in [Mutiny](https://smallrye.io/smallrye-mutiny).
+It is recommended to switch to this implementation.
+               
+Reactive Converters have been migrated to https://github.com/smallrye/smallrye-reactive-utils.
+               
+If you have any questions, send a message to https://groups.google.com/forum/#!forum/smallrye.
+
+-----
 
 **Documentation:** https://www.smallrye.io/smallrye-reactive-streams-operators/
 
