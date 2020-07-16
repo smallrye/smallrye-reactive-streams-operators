@@ -17,6 +17,19 @@ ifdef::basebackend-html[toc::[]]
 :sectnums:
 :sectnumlevels: 4
 
+----
+
+*IMPORTANT*: This project is in _maintenance_ mode.
+No new features will be implemented.
+
+Another implementation of MicroProfile Reactive Streams Operators is available in https://smallrye.io/smallrye-mutiny[Mutiny].
+It is recommended to switch to this implementation.
+
+Reactive Converters have been migrated to https://github.com/smallrye/smallrye-reactive-utils.
+
+If you have any questions, send a message to the https://groups.google.com/forum/#!forum/smallrye[smallrye group].
+
+----
 
 include::./intro.adoc[]
 include::./getting-started.adoc[]
