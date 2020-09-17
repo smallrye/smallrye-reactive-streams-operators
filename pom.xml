@@ -66,7 +66,7 @@
     </modules>
 
     <properties>
-        <vertx.version>3.9.1</vertx.version>
+        <vertx.version>3.9.3</vertx.version>
         <microprofile-reactive-streams.version>1.0.1</microprofile-reactive-streams.version>
 
         <asciidoctorj.version>1.5.8.1</asciidoctorj.version>
