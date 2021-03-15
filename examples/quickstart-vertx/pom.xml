@@ -10,7 +10,7 @@
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <vertx.version>3.9.4</vertx.version>
+        <vertx.version>4.0.3</vertx.version>
 
         <sonar.skip>true</sonar.skip>
     </properties>
